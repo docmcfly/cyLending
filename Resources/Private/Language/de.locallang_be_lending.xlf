@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf" date="2020-01-09T21:28:55Z" product-name="cylending">
+		<header />
+		<body>
+			<trans-unit id="plugin.name">
+				<source>Lending</source>
+				<target state="tanslated">Ausleihe</target>
+			</trans-unit>
+			<trans-unit id="plugin.description">
+				<source>Shows items already borrowed and you can submit a loan request.</source>
+				<target state="tanslated">Zeigt bereits ausgeliehene Objekte und man kann einen Ausleihantrag stellen.</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.title">
+				<source>Common</source>
+				<target state="tanslated">Allgemein</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.approverGroup">
+				<source>Approver group</source>
+				<target state="tanslated">Genehmiger:in-Gruppe</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.purposes">
+				<source>Purposes</source>
+				<target state="tanslated">Zweck (Vorschläge)</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.usualLendingTermHours">
+				<source>Usual lending term (hours)</source>
+				<target state="tanslated">Übliche Ausleihdauer (Stunden)</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.usualLendingTermMinutes">
+				<source>Usual lending term (minutes)</source>
+				<target state="tanslated">Übliche Ausleihdauer (Minuten)</target>
+			</trans-unit>
+
+
+		</body>
+	</file>
+</xliff>

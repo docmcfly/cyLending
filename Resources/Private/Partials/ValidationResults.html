@@ -1,0 +1,32 @@
+<!-- errors and infos -->
+<style>
+	.error{
+		color:var(--bs-primary);
+	}
+
+</style>
+<f:for each="{validationResults.infos}" as="info" key="infoKey">
+	<div class="alert alert-success">
+		<f:translate key="{prefix}.{infoKey}" arguments="{info.arguments}" />
+	</div>
+</f:for>
+<f:if condition="{validationResults.errors}">
+	<script type="text/javascript" defer="defer">
+		$(document).ready(function() {
+			let label
+			let forLabel
+		<f:for each="{validationResults.errors}" as="error">
+			label = $('#{error.id}Label')
+			label.addClass('error')
+			forLabel = $('#'+label.attr('for'))
+			forLabel.addClass('error')
+		</f:for>
+		})
+	</script>
+	<f:for each="{validationResults.errors}" as="error" key="errorKey">
+		<div class="alert alert-danger">
+				{prefix}.{errorKey} 
+			<f:translate key="{prefix}.{errorKey}" arguments="{error.arguments}"/>
+		</div>
+	</f:for>
+</f:if>

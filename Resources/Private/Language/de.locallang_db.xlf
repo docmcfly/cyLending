@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="EXT:cy_lending/Resources/Private/Language/locallang_db.xlf" date="2020-01-09T21:28:55Z" product-name="cylending">
+		<header />
+		<body>
+			<trans-unit id="tx_cylending_domain_model_product_lending.lending">
+				<source>Lending</source>
+				<target state="tanslated">Ausleihe</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.object">
+				<source>Lending object</source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.from">
+				<source>From</source>
+				<target state="tanslated">Von</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.until">
+				<source>Until</source>
+				<target state="tanslated">Bis</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.borrower">
+				<source>Borrower</source>
+				<target state="tanslated">Ausleiher</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.purpose">
+				<source>Purpose</source>
+				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.state">
+				<source>State</source>
+				<target state="tanslated">Status</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.state.unknown">
+				<source>Unknown</source>
+				<target state="tanslated">Unbekannt</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.state.availabilityRequest">
+				<source>Availabitility request</source>
+				<target state="tanslated">Verfügbarkeitsanfrage</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.state.approved">
+				<source>Approved</source>
+				<target state="tanslated">Genehmigt</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.state.rejected">
+				<source>Rejected</source>
+				<target state="tanslated">Abgelehnt</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.approver">
+				<source>Approver</source>
+				<target state="tanslated">Genehmigende Person</target>
+			</trans-unit>
+
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.object">
+				<source>Lending object </source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.groupName">
+				<source>Group name</source>
+				<target state="tanslated">Gruppenname</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.objectTitle">
+				<source>Lending object</source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.objectColor">
+				<source>Lending object color</source>
+				<target state="tanslated">Ausleihobjekt-Farbe</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.approverGroup">
+				<source>The approver group</source>
+				<target state="tanslated">Gruppe der Genehmiger</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.observerGroup">
+				<source>The observer group</source>
+				<target state="tanslated">Gruppe der Beobachter</target>
+			</trans-unit>
+
+
+
+
+
+		</body>
+	</file>
+</xliff>

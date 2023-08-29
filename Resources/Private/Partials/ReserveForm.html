@@ -1,0 +1,90 @@
+<f:render partial="validationResults"
+    arguments="{prefix:'lending.overview.availabilityRequest.form', validationResults: availabilityRequestValidationResults}" />
+
+<f:format.raw>
+    <script defer="defer">
+        {untilOffset}
+    </script>
+</f:format.raw>
+
+<f:asset.script identifier="reserveForm.js" defer="defer"
+    src="EXT:cy_lending/Resources/Public/JavaScript/reserveForm.js" />
+
+<f:form class="form" action="reserve" method="POST" enctype="multipart/form-data" objectName="toReserve"
+    object="{toReserve}">
+    <div class="row mt-3 mb-2">
+        <label id="objectLabel" for="object" class="col-sm-3 col-form-label">
+            <f:translate key="lending.overview.availabilityRequest.form.object" />
+        </label>
+        <div class="col-sm-9">
+            <f:form.select class="form-select" property="object">
+                <f:groupedFor each="{lendingObjects}" as="lendingObjects" groupBy="groupName" groupKey="groupName">
+                    <f:if condition="{groupName} == '' ">
+                        <f:then>
+                            <f:for each="{lendingObjects}" as="lendingObject">
+                                <f:form.select.option value="{lendingObject.uid}">
+                                    {lendingObject.title}
+                                </f:form.select.option>
+                            </f:for>
+                        </f:then>
+                        <f:else>
+                            <f:form.select.optgroup label="{groupName}">
+                                <f:for each="{lendingObjects}" as="lendingObject">
+                                    <f:form.select.option value="{lendingObject.uid}">
+                                        {lendingObject.title}
+                                    </f:form.select.option>
+                                </f:for>
+                            </f:form.select.optgroup>
+                        </f:else>
+                    </f:if>
+
+                </f:groupedFor>
+            </f:form.select>
+        </div>
+    </div>
+    <div class="row  mb-2">
+        <label id="purposeLabel" for="purpose" class="col-sm-3 col-form-label">
+            <f:translate key="lending.overview.availabilityRequest.form.purpose" />
+        </label>
+        <div class="col-sm-9">
+            <f:form.textfield class="form-control" property="purpose" type="text" id="purpose"
+                additionalAttributes="{list:'purposeList'}"
+                placeholder="{f:if(condition:'{purposes->f:count()} > 0', then:'{f:translate(key:\'lending.overview.availabilityRequest.form.purpose.placeholder\')}')}" />
+            <f:if condition="{purposes->f:count()} > 0">
+                <datalist id="purposeList">
+                    <f:for each="{purposes}" as="purpose">
+                        <option value="{purpose}">{purpose}</option>
+                    </f:for>
+                </datalist>
+            </f:if>
+        </div>
+    </div>
+    <div class="row  mb-2">
+        <label id="fromLabel" for="from" class="col-sm-3 col-form-label">
+            <f:translate key="lending.overview.availabilityRequest.form.from" />
+        </label>
+        <div class="col-sm-9">
+            <f:form.textfield id="from" class="form-control" property="from" type="datetime-local" />
+        </div>
+    </div>
+    <div class="row  mb-2">
+        <label id="untilLabel" for="until" class="col-sm-3 col-form-label">
+            <f:translate key="lending.overview.availabilityRequest.form.until" />
+        </label>
+        <div class="col-sm-9">
+
+            <f:form.textfield id="until" class="form-control" property="until" type="datetime-local" />
+        </div>
+    </div>
+    <div class="row  mb-2">
+        <div class="col-sm-3">
+            &nbsp;
+        </div>
+        <div class="col-sm-9">
+            <f:form.submit name="submit" class="btn btn-primary"
+                value="{f:translate(key:'lending.overview.availabilityRequest.form.submit')}">
+                <f:translate key="lending.overview.availabilityRequest.form.submit" />
+            </f:form.submit>
+        </div>
+    </div>
+</f:form>

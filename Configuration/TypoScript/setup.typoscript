@@ -1,0 +1,19 @@
+plugin.tx_cylending {
+	view {
+		templateRootPaths {
+			0 = EXT:cy_lending/Resources/Private/Templates/
+			1 = {$plugin.tx_cylending.view.templateRootPath}
+		}
+
+		partialRootPaths {
+			0 = EXT:cy_lending/Resources/Private/Partials/
+			1 = {$plugin.tx_cylending.view.partialRootPath}
+		}
+
+		layoutRootPaths {
+			0 = EXT:cy_lending/Resources/Private/Layouts/
+			1 = {$plugin.tx_cylending.view.layoutRootPath}
+		}
+	}
+}
+

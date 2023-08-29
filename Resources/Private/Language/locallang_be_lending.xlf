@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf" date="2020-01-09T21:28:55Z" product-name="cylending">
+		<header />
+		<body>
+			<trans-unit id="plugin.name">
+				<source>Lending</source>
+			</trans-unit>
+			<trans-unit id="plugin.description">
+				<source>Shows items already borrowed and you can submit a loan request.</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.title">
+				<source>Common</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.approverGroup">
+				<source>Approver group</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.purposes">
+				<source>Purposes</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.usualLendingTermHours">
+				<source>Usual lending term (hours)</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.usualLendingTermMinutes">
+				<source>Usual lending term (minutes)</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

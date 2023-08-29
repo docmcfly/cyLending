@@ -1,0 +1,92 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:c="http://typo3.org/ns/Cylancer/Participants/ViewHelpers" data-namespace-typo3-fluid="true">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	</head>
+	<body>
+		<f:layout name="Default" />
+		<f:section name="content">
+			<p>
+				<f:translate
+					key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.salutation"
+					arguments="{0:user.firstName, 1:user:user.lastName}" />
+			</p>
+			<p>
+				<f:translate
+					key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.youHaveRequest" />
+			</p>
+			<table>
+				<tr>
+					<td>
+						<f:translate
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.object" />&nbsp;&nbsp;
+					</td>
+					<td>{availabilityRequest.object.title}</td>
+				</tr>
+				<tr>
+					<td>
+						<f:translate
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.purpose" />&nbsp;&nbsp;
+					</td>
+					<td>{availabilityRequest.purpose}</td>
+				</tr>
+				<tr>
+					<td>
+						<f:translate
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.from" />&nbsp;&nbsp;
+					</td>
+					<td>
+						<f:format.date format="d.m.Y H:i">{availabilityRequest.from}</f:format.date>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<f:translate
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.until" />&nbsp;&nbsp;
+					</td>
+					<td>
+						<f:format.date format="d.m.Y H:i">{availabilityRequest.until}</f:format.date>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<f:translate
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.borrower" />&nbsp;&nbsp;
+					</td>
+					<td>{availabilityRequest.borrower.firstName} {availabilityRequest.borrower.lastName}</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr style="padding:2em;">
+					<td style="background-color:#e05e36; padding:0.5em; margin:0.5em; color:white; ">
+						<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}"
+							action="approve" pluginName="lending" controller="Lending" absolute="true" noCache="true"
+							arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid}">
+							<f:translate key="lending.overview.approval.action.approve" />
+						</f:link.action>
+					</td>
+					<td style="background-color:#e05e36; padding:0.5em; margin:0.5em; color:white; ">
+						<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}"
+							action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true"
+							arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid}">
+							<f:translate key="lending.overview.approval.action.reject" />
+						</f:link.action>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+
+			</table>
+
+
+		</f:section>
+	</body>
+</html>

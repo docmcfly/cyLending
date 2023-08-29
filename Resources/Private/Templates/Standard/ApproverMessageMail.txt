@@ -1,0 +1,43 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
+<f:layout name="Default"/>
+<f:section name="content">
+<f:translate
+	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.salutation"
+	arguments="{0:user.firstName, 1:user:user.lastName}" />
+
+<f:translate
+	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.youHaveRequest" />
+
+<f:translate
+	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.object" />:
+{availabilityRequest.object.title}
+				
+<f:translate
+		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.purpose" />:
+{availabilityRequest.purpose}
+
+<f:translate
+	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.from" />:
+<f:format.date format="d.m.Y H:i">{availabilityRequest.from}</f:format.date>
+
+<f:translate
+	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.until" />:
+<f:format.date format="d.m.Y H:i">{availabilityRequest.until}</f:format.date>
+
+<f:translate
+		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.borrower" />:
+{availabilityRequest.borrower.firstName} {availabilityRequest.borrower.lastName}
+
+<f:translate key="lending.overview.approval.action.approve" />:
+<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}" action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true" 	arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid}"></f:link.action>
+
+<f:translate key="lending.overview.approval.action.reject" />:
+<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}" action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true" arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid}"></f:link.action>
+</f:section>
+</body></html>
+
+

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="EXT:cy_lending/Resources/Private/Language/locallang_db.xlf" date="2020-01-09T21:28:55Z" product-name="cylending">
+		<header />
+		<body>
+			<trans-unit id="lending.overview.tab.lending">
+				<source>Lending</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.tab.approval">
+				<source>Approval</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.tab.calendar">
+				<source>Calendar</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.object">
+				<source>Lending object</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.purpose">
+				<source>Purpose</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.purpose.placeholder">
+				<source>Press cursor down for poposals</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.from">
+				<source>From</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.until">
+				<source>Until</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.borrower">
+				<source>Borrower</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.submit">
+				<source>Query availability</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.object.isEmpty">
+				<source>Lending object is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.purpose.isEmpty">
+				<source>The purpose is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.from.isEmpty">
+				<source>Lending start time is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isEmpty">
+				<source>Lending end time is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.from.invalid">
+				<source>Lending start time is invalid.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.invalid">
+				<source>Lending end time is invalid.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isBeforeFrom">
+				<source>Lending end time is before the start time.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isInThePast">
+				<source>Lending start time is in the past.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.info.successful">
+				<source>Availability request send sucessful.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.info.automaticApproved">
+				<source>Availability request was automatic approved.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.automaticApproved">
+				<source>Availability request was not automatic approved. Please contact the webmaster.</source>
+			</trans-unit>
+
+			<trans-unit id="lending.overview.availabilityRequest.form.button.back">
+				<source>Back</source>
+			</trans-unit>
+
+			<trans-unit id="lending.overview.availabilityRequest.object">
+				<source>Lending object</source>
+			</trans-unit>
+
+			<trans-unit id="lending.overview.approval.form.error.userNotApprover.approve">
+				<source>You has not the rights to approve a availability request.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.existsOverlapsAvailabilityRequests">
+				<source>The object is already borrowed in this period.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.userNotApprover.reject">
+				<source>You has not the rights to reject a availability request.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.info.successful.approved">
+				<source>You have approve the availability request successful.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.info.successful.rejected">
+				<source>You have reject the availability request successful.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.action.approve">
+				<source>Approve availability request</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.action.reject">
+				<source>Reject availability request</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.noneEntries">
+				<source>None entry exists</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.object.isEmpty">
+				<source>Lending object is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.purpose.isEmpty">
+				<source>The purpose is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.from.isEmpty">
+				<source>Lending start time is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.until.isEmpty">
+				<source>Lending end time is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.from.invalid">
+				<source>Lending start time is invalid.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.until.invalid">
+				<source>Lending end time is invalid.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.until.isBeforeFrom">
+				<source>Lending end time is before the start time.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.from.isInThePast">
+				<source>Lending start time is in the past.</source>
+			</trans-unit>
+
+
+			<trans-unit id="message.approver.email.subject">
+				<source>A new the availability request</source>
+			</trans-unit>
+			<trans-unit id="message.approver.email.salutation">
+				<source>Hello %s.</source>
+			</trans-unit>
+			<trans-unit id="message.approver.email.youHaveRequest">
+				<source>You have availability request: </source>
+			</trans-unit>
+			<trans-unit id="message.approver.email.object">
+				<source>Lending object</source>
+			</trans-unit>
+			<trans-unit id="message.approver.email.purpose">
+				<source>Purpose</source>
+			</trans-unit>
+			<trans-unit id="message.approver.email.from">
+				<source>From</source>
+			</trans-unit>
+			<trans-unit id="message.approver.email.until">
+				<source>Until</source>
+			</trans-unit>
+			<trans-unit id="message.approver.email.borrower">
+				<source>Borrower</source>
+			</trans-unit>
+
+
+			<trans-unit id="message.borrower.email.subject">
+				<source>Your availability request</source>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.salutation">
+				<source>Hello %s %s.</source>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.yourRequestIsApproved">
+				<source>Your availability request is approved.</source>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.yourRequestIsRejected">
+				<source>Your availability request is rejected.</source>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.object">
+				<source>Lending object</source>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.purpose">
+				<source>Purpose</source>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.from">
+				<source>From</source>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.until">
+				<source>Until</source>
+			</trans-unit>
+
+
+			<trans-unit id="message.observer.email.subject">
+				<source>State of an availability request</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.salutation">
+				<source>Hello %s %s.</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.requestIsApproved">
+				<source>An availability request is approved.</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.requestIsRejected">
+				<source>An availability request is rejected.</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.object">
+				<source>Lending object</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.purpose">
+				<source>Purpose</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.from">
+				<source>From</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.until">
+				<source>Until</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.borrower">
+				<source>Borrower</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.approver">
+				<source>Approver</source>
+			</trans-unit>
+
+
+		</body>
+	</file>
+</xliff>

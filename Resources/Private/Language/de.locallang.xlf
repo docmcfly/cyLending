@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="EXT:cy_lending/Resources/Private/Language/locallang_db.xlf" date="2020-01-09T21:28:55Z" product-name="cylending">
+		<header />
+		<body>
+			<trans-unit id="lending.overview.tab.lending">
+				<source>Lending</source>
+				<target state="tanslated">Ausleihe</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.tab.approval">
+				<source>Approval</source>
+				<target state="tanslated">Genehmigung</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.tab.calendar">
+				<source>Calendar</source>
+				<target state="tanslated">Kalender</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.object">
+				<source>Lending object</source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.purpose">
+				<source>Purpose</source>
+				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.purpose.placeholder">
+				<source>Press cursor down for poposals</source>
+				<target state="tanslated">Taste nach unten für Vorschläge</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.from">
+				<source>From</source>
+				<target state="tanslated">Von</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.until">
+				<source>Until</source>
+				<target state="tanslated">Bis</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.borrower">
+				<source>Borrower</source>
+				<target state="tanslated">Ausleiher:in</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.submit">
+				<source>Query availability</source>
+				<target state="tanslated">Verfügbarkeit abfragen</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.object.isEmpty">
+				<source>Lending object is not specified.</source>
+				<target state="tanslated">Ausleihobjekt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.purpose.isEmpty">
+				<source>The purpose is not specified.</source>
+				<target state="tanslated">Der Zweck (Ausleihgrund) wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.from.isEmpty">
+				<source>Lending start time is not specified.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isEmpty">
+				<source>Lending end time is not specified.</source>
+				<target state="tanslated">Ausleihendzeitpunkt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.from.invalid">
+				<source>Lending start time is invalid.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt ist ungültig.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.invalid">
+				<source>Lending end time is invalid.</source>
+				<target state="tanslated">Ausleihendzeitpunkt ist ungültig.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isBeforeFrom">
+				<source>Lending end time is before the start time.</source>
+				<target state="tanslated">Ausleihendzeitpunkt ist vor dem Ausleihstartzeitpunkt.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isInThePast">
+				<source>Lending start time is in the past.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt ist in der Vergangenheit.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.info.successful">
+				<source>Availability request send sucessful.</source>
+				<target state="tanslated">Ausleihanfrage erfolgreich abgeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.info.automaticApproved">
+				<source>Availability request was automatic approved.</source>
+				<target state="tanslated">Ausleihanfrage wurde automatisch genehmigt.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.automaticApproved">
+				<source>Availability request was not automatic approved. Please contact the webmaster.</source>
+				<target state="tanslated">Ausleihanfrage wurde nicht automatisch genehmigt. Bitte wende Dich an den Webmaster.</target>
+			</trans-unit>
+
+			<trans-unit id="lending.overview.availabilityRequest.form.button.back">
+				<source>Back</source>
+				<target state="tanslated">Zurück</target>
+			</trans-unit>
+
+			<trans-unit id="lending.overview.approval.form.error.userNotApprover.approve">
+				<source>You has not the rights to approve a availability request.</source>
+				<target state="tanslated">Sie haben nicht die Rechte eine Ausleihanfrage zu genehmigen.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.existsOverlapsAvailabilityRequests">
+				<source>The object is already borrowed in this period.</source>
+				<target state="tanslated">Das Objekt ist bereits in diesem Zeitraum ausgeliehen.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.userNotApprover.reject">
+				<source>You has not the rights to reject a availability request.</source>
+				<target state="tanslated">Sie haben nicht die Rechte eine Ausleihanfrage abzulehnen.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.info.successful.approved">
+				<source>You have approve the availability request successful.</source>
+				<target state="tanslated">Sie haben die Ausleihanfrage erfolgreich genehmigt.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.info.successful.rejected">
+				<source>You have reject the availability request successful.</source>
+				<target state="tanslated">Sie haben die Ausleihanfrage erfolgreich abgelehnt.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.action.approve">
+				<source>Approve availability request</source>
+				<target state="tanslated">Ausleihanfrage genehmigen</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.action.reject">
+				<source>Reject availability request</source>
+				<target state="tanslated">Ausleihanfrage ablehnen</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.noneEntries">
+				<source>None entry exists</source>
+				<target state="tanslated">Aktuell keine Ausleihanfragen vorhanden</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.object.isEmpty">
+				<source>Lending object is not specified.</source>
+				<target state="tanslated">Ausleihobjekt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.purpose.isEmpty">
+				<source>The purpose is not specified.</source>
+				<target state="tanslated">Der Zweck (Ausleihgrund) wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.from.isEmpty">
+				<source>Lending start time is not specified.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.until.isEmpty">
+				<source>Lending end time is not specified.</source>
+				<target state="tanslated">Ausleihendzeitpunkt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.from.invalid">
+				<source>Lending start time is invalid.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt ist ungültig.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.until.invalid">
+				<source>Lending end time is invalid.</source>
+				<target state="tanslated">Ausleihendzeitpunkt ist ungültig.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.until.isBeforeFrom">
+				<source>Lending end time is before the start time.</source>
+				<target state="tanslated">Ausleihendzeitpunkt ist vor dem Ausleihstartzeitpunkt.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.from.isInThePast">
+				<source>Lending start time is in the past.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt ist in der Vergangenheit.</target>
+			</trans-unit>
+
+
+
+
+			<trans-unit id="message.approver.email.subject">
+				<source>A new the availability request</source>
+				<target state="tanslated">Eine neue Ausleihanfrage</target>
+			</trans-unit>
+			<trans-unit id="message.approver.email.salutation">
+				<source>Hello %s %s.</source>
+				<target state="tanslated">Hallo %s %s.</target>
+			</trans-unit>
+			<trans-unit id="message.approver.email.youHaveRequest">
+				<source>You have availability request:</source>
+				<target state="tanslated">Eine neue Ausleihanfrage wurde gestellt:</target>
+			</trans-unit>
+			<trans-unit id="message.approver.email.object">
+				<source>Lending object</source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="message.approver.email.purpose">
+				<source>Purpose</source>
+				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="message.approver.email.from">
+				<source>From</source>
+				<target state="tanslated">Von</target>
+			</trans-unit>
+			<trans-unit id="message.approver.email.until">
+				<source>Until</source>
+				<target state="tanslated">Bis</target>
+			</trans-unit>
+			<trans-unit id="message.approver.email.borrower">
+				<source>Borrower</source>
+				<target state="tanslated">Ausleiher:in</target>
+			</trans-unit>
+
+			<trans-unit id="message.borrower.email.subject">
+				<source>Your availability request</source>
+				<target state="tanslated">Deine Ausleihanfrage</target>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.salutation">
+				<source>Hello %s %s.</source>
+				<target state="tanslated">Hallo %s %s.</target>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.yourRequestIsApproved">
+				<source>Your availability request is approved.</source>
+				<target state="tanslated">Deine Ausleihanfrage wurde genehmingt.</target>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.yourRequestIsRejected">
+				<source>Your availability request is rejected.</source>
+				<target state="tanslated">Deine Ausleihanfrage wurde abgelehnt.</target>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.object">
+				<source>Lending object</source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.purpose">
+				<source>Purpose</source>
+				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.from">
+				<source>From</source>
+				<target state="tanslated">Von</target>
+			</trans-unit>
+			<trans-unit id="message.borrower.email.until">
+				<source>Until</source>
+				<target state="tanslated">Bis</target>
+			</trans-unit>
+
+			<trans-unit id="message.observer.email.subject">
+				<source>State of an availability request</source>
+				<target state="tanslated">Status einer Ausleihanfrage</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.salutation">
+				<source>Hello %s %s.</source>
+				<target state="tanslated">Hallo %s %s.</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.requestIsApproved">
+				<source>An availability request is approved.</source>
+				<target state="tanslated">Eine Ausleihanfrage wurde genehmingt.</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.requestIsRejected">
+				<source>An availability request is rejected.</source>
+				<target state="tanslated">Eine Ausleihanfrage wurde abgelehnt.</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.object">
+				<source>Lending object</source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.purpose">
+				<source>Purpose</source>
+				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.from">
+				<source>From</source>
+				<target state="tanslated">Von</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.until">
+				<source>Until</source>
+				<target state="tanslated">Bis</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.borrower">
+				<source>Borrower</source>
+				<target state="tanslated">Ausleiher:in</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.approver">
+				<source>Approver</source>
+				<target state="tanslated">Genehmiger:in</target>
+			</trans-unit>
+
+
+
+		</body>
+	</file>
+</xliff>

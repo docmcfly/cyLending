@@ -1,0 +1,62 @@
+<f:render partial="validationResults"
+    arguments="{prefix:'lending.overview.approval.form', validationResults: approvalValidationResults}" />
+<f:if condition="{availabilityRequests->f:count()} == 0">
+    <f:then>
+        <f:translate key="lending.overview.approval.noneEntries" />
+    </f:then>
+    <f:else>
+        <f:for each="{availabilityRequests}" as="availabilityRequest">
+            <div class="row mt-4">
+                <div class="col-md-3 fw-bold fs-5">
+                    <f:translate key="lending.overview.availabilityRequest.form.object" />
+                </div>
+                <div class="col-md-9 fw-bold fs-5">{availabilityRequest.object.title}</div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-3">
+                    <f:translate key="lending.overview.availabilityRequest.form.purpose" />
+                </div>
+                <div class="col-md-9">{availabilityRequest.purpose}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <f:translate key="lending.overview.availabilityRequest.form.borrower" />
+                </div>
+                <div class="col-md-9">{availabilityRequest.borrower.firstName}
+                    {availabilityRequest.borrower.lastName}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <f:translate key="lending.overview.availabilityRequest.form.from" />
+                </div>
+                <div class="col-md-9">
+                    <f:format.date format="d.m.Y - H:i">{availabilityRequest.from}
+                    </f:format.date>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <f:translate key="lending.overview.availabilityRequest.form.until" />
+                </div>
+                <div class="col-md-9">
+                    <f:format.date format="d.m.Y - H:i">{availabilityRequest.until}
+                    </f:format.date>
+                </div>
+            </div>
+            <div class="row border-bottom mt-3 pb-4">
+                <div class="col-md-2 offset-md-3">
+                    <f:link.action class="btn btn-primary mb-2" action="approve"
+                        arguments="{'availabilityRequest':availabilityRequest}">
+                        <f:translate key="lending.overview.approval.action.approve" />
+                    </f:link.action>
+                </div>
+                <div class="col-md-2">
+                    <f:link.action class="btn btn-dark mb-2" action="reject"
+                        arguments="{'availabilityRequest':availabilityRequest}">
+                        <f:translate key="lending.overview.approval.action.reject" />
+                    </f:link.action>
+                </div>
+            </div>
+        </f:for>
+    </f:else>
+</f:if>
