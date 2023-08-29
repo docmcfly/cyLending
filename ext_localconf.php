@@ -40,6 +40,8 @@ call_user_func(function () {
         'source' => 'EXT:cy_lending/Resources/Public/Icons/PluginLending.svg'
     ]);
 
+
+    
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
         'cylending',
         'setup',
