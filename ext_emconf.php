@@ -7,7 +7,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'beta',
     'clearCacheOnLoad' => 1,
-    'version' => '1.1.1',
+    'version' => '1.1.2',
     'constraints' => [
         'depends' => [
             'typo3' => '11.5.0-11.99.99',
@@ -31,5 +31,6 @@ $EM_CONF[$_EXTKEY] = [
  *  1.0.0 :: FIX : Fix the plugin registration/configuration.
  *  1.1.0 :: ADD : Add ajax connect for dynamic reloading of the events (lendings).
  *  1.1.1 :: FIX : Repaire the date format.
+ *  1.1.2 :: FIX : Remove debug outputs.
  * 
  */
