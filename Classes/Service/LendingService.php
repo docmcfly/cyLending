@@ -52,7 +52,6 @@ class LendingService implements SingletonInterface
             /** @var \Cylancer\CyLending\Domain\Model\LendingObject $lendingObject*/
             $lendingObject = $lending->getObject();
 
-
             $event = [];
             $event['idx'] = $lending->getUid();
             $event['start'] = $lending->getFrom();

@@ -37,7 +37,7 @@ return
                     'renderType' => 'inputDateTime',
                     'eval' => 'datetime',
                     'required' => true,
-                    'default' => date("Y-m-d H:i:s", time()),
+                    'default' => date('Y-m-d H:i:s', time()),
                 ]
             ],
             'until' => [

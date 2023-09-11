@@ -176,7 +176,6 @@ class LendingController extends ActionController
         $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language());
         $this->view->assign('currentMonthEvents', json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'], $today['mon'])));
         $this->view->assign('purposes', empty(trim($this->settings['purposes'])) ? [] : explode("\n", $this->settings['purposes']));
-        $this->view->assign('availabilityRequests', $this->lendingRepository->findAllAvailabilityRequests($canApproveLendingObjects));
         $this->view->assign('toReserve', $toReserve);
         $this->view->assign('untilOffset', "var untilOffset = '" . intval($this->settings['usualLendingTermHours']) . ':' . intval($this->settings['usualLendingTermMinutes']) . "';\n");
         $this->view->assign(LendingController::TAB_KEY, $tab);
@@ -195,6 +194,12 @@ class LendingController extends ActionController
         return $return;
     }
 
+
+    private function toDBDateTime(string $dateTime) {
+        return date('Y-m-d H:i:s', strtotime($dateTime)); 
+
+    }
+
     /**
      *
      * @param Lending $toReserve
@@ -205,6 +210,11 @@ class LendingController extends ActionController
     {
         $toReserve->setBorrower($this->frontendUserService->getCurrentUser());
         $toReserve->setState(Lending::STATE_AVAILABILITY_REQUEST);
+        $toReserve->setFrom($this->toDBDateTime($toReserve->getFrom()));
+        $toReserve->setUntil($this->toDBDateTime($toReserve->getUntil()));
+        debug($toReserve);
+
+
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validate($toReserve);
 
@@ -214,10 +224,11 @@ class LendingController extends ActionController
             $validationResults->addInfo('successful');
 
             $canApproveLendingObjects = $this->getAllCanApproveLendingObject();
+            $today = getdate();
 
             $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, new ValidationResults());
             $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language());
-            $this->view->assign('availabilityRequests', $this->lendingRepository->findAllAvailabilityRequests($canApproveLendingObjects));
+            $this->view->assign('currentMonthEvents', json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'], $today['mon'])));
             $this->view->assign('toReserveSummary', $toReserve);
             $this->view->assign(LendingController::TAB_KEY, 'lending');
             $this->view->assign('isApprover', !empty($canApproveLendingObjects));
@@ -243,7 +254,6 @@ class LendingController extends ActionController
             }
 
             $this->view->assign(LendingController::AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY, $validationResults);
-            $this->view->assign('calendarScript', $this->createCalendarScript());
             return $this->htmlResponse();
         }
 
@@ -492,63 +502,6 @@ class LendingController extends ActionController
         return $validationResults;
     }
 
-
-    private function createCalendarScriptBAK()
-    {
-        $lanuguage = $GLOBALS['TSFE']->language->getTypo3Language();
-        $script = "new Calendar('#calendar', '" . $lanuguage . "', {
-            appointmentSymbole:' 🚒',
-        }).importEvents([";
-
-        $since = date('Y-m-d H:i:s', (time() - (3600 * 24 * 31)));
-        /** @var \Cylancer\CyLending\Domain\Model\Lending $lending*/
-        /** @var \Cylancer\CyLending\Domain\Model\LendingObject $lendingObject*/
-        foreach ($this->lendingRepository->findAllNotRejectedSince($since) as $lending) {
-            $lendingObject = $lending->getObject();
-            $script .= "{
-                idx: " . $lending->getUid() . ",
-                start: '" . $lending->getFrom() . "',
-                end: '" . $lending->getUntil() . "',
-                title: '" . $lendingObject->getTitle() . "',
-                description: '" . $lending->getPurpose() . "',
-                responsible: '" . $lending->getBorrower()->getFirstName() . ' ' . $lending->getBorrower()->getLastName() . "',
-                backgroundColor: '" . $lendingObject->getColor() . "',
-                striped: " . ($lending->getState() == Lending::STATE_AVAILABILITY_REQUEST ? 'true' : 'false') . ",
-            },";
-        }
-        $script .= "]).renderCalendar();";
-        debug($script);
-        return $script;
-    }
-
-
-    private function createCalendarScript()
-    {
-
-        $lanuguage = $GLOBALS['TSFE']->language->getTypo3Language();
-        $script = "new Calendar('#calendar', '" . $lanuguage . "', {
-            appointmentSymbole:' 🚒',
-            previousMonthButtonHook: function (calendar) { 
-                    $.ajax(
-                        {
-                            url: 'https://development.ortsfeuerwehr-letter.de/eigenentwicklungen/lending?month=10&no_cache=1&tx_cylending_lending%5Baction%5D=getEvents&tx_cylending_lending%5Bcontroller%5D=ajaxConnect&type=778&year=2023&cHash=894cec17d3ccf94bead6e99f83dd64a4', 
-                            success: function(result){
-                                        alert(result)
-                                    },
-                        }
-                    )    
-                },
-            nextMonthButtonHook: function (calendar) { alert('next')},    
-        }).importEvents("
-            . json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'], $today['mon']))
-            . ").renderCalendar();";
-
-        debug($script);
-        // debug($this->lendingService);
-        // debug($this->lendingService->getAvailabilityRequestsAsEventsOf(2023, 9));
-        // debug(json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf(2023, 9)));
-        return $script;
-    }
 
 
 

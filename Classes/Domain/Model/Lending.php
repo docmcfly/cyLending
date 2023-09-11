@@ -85,6 +85,16 @@ class Lending extends AbstractEntity
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getUntilUnixTime():int
+	{
+		return \DateTimeImmutable::createFromFormat($this->getUntil(),'Y-m-d H:i:s')->getTimestamp();
+	}
+
+
+
+	/**
 	 * @param string $until 
 	 * @return self
 	 */
