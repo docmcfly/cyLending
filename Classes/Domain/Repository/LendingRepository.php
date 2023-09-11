@@ -64,7 +64,7 @@ class LendingRepository extends Repository
             $q->logicalAnd([
                 $q->equals('state', Lending::STATE_AVAILABILITY_REQUEST),
                 $q->logicalNot(
-                    $q->lessThanOrEqual('until', date("Y-m-d H:i:s", time()))
+                    $q->lessThanOrEqual('until', date('Y-m-d H:i:s', time()))
                 ),
                 $q->in('object', array_keys($canApproveLendingObjects))
             ])
@@ -80,14 +80,14 @@ class LendingRepository extends Repository
         $from = new \DateTimeImmutable();
         $from = $from->setDate($year, $month, 1)
             ->setTime(0, 0, 0, 0)
-            ->format("Y-m-d H:i:s");
+            ->format('Y-m-d H:i:s');
 
         $until = new \DateTimeImmutable();
         $until = $until->setDate($year, $month, 1)
             ->setTime(0, 0, 0, 0)
             ->add(new \DateInterval('P1M'))
             // ->sub(new \DateInterval('P1D'))
-            ->format("Y-m-d H:i:s");
+            ->format('Y-m-d H:i:s');
 
         $q = $this->createQuery();
         $q->matching(

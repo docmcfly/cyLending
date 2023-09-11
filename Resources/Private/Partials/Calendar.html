@@ -42,7 +42,7 @@
                         
 
                         calendar.importEvents(JSON.parse(result))// alert(result)
-                        console.log(calendar.events.size)
+                        console.log(result)
                         calendar.renderEvents()
                     })
             },
@@ -63,7 +63,7 @@
                         $('#output').css('border', '1px solid green')
                         $('#output').html(result)
                         calendar.importEvents(JSON.parse(result))// alert(result)
-                        console.log(calendar.events.size)
+                        console.log(result)
                         calendar.renderEvents()
                     })
             },
