@@ -10,6 +10,7 @@ use Cylancer\CyLending\Domain\Repository\LendingObjectRepository;
 use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use Cylancer\CyLending\Service\EmailSendService;
 use Cylancer\CyLending\Service\FrontendUserService;
+use Cylancer\CyLending\Service\LendingService;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
@@ -17,6 +18,19 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use Cylancer\CyLending\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+
+
+/**
+ *
+ * This file is part of the "lending" Extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * (c) 2023 Clemens Gogolin <service@cylancer.net>
+ *
+ * @package CCylancer\CyLending\Controller
+ */
 
 class LendingController extends ActionController
 {
@@ -62,6 +76,8 @@ class LendingController extends ActionController
     /* @var EmailSendService */
     private EmailSendService $emailSendService;
 
+    private LendingService $lendingService;
+
     /** @var PersistenceManager **/
     private $persistenceManager;
 
@@ -73,7 +89,8 @@ class LendingController extends ActionController
         FrontendUserRepository $frontendUserRepository,
         FrontendUserService $frontendUserService,
         PersistenceManager $persistenceManager,
-        EmailSendService $emailSendService
+        EmailSendService $emailSendService,
+        LendingService $lendingService
     ) {
         $this->lendingRepository = $lendingRepository;
         $this->lendingObjectRepository = $lendingObjectRepository;
@@ -82,10 +99,12 @@ class LendingController extends ActionController
         $this->frontendUserService = $frontendUserService;
         $this->persistenceManager = $persistenceManager;
         $this->emailSendService = $emailSendService;
+        $this->lendingService = $lendingService;
     }
 
 
-    private function getAllCanApproveLendingObject(){
+    private function getAllCanApproveLendingObject()
+    {
         $canApproveLendingObjects = [];
         $lendingObjects = $this->lendingObjectRepository->findAll();
         /** @var \Cylancer\CyLending\Domain\Model\LendingObject $lendingObject */
@@ -94,10 +113,10 @@ class LendingController extends ActionController
             /** @var \Cylancer\CyLending\Domain\Model\FrontendUserGroup $approverGroup */
             $approverGroup = $lendingObject->getApproverGroup();
             if ($approverGroup != null) {
-             //   debug($approverGroup, 'approverGroup');
+                //   debug($approverGroup, 'approverGroup');
                 $approverGroupUid = $lendingObject->getApproverGroup()->getUid();
                 foreach ($this->frontendUserService->getCurrentUser()->getUsergroup() as $frontendUserGroup) {
-                  //  debug($frontendUserGroup, 'frontendUserGroup');
+                    //  debug($frontendUserGroup, 'frontendUserGroup');
                     if ($this->frontendUserService->contains($frontendUserGroup, $approverGroupUid)) {
                         $canApproveLendingObjects[$lendingObject->getUid()] = $lendingObject;
                     }
@@ -124,8 +143,8 @@ class LendingController extends ActionController
         $this->view->assign('lendingObjects', $lendingObjects);
 
         $canApproveLendingObjects = $this->getAllCanApproveLendingObject();
-       
-       // debug($canApproveLendingObjects);
+
+        // debug($canApproveLendingObjects);
 
         $availabilityRequestValidationResults = $this->request->hasArgument(LendingController::AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY)
             ? $this->request->getArgument(LendingController::AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY)
@@ -145,20 +164,23 @@ class LendingController extends ActionController
             $toReserve->setObject($lendingObjects[0]);
         }
 
+        $today = getdate();
+
+
         $tab = $this->request->hasArgument(LendingController::TAB_KEY)
             ? $this->request->getArgument(LendingController::TAB_KEY)
             : 'calendar';
         $this->view->assign(LendingController::AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY, $availabilityRequestValidationResults);
         $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, $approvalValidationResults);
         $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language());
-        $this->view->assign('calendarScript', $this->createCalendarScript());
+        $this->view->assign('currentMonthEvents', json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'],$today['mon'])));
         $this->view->assign('purposes', empty(trim($this->settings['purposes'])) ? [] : explode("\n", $this->settings['purposes']));
         $this->view->assign('availabilityRequests', $this->lendingRepository->findAllAvailabilityRequests($canApproveLendingObjects));
         $this->view->assign('toReserve', $toReserve);
         $this->view->assign('untilOffset', "var untilOffset = '" . intval($this->settings['usualLendingTermHours']) . ':' . intval($this->settings['usualLendingTermMinutes']) . "';\n");
         $this->view->assign(LendingController::TAB_KEY, $tab);
         $this->view->assign('isApprover', !empty($canApproveLendingObjects));
-
+        $this->view->assign('cid', $this->configurationManager->getContentObject()->data['uid']);
 
         return $this->htmlResponse();
 
@@ -195,7 +217,7 @@ class LendingController extends ActionController
 
             $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, new ValidationResults());
             $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language());
-            $this->view->assign('availabilityRequests',  $this->lendingRepository->findAllAvailabilityRequests($canApproveLendingObjects));
+            $this->view->assign('availabilityRequests', $this->lendingRepository->findAllAvailabilityRequests($canApproveLendingObjects));
             $this->view->assign('toReserveSummary', $toReserve);
             $this->view->assign(LendingController::TAB_KEY, 'lending');
             $this->view->assign('isApprover', !empty($canApproveLendingObjects));
@@ -239,10 +261,10 @@ class LendingController extends ActionController
     {
         $contentObj = $this->configurationManager->getContentObject();
         $pageId = $contentObj->data['pid'];
-        
+
         $approverGroup = $this->frontendUserService->getTopGroups($lending->getObject()->getApproverGroup());
         $frontendUserStorageUids = GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']);
-        
+
         /** @var FrontendUser $receiver */
         foreach ($this->frontendUserRepository->getUsersOfGroups($approverGroup, $frontendUserStorageUids) as $receiver) {
             if (!empty($receiver->getEmail())) {
@@ -298,17 +320,18 @@ class LendingController extends ActionController
     }
 
 
-    private function canApproveLendingObject(LendingObject $lendingObject):bool{
-        if( $lendingObject->getApproverGroup() == null) {
+    private function canApproveLendingObject(LendingObject $lendingObject): bool
+    {
+        if ($lendingObject->getApproverGroup() == null) {
             return true;
         }
         $approverGroupUid = $lendingObject->getApproverGroup()->getUid();
-        foreach( $this->frontendUserService->getCurrentUser()->getUsergroup() as $frontendUserGroup) {
-              if ($this->frontendUserService->contains($frontendUserGroup, $approverGroupUid )) {
-                  return true; 
-              }
-          }
-          return false; 
+        foreach ($this->frontendUserService->getCurrentUser()->getUsergroup() as $frontendUserGroup) {
+            if ($this->frontendUserService->contains($frontendUserGroup, $approverGroupUid)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function validateReject(Lending $lending): ValidationResults
@@ -316,7 +339,7 @@ class LendingController extends ActionController
 
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validate($lending);
-       
+
         if (!$this->canApproveLendingObject($lending->getObject())) {
             $validationResults->addError('userNotApprover.reject');
         }
@@ -470,12 +493,12 @@ class LendingController extends ActionController
     }
 
 
-    private function createCalendarScript()
+    private function createCalendarScriptBAK()
     {
         $lanuguage = $GLOBALS['TSFE']->language->getTypo3Language();
         $script = "new Calendar('#calendar', '" . $lanuguage . "', {
             appointmentSymbole:' 🚒',
-        }).renderCalendar([";
+        }).importEvents([";
 
         $since = date('Y-m-d H:i:s', (time() - (3600 * 24 * 31)));
         /** @var \Cylancer\CyLending\Domain\Model\Lending $lending*/
@@ -483,6 +506,7 @@ class LendingController extends ActionController
         foreach ($this->lendingRepository->findAllNotRejectedSince($since) as $lending) {
             $lendingObject = $lending->getObject();
             $script .= "{
+                idx: " . $lending->getUid() . ",
                 start: '" . $lending->getFrom() . "',
                 end: '" . $lending->getUntil() . "',
                 title: '" . $lendingObject->getTitle() . "',
@@ -492,7 +516,37 @@ class LendingController extends ActionController
                 striped: " . ($lending->getState() == Lending::STATE_AVAILABILITY_REQUEST ? 'true' : 'false') . ",
             },";
         }
-        $script .= "]);";
+        $script .= "]).renderCalendar();";
+        debug($script);
+        return $script;
+    }
+
+
+    private function createCalendarScript()
+    {
+
+        $lanuguage = $GLOBALS['TSFE']->language->getTypo3Language();
+        $script = "new Calendar('#calendar', '" . $lanuguage . "', {
+            appointmentSymbole:' 🚒',
+            previousMonthButtonHook: function (calendar) { 
+                    $.ajax(
+                        {
+                            url: 'https://development.ortsfeuerwehr-letter.de/eigenentwicklungen/lending?month=10&no_cache=1&tx_cylending_lending%5Baction%5D=getEvents&tx_cylending_lending%5Bcontroller%5D=ajaxConnect&type=778&year=2023&cHash=894cec17d3ccf94bead6e99f83dd64a4', 
+                            success: function(result){
+                                        alert(result)
+                                    },
+                        }
+                    )    
+                },
+            nextMonthButtonHook: function (calendar) { alert('next')},    
+        }).importEvents("
+            . json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'],$today['mon']))
+            . ").renderCalendar();";
+
+        debug($script);
+        // debug($this->lendingService);
+        // debug($this->lendingService->getAvailabilityRequestsAsEventsOf(2023, 9));
+        // debug(json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf(2023, 9)));
         return $script;
     }
 

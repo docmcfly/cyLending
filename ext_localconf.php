@@ -1,4 +1,5 @@
 <?php
+use Cylancer\CyLending\Controller\AjaxConnectController;
 use Cylancer\CyLending\Controller\LendingController;
 
 defined('TYPO3_MODE') || die('Access denied.');
@@ -41,11 +42,19 @@ call_user_func(function () {
     ]);
 
 
-    
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'CyLenduing',
+        'AjaxConnect',
+        [AjaxConnectController::class => 'getEvents'],
+        [AjaxConnectController::class => 'getEvents']
+     );
+
+    /*
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
         'cylending',
         'setup',
         "@import 'EXT:cy_lending/Configuration/TypoScript/setup.typoscript'"
      );
+     */
 
 });

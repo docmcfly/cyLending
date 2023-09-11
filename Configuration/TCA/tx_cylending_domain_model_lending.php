@@ -37,7 +37,7 @@ return
                     'renderType' => 'inputDateTime',
                     'eval' => 'datetime',
                     'required' => true,
-                    'default' => '2023-12-12 12:30',
+                    'default' => date("Y-m-d H:i:s", time()),
                 ]
             ],
             'until' => [
@@ -66,7 +66,7 @@ return
                 'config' => [
                     'type' => 'input',
                     'required' => true,
-                    'readOnly' => true,
+                    'readOnly' => false,
                 ]
             ],
             'state' => [

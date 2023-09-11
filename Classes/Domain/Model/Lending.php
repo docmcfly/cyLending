@@ -36,12 +36,12 @@ class Lending extends AbstractEntity
 	/** 
 	 * @var string 
 	 * */
-	protected $from = 0;
+	protected $from = '0';
 
 	/** 
 	 * @var string
 	 * */
-	protected $until = 0;
+	protected $until = '0';
 
 	/** @var boolean */
 	protected $lendingAllowed = false;

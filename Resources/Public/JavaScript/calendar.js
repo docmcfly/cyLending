@@ -38,6 +38,9 @@ class Calendar {
             }
         },
 
+        previousMonthButtonHook: function (calendar) {alert(1)},
+        nextMonthButtonHook: function (calendar) {alert(2)},
+
         // translations
         texts: {
             de: {
@@ -118,11 +121,26 @@ class Calendar {
         this.language = language
     }
 
+    importEvents(events) {
+        events = this.cleanEvents(events);
+
+        for (let i = 0, l = events.length; i < l; i++) {
+            let event = events[i]
+            // get a negative index if the idx is not set.
+            if (!('idx' in event) || event.idx < 0) {
+                event.idx = -1 * (this.events.length + 1)
+            }
+            this.events[event.idx] = event
+        }
+        return this
+    }
+
     merge(target, ...sources) {
         for (let source of sources) {
             for (let k in source) {
-                let vs = source[k], vt = target[k]
-                if (Object(vs) == vs && Object(vt) === vt) {
+                let vs = source[k]
+                let vt = target[k]
+                if (Object(vs) == vs && Object(vt) === vt && !(vs instanceof Function) && !(vt instanceof Function)) {
                     target[k] = this.merge(vt, vs)
                     continue
                 }
@@ -185,11 +203,12 @@ class Calendar {
         );
     }
 
-    checkEvents(events) {
+    cleanEvents(events) {
+
         let eventsCount = events.length
         for (let i = 0; i < eventsCount; i++) {
             let event = events[i]
-            event.idx = i
+
             let start = this.parseMoment(event.start)
             let end = this.parseMoment(event.end)
 
@@ -203,9 +222,8 @@ class Calendar {
         return events
     }
 
-    renderCalendar(events) {
+    renderCalendar() {
 
-        this.events = this.checkEvents(events)
         let cal = $(this.selector);
         cal.empty();
         let content = ''
@@ -249,13 +267,16 @@ class Calendar {
         let btnNextMonth = $(this.selector + ' .btn.nextMonth')
         btnNextMonth.on('click', {calendar: this}, function (event) {
             let calendar = event.data.calendar
+            calendar.properties.nextMonthButtonHook(calendar)
             calendar.currentDay.setMonth(calendar.currentDay.getMonth() + 1)
             calendar.renderMonth()
         })
 
         let btnPreviousMonth = $(this.selector + ' .btn.previousMonth')
         btnPreviousMonth.on('click', {calendar: this}, function (event) {
+
             let calendar = event.data.calendar
+            calendar.properties.previousMonthButtonHook(calendar)
             calendar.currentDay.setMonth(calendar.currentDay.getMonth() - 1)
             calendar.renderMonth()
         })
@@ -444,10 +465,8 @@ class Calendar {
         let day = this.parseDate(d)
         let details = $(this.selector + ' .details')
         details.empty()
-        let eventsCount = this.events.length
         let add = '<h3 class="p-2" >' + day.toLocaleDateString(this.language) + '</h3>' + "\n"
-        for (let i = 0; i < eventsCount; i++) {
-            let event = this.events[i]
+        for (const [idx, event] of Object.entries(this.events)) {
             if (this.contains(event, day)) {
                 let backgroundColor = event.backgroundColor
                 add += '<div class="mb-2 p-1 text-dark" '
@@ -501,10 +520,9 @@ class Calendar {
     }
 
     renderEvents() {
-        let eventsCount = this.events.length
-        for (let i = 0; i < eventsCount; i++) {
-            this.events[i].idx = i
-            this.renderEvent(this.events[i])
+
+        for (const [idx, event] of Object.entries(this.events)) {
+           this.renderEvent(event)
         }
     }
 
@@ -600,7 +618,6 @@ class Calendar {
     formatTime(time) {
         return time.getHours().toString().padStart(2, '0') + ':' + (time.getMinutes()).toString().padStart(2, '0')
     }
-
 
 }
 

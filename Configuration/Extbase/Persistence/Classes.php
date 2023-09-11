@@ -1,13 +1,11 @@
 <?php
 declare(strict_types = 1);
-use Cylancer\CyLending\Domain\Model\FrontendUser;
-use Cylancer\CyLending\Domain\Model\FrontendUserGroup;
 
 return [
-    FrontendUser::class => [
+    \Cylancer\CyLending\Domain\Model\FrontendUser::class => [
         'tableName' => 'fe_users'
     ],
-    FrontendUserGroup::class => [
+    \Cylancer\CyLending\Domain\Model\FrontendUserGroup::class => [
         'tableName' => 'fe_groups'
     ]
 ];

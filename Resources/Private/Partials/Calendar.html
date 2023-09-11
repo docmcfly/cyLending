@@ -1,9 +1,44 @@
 <div class="mt-4">
-    <f:asset.script identifier="calendar.js" priority="true" src="EXT:cy_lending/Resources/Public/JavaScript/calendar.js" />
-    <div class="mt-4" id='calendar'> </div>
+    <f:asset.script identifier="calendar.js" priority="true"
+        src="EXT:cy_lending/Resources/Public/JavaScript/calendar.js" />
+    <div class="mt-4" id='calendar'></div>
+    <div id="output">outpuit</div>
+
+
     <f:format.raw>
         <script defer="defer">
-            {calendarScript}
+
+            let language = '{language}'
+            let currentMonthEvents = {currentMonthEvents}
+            let ajaxConnect = '{f:uri.action(pageType:"778", controller:"ajaxConnect",absolute:1, action:"getEvents",  arguments="{cid:cid}")}'
         </script>
     </f:format.raw>
+    {f:uri.action(pageType:"778", absolute:1, action:"getEvents",arguments="{cid:cid}")}
+
+    <script defer="defer">
+        //   <f:format.cdata>
+        new Calendar('#calendar', language, {
+            appointmentSymbole: ' 🚒',
+            previousMonthButtonHook: function (calendar) {
+                $.ajax({
+                    url: ajaxConnect,
+                    method: "POST",
+                    data: {year: 2023, month: 9},
+                }
+                )
+                    .fail(function (error) {
+                        $('#output').html(error.responseText)
+                    })
+                    .done(function (result) {
+                        $('#output').html(result)
+                        
+                        // alert(result)
+                    })
+            },
+            nextMonthButtonHook: function (calendar) {alert('next')},
+        })
+            .importEvents(currentMonthEvents)
+            .renderCalendar();
+          //    </f:format.cdata>
+    </script>
 </div>
