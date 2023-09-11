@@ -1,15 +1,9 @@
 <?php
 namespace Cylancer\CyLending\Domain\Repository;
 
-use Cylancer\CyLending\Controller\LendingController;
 use Cylancer\CyLending\Domain\Model\Lending;
-use Cylancer\CyLending\Domain\Model\LendingObject;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  *
@@ -104,10 +98,8 @@ class LendingRepository extends Repository
                 ])
             )
         );
-
-
         return $q->execute();
-
+        
     }
 
 

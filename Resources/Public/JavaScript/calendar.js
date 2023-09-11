@@ -112,7 +112,7 @@ class Calendar {
     currentDay = new Date();
     monthStartDate = null;
     monthEndDate = null;
-    events = []
+    events = new Map()
 
     constructor(selector, language, properties) {
         this.properties = this.merge(this.properties, properties);
@@ -128,10 +128,11 @@ class Calendar {
             let event = events[i]
             // get a negative index if the idx is not set.
             if (!('idx' in event) || event.idx < 0) {
-                event.idx = -1 * (this.events.length + 1)
+                event.idx = -1 * (this.events.size + 1)
             }
-            this.events[event.idx] = event
+            this.events.set(event.idx, event)
         }
+        console.log(this.events.size)
         return this
     }
 
@@ -231,7 +232,7 @@ class Calendar {
         content += '<div class="container mb-3">' + "\n";
         content += '    <div class="row mb-3 ">' + "\n";
         content += '        <div class="col-md-3 mb-3">' + "\n";
-        content += '            <span class="month-name fs-1">month</span>' + "\n";
+        content += '            <span class="currentMonth fs-1">month</span>' + "\n";
         content += '        </div>' + "\n"
         content += '        <div class="col-md-3 mb-3">' + "\n";
         content += '            <button class="btn btn-primary toToday overflowHidden" style="width:100%">' + this.t().btnToday + '</button>' + "\n";
@@ -315,7 +316,11 @@ class Calendar {
 
         // 
         let currentMonth = this.currentDay.getMonth();
-        $(this.selector + ' .month-name').text(this.t().monthNames[this.currentDay.getMonth()] + " " + this.currentDay.getFullYear());
+        let currentMonthTag = $(this.selector + ' .currentMonth')
+        currentMonthTag.text(this.t().monthNames[this.currentDay.getMonth()] + " " + this.currentDay.getFullYear());
+        currentMonthTag.attr('data-month', this.currentDay.getMonth())
+        currentMonthTag.attr('data-year', this.currentDay.getFullYear())
+
         let cal = $(this.selector + ' .month');
         cal.empty();
         let grid = '' // '<div class="container-fluid" style="border: 1px solid red">' + "\n"
@@ -466,7 +471,8 @@ class Calendar {
         let details = $(this.selector + ' .details')
         details.empty()
         let add = '<h3 class="p-2" >' + day.toLocaleDateString(this.language) + '</h3>' + "\n"
-        for (const [idx, event] of Object.entries(this.events)) {
+        let iter = this.events.entries()
+        for (const [idx, event] of iter) {
             if (this.contains(event, day)) {
                 let backgroundColor = event.backgroundColor
                 add += '<div class="mb-2 p-1 text-dark" '
@@ -520,9 +526,9 @@ class Calendar {
     }
 
     renderEvents() {
-
-        for (const [idx, event] of Object.entries(this.events)) {
-           this.renderEvent(event)
+        let iter = this.events.entries()
+        for (const [idx, event] of iter) {
+            this.renderEvent(event)
         }
     }
 
@@ -531,6 +537,14 @@ class Calendar {
     }
 
     renderEvent(event) {
+
+        $('[data-eventbox][data-idx='+event.idx+']').each(function(index){
+            let eb = $(this)
+            eb.attr('data-empty', 'true')
+            eb.attr('data-idx', '')
+            eb.attr('title', '')
+            eb.html('<div class="content fs-6 overflowHidden p-0 px-1 m-1 me-2" >&nbsp;</div>')
+        } )
 
         let start = event.start
         let end = event.end
@@ -567,6 +581,9 @@ class Calendar {
             tmp.setDate(tmp.getDate() + 1)
             dc++
         }
+
+
+
         let row;
         for (let j = 0; j < this.properties.maxEventBoxes; j++) {
             row = j;

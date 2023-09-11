@@ -36,8 +36,8 @@ tx_cylending_ajaxConnect {
    10 = USER
    10 {
       userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-      extensionName = CyLenduing
-      pluginName = AjaxConnect
+      extensionName = CyLending
+      pluginName = Lending
       vendorName = cylancer
   }
 

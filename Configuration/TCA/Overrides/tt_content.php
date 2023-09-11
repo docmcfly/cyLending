@@ -13,7 +13,6 @@ defined('TYPO3') or die();
         'EXT:cy_lending/Resources/Public/Icons/PluginLending.svg'
     );
 
-
     $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['cylending_lending'] = 'pi_flexform';
     ExtensionManagementUtility::addPiFlexFormValue(
         // plugin signature: <extension key without underscores> '_' <plugin name in lowercase>

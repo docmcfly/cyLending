@@ -2,43 +2,74 @@
     <f:asset.script identifier="calendar.js" priority="true"
         src="EXT:cy_lending/Resources/Public/JavaScript/calendar.js" />
     <div class="mt-4" id='calendar'></div>
-    <div id="output">outpuit</div>
-
-
     <f:format.raw>
         <script defer="defer">
-
             let language = '{language}'
             let currentMonthEvents = {currentMonthEvents}
-            let ajaxConnect = '{f:uri.action(pageType:"778", controller:"ajaxConnect",absolute:1, action:"getEvents",  arguments="{cid:cid}")}'
+            let ajaxConnect = '{f:uri.action(pageType:"{settings.ajax.pageType}", controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{cid:cid}")}'
         </script>
     </f:format.raw>
-    {f:uri.action(pageType:"778", absolute:1, action:"getEvents",arguments="{cid:cid}")}
 
     <script defer="defer">
         //   <f:format.cdata>
-        new Calendar('#calendar', language, {
+        let selector = '#calendar'
+
+
+        let calculateOtherMonth = function (offset) {
+            let currentMonth = $(selector + ' .currentMonth').attr('data-month')
+            let currentYear = $(selector + ' .currentMonth').attr('data-year')
+
+            let result = new Date(currentYear, currentMonth, 1);
+            return new Date(result.setMonth(result.getMonth() + offset))
+
+        }
+
+        new Calendar(selector, language, {
             appointmentSymbole: ' 🚒',
             previousMonthButtonHook: function (calendar) {
+
+                let previousMonth = calculateOtherMonth(-1);
                 $.ajax({
                     url: ajaxConnect,
                     method: "POST",
-                    data: {year: 2023, month: 9},
+                    data: {year: previousMonth.getFullYear(), month: previousMonth.getMonth() + 1},
                 }
                 )
                     .fail(function (error) {
+                        console.log(error.responseText)
+                    })
+                    .done(function (result) {
+                        
+
+                        calendar.importEvents(JSON.parse(result))// alert(result)
+                        console.log(calendar.events.size)
+                        calendar.renderEvents()
+                    })
+            },
+            nextMonthButtonHook: function (calendar) {
+
+                let nextMonth = calculateOtherMonth(1);
+                $.ajax({
+                    url: ajaxConnect,
+                    method: "POST",
+                    data: {year: nextMonth.getFullYear(), month: nextMonth.getMonth() + 1},
+                }
+                )
+                    .fail(function (error) {
+                        $('#output').css('border', '1px solid red')
                         $('#output').html(error.responseText)
                     })
                     .done(function (result) {
+                        $('#output').css('border', '1px solid green')
                         $('#output').html(result)
-                        
-                        // alert(result)
+                        calendar.importEvents(JSON.parse(result))// alert(result)
+                        console.log(calendar.events.size)
+                        calendar.renderEvents()
                     })
             },
-            nextMonthButtonHook: function (calendar) {alert('next')},
         })
             .importEvents(currentMonthEvents)
             .renderCalendar();
-          //    </f:format.cdata>
+        //    </f:format.cdata>
     </script>
 </div>

@@ -3,6 +3,7 @@ namespace Cylancer\CyLending\Controller;
 
 use Cylancer\CyLending\Domain\Model\Lending;
 use Cylancer\CyLending\Domain\Model\LendingObject;
+use Cylancer\CyLending\Domain\Model\LendingsRequest;
 use Cylancer\CyLending\Domain\Model\ValidationResults;
 use Cylancer\CyLending\Domain\Repository\FrontendUserGroupRepository;
 use Cylancer\CyLending\Domain\Repository\FrontendUserRepository;
@@ -173,7 +174,7 @@ class LendingController extends ActionController
         $this->view->assign(LendingController::AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY, $availabilityRequestValidationResults);
         $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, $approvalValidationResults);
         $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language());
-        $this->view->assign('currentMonthEvents', json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'],$today['mon'])));
+        $this->view->assign('currentMonthEvents', json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'], $today['mon'])));
         $this->view->assign('purposes', empty(trim($this->settings['purposes'])) ? [] : explode("\n", $this->settings['purposes']));
         $this->view->assign('availabilityRequests', $this->lendingRepository->findAllAvailabilityRequests($canApproveLendingObjects));
         $this->view->assign('toReserve', $toReserve);
@@ -181,7 +182,6 @@ class LendingController extends ActionController
         $this->view->assign(LendingController::TAB_KEY, $tab);
         $this->view->assign('isApprover', !empty($canApproveLendingObjects));
         $this->view->assign('cid', $this->configurationManager->getContentObject()->data['uid']);
-
         return $this->htmlResponse();
 
     }
@@ -540,7 +540,7 @@ class LendingController extends ActionController
                 },
             nextMonthButtonHook: function (calendar) { alert('next')},    
         }).importEvents("
-            . json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'],$today['mon']))
+            . json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'], $today['mon']))
             . ").renderCalendar();";
 
         debug($script);

@@ -70,7 +70,7 @@ class Lending extends AbstractEntity
 	 * @param LendingObject $object 
 	 * @return self
 	 */
-	public function setObject(LendingObject $object): self
+	public function setObject(?LendingObject $object): self
 	{
 		$this->object = $object;
 		return $this;

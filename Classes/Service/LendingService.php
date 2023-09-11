@@ -1,8 +1,10 @@
 <?php
 namespace Cylancer\CyLending\Service;
 
+use Cylancer\CyLending\Controller\AjaxConnectController;
 use Cylancer\CyLending\Domain\Model\Lending;
 use Cylancer\CyLending\Domain\Repository\LendingRepository;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -36,18 +38,13 @@ class LendingService implements SingletonInterface
         $this->lendingRepository = $lendingRepository;
     }
 
-    public function getAvailabilityRequestsAsEventsOf(int $year, int $month):array
-    {   
-
-        // $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
-        // // Show comments from all pages
-        // // $querySettings->setRespectStoragePage(true);
-        // $this->lendingRepository->setDefaultQuerySettings($querySettings);
-
-        debug($this->lendingRepository);
-        debug($year, 'year');
-
-        debug($this->lendingRepository->findAll());
+    public function getAvailabilityRequestsAsEventsOf(int $year, int $month, array $storagePids = NULL): array
+    {
+        if ($storagePids != null) {
+            $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+            $querySettings->setStoragePageIds($storagePids);
+            $this->lendingRepository->setDefaultQuerySettings($querySettings);
+        }
 
         $events = [];
         /** @var \Cylancer\CyLending\Domain\Model\Lending $lending*/
@@ -57,6 +54,7 @@ class LendingService implements SingletonInterface
 
 
             $event = [];
+            $event['idx'] = $lending->getUid();
             $event['start'] = $lending->getFrom();
             $event['end'] = $lending->getUntil();
             $event['title'] = $lendingObject->getTitle();
@@ -67,12 +65,11 @@ class LendingService implements SingletonInterface
 
             $events[] = $event;
         }
-
-        debug($this);
         return $events;
 
 
     }
+
 
 
 }

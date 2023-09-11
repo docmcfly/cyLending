@@ -21,7 +21,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class AjaxConnectController extends ActionController
 {
 
-    const LIST_TYPE = 'cylancer_cylending';
+    const LIST_TYPE = 'cylending_lending';
 
     /* @var LendingRepository */
     private LendingService $lendingService;
@@ -34,23 +34,22 @@ class AjaxConnectController extends ActionController
     }
 
 
-     /**
-     * @param string $cid
-     */
-    public function getEventsAction(String $cid){
-        debug($cid);
 
+    /**
+     * @param int $cid
+     */
+    public function getEventsAction(int $cid = 0)
+    {
         $parsedBody = $this->request->getParsedBody();
-        if(is_array($parsedBody)){
+        if (is_array($parsedBody)) {
             $year = intval($parsedBody['year']);
             $month = intval($parsedBody['month']);
-            return json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf(2023,9));
+            return json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($year, $month, $this->getStoragePids($cid)));
         }
-        debug($currentPid = $GLOBALS['TSFE']->id);
-        
-        return json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf(2023,9));
-
+        return json_encode([]);
     }
+
+
 
 
 
@@ -60,7 +59,7 @@ class AjaxConnectController extends ActionController
      * @param string $table
      * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
      */
-    private function getQueryBuilder(String $table): QueryBuilder
+    private function getQueryBuilder(string $table): QueryBuilder
     {
         return GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
     }
@@ -71,13 +70,13 @@ class AjaxConnectController extends ActionController
      * @throws \Exception
      * @return array
      */
-    private function getStorageUid(String $id): array
+    private function getStoragePids(string $id): array
     {
         $qb = $this->getQueryBuilder('tt_content');
         $s = $qb->select('list_type', 'pages', 'pi_flexform')
             ->from('tt_content')
             ->where($qb->expr()
-            ->eq('uid', $qb->createNamedParameter($id)))
+                ->eq('uid', $qb->createNamedParameter($id)))
             ->execute();
         if ($row = $s->fetchAssociative()) {
             $contentElement = $row;
@@ -96,15 +95,3 @@ class AjaxConnectController extends ActionController
 
 
 }
-
-/*
-
-https://development.ortsfeuerwehr-letter.de/eigenentwicklungen/lending?
-no_cache=1&
-tx_cylending_lending%5Baction%5D=getEvents&
-tx_cylending_lending%5Bcontroller%5D=ajaxConnect&
-tx_cylending_lending%5Bmonth%5D=10&
-tx_cylending_lending%5Byear%5D=2023&
-type=778&
-cHash=7ae8a39a76b565c55929e2c47839b22a
-*/
