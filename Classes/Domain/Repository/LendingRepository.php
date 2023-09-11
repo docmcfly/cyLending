@@ -128,15 +128,6 @@ class LendingRepository extends Repository
                 )
             );
 
-        //     debug($lending);
-
-        //     $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        //     $queryParser = $objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class); 
-        //     $parameters = $queryParser->convertQueryToDoctrineQueryBuilder($q)->getParameters();
-        //     $sql = $queryParser->convertQueryToDoctrineQueryBuilder($q)->getSQL();
-
-        // debug($sql);
-        // debug($q->execute());
         return $q->count() > 0;
     }
 
