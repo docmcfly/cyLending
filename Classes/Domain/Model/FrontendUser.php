@@ -153,6 +153,7 @@ class FrontendUser extends AbstractEntity
      * although it can hold several usergroups.
      *
      * @param ObjectStorage<FrontendUserGroup> $usergroup
+     * 
      */
     public function setUsergroup(ObjectStorage $usergroup)
     {

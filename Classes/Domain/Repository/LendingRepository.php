@@ -1,13 +1,9 @@
 <?php
 namespace Cylancer\CyLending\Domain\Repository;
 
-use Cylancer\CyLending\Controller\LendingController;
 use Cylancer\CyLending\Domain\Model\Lending;
-use Cylancer\CyLending\Domain\Model\LendingObject;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Repository;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  *
@@ -77,6 +73,35 @@ class LendingRepository extends Repository
 
         return $q->execute();
     }
+
+
+    function findMonthAvailabilityRequests(int $year, int $month): QueryResult
+    {
+        $from = new \DateTimeImmutable();
+        $from = $from->setDate($year, $month, 1)
+            ->setTime(0, 0, 0, 0)
+            ->format("Y-m-d H:i:s");
+
+        $until = new \DateTimeImmutable();
+        $until = $until->setDate($year, $month, 1)
+            ->setTime(0, 0, 0, 0)
+            ->add(new \DateInterval('P1M'))
+            // ->sub(new \DateInterval('P1D'))
+            ->format("Y-m-d H:i:s");
+
+        $q = $this->createQuery();
+        $q->matching(
+            $q->logicalNot(
+                $q->logicalOr([
+                    $q->lessThan('until', $from),
+                    $q->greaterThanOrEqual('from', $until)
+                ])
+            )
+        );
+        return $q->execute();
+        
+    }
+
 
 
     function existsOverlapsAvailabilityRequests(Lending $lending): bool

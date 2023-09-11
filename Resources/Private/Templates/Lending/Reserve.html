@@ -40,7 +40,7 @@
 				<div class="tab-pane fade {f:if(condition:'{tab} === {calendar} ', then: 'show active')} "
 					id="nav-calendar" role="calendar" aria-labelledby="nav-calendar-tab">
 					<f:render partial="calendar"
-						arguments="{calendar:calendar, lendingObjects:lendingObjects, calendarScript: calendarScript}" />
+						arguments="{calendar:calendar, lendingObjects:lendingObjects, language: language}" />
 				</div>
 				<div class="tab-pane fade {f:if(condition:'{tab} === {lending} ', then: 'show active')} pt-3"
 					id="nav-lending" role="tabpanel" aria-labelledby="nav-lending-tab">

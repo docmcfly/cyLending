@@ -38,6 +38,9 @@ class Calendar {
             }
         },
 
+        previousMonthButtonHook: function (calendar) {alert(1)},
+        nextMonthButtonHook: function (calendar) {alert(2)},
+
         // translations
         texts: {
             de: {
@@ -109,7 +112,7 @@ class Calendar {
     currentDay = new Date();
     monthStartDate = null;
     monthEndDate = null;
-    events = []
+    events = new Map()
 
     constructor(selector, language, properties) {
         this.properties = this.merge(this.properties, properties);
@@ -118,11 +121,27 @@ class Calendar {
         this.language = language
     }
 
+    importEvents(events) {
+        events = this.cleanEvents(events);
+
+        for (let i = 0, l = events.length; i < l; i++) {
+            let event = events[i]
+            // get a negative index if the idx is not set.
+            if (!('idx' in event) || event.idx < 0) {
+                event.idx = -1 * (this.events.size + 1)
+            }
+            this.events.set(event.idx, event)
+        }
+        console.log(this.events.size)
+        return this
+    }
+
     merge(target, ...sources) {
         for (let source of sources) {
             for (let k in source) {
-                let vs = source[k], vt = target[k]
-                if (Object(vs) == vs && Object(vt) === vt) {
+                let vs = source[k]
+                let vt = target[k]
+                if (Object(vs) == vs && Object(vt) === vt && !(vs instanceof Function) && !(vt instanceof Function)) {
                     target[k] = this.merge(vt, vs)
                     continue
                 }
@@ -185,11 +204,12 @@ class Calendar {
         );
     }
 
-    checkEvents(events) {
+    cleanEvents(events) {
+
         let eventsCount = events.length
         for (let i = 0; i < eventsCount; i++) {
             let event = events[i]
-            event.idx = i
+
             let start = this.parseMoment(event.start)
             let end = this.parseMoment(event.end)
 
@@ -203,9 +223,8 @@ class Calendar {
         return events
     }
 
-    renderCalendar(events) {
+    renderCalendar() {
 
-        this.events = this.checkEvents(events)
         let cal = $(this.selector);
         cal.empty();
         let content = ''
@@ -213,7 +232,7 @@ class Calendar {
         content += '<div class="container mb-3">' + "\n";
         content += '    <div class="row mb-3 ">' + "\n";
         content += '        <div class="col-md-3 mb-3">' + "\n";
-        content += '            <span class="month-name fs-1">month</span>' + "\n";
+        content += '            <span class="currentMonth fs-1">month</span>' + "\n";
         content += '        </div>' + "\n"
         content += '        <div class="col-md-3 mb-3">' + "\n";
         content += '            <button class="btn btn-primary toToday overflowHidden" style="width:100%">' + this.t().btnToday + '</button>' + "\n";
@@ -249,13 +268,16 @@ class Calendar {
         let btnNextMonth = $(this.selector + ' .btn.nextMonth')
         btnNextMonth.on('click', {calendar: this}, function (event) {
             let calendar = event.data.calendar
+            calendar.properties.nextMonthButtonHook(calendar)
             calendar.currentDay.setMonth(calendar.currentDay.getMonth() + 1)
             calendar.renderMonth()
         })
 
         let btnPreviousMonth = $(this.selector + ' .btn.previousMonth')
         btnPreviousMonth.on('click', {calendar: this}, function (event) {
+
             let calendar = event.data.calendar
+            calendar.properties.previousMonthButtonHook(calendar)
             calendar.currentDay.setMonth(calendar.currentDay.getMonth() - 1)
             calendar.renderMonth()
         })
@@ -294,7 +316,11 @@ class Calendar {
 
         // 
         let currentMonth = this.currentDay.getMonth();
-        $(this.selector + ' .month-name').text(this.t().monthNames[this.currentDay.getMonth()] + " " + this.currentDay.getFullYear());
+        let currentMonthTag = $(this.selector + ' .currentMonth')
+        currentMonthTag.text(this.t().monthNames[this.currentDay.getMonth()] + " " + this.currentDay.getFullYear());
+        currentMonthTag.attr('data-month', this.currentDay.getMonth())
+        currentMonthTag.attr('data-year', this.currentDay.getFullYear())
+
         let cal = $(this.selector + ' .month');
         cal.empty();
         let grid = '' // '<div class="container-fluid" style="border: 1px solid red">' + "\n"
@@ -444,10 +470,9 @@ class Calendar {
         let day = this.parseDate(d)
         let details = $(this.selector + ' .details')
         details.empty()
-        let eventsCount = this.events.length
         let add = '<h3 class="p-2" >' + day.toLocaleDateString(this.language) + '</h3>' + "\n"
-        for (let i = 0; i < eventsCount; i++) {
-            let event = this.events[i]
+        let iter = this.events.entries()
+        for (const [idx, event] of iter) {
             if (this.contains(event, day)) {
                 let backgroundColor = event.backgroundColor
                 add += '<div class="mb-2 p-1 text-dark" '
@@ -501,10 +526,9 @@ class Calendar {
     }
 
     renderEvents() {
-        let eventsCount = this.events.length
-        for (let i = 0; i < eventsCount; i++) {
-            this.events[i].idx = i
-            this.renderEvent(this.events[i])
+        let iter = this.events.entries()
+        for (const [idx, event] of iter) {
+            this.renderEvent(event)
         }
     }
 
@@ -513,6 +537,14 @@ class Calendar {
     }
 
     renderEvent(event) {
+
+        $('[data-eventbox][data-idx='+event.idx+']').each(function(index){
+            let eb = $(this)
+            eb.attr('data-empty', 'true')
+            eb.attr('data-idx', '')
+            eb.attr('title', '')
+            eb.html('<div class="content fs-6 overflowHidden p-0 px-1 m-1 me-2" >&nbsp;</div>')
+        } )
 
         let start = event.start
         let end = event.end
@@ -549,6 +581,9 @@ class Calendar {
             tmp.setDate(tmp.getDate() + 1)
             dc++
         }
+
+
+
         let row;
         for (let j = 0; j < this.properties.maxEventBoxes; j++) {
             row = j;
@@ -600,7 +635,6 @@ class Calendar {
     formatTime(time) {
         return time.getHours().toString().padStart(2, '0') + ':' + (time.getMinutes()).toString().padStart(2, '0')
     }
-
 
 }
 

@@ -1,23 +1,30 @@
 <?php
+use Cylancer\CyLending\Controller\AjaxConnectController;
 use Cylancer\CyLending\Controller\LendingController;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 defined('TYPO3_MODE') || die('Access denied.');
 
 call_user_func(function () {
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+
+    ExtensionUtility::configurePlugin(
         'CyLending',
         'Lending',
         [
-            LendingController::class => 'show, reserve, approve, reject'
+            LendingController::class => 'show, reserve, approve, reject',
+            AjaxConnectController::class => 'getEvents'
         ],
         // non-cacheable actions
         [
-            LendingController::class => 'show, reserve, approve, reject'
+            LendingController::class => 'show, reserve, approve, reject',
+            AjaxConnectController::class => 'getEvents'
         ]
     );
 
+
     // wizards
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
+    ExtensionManagementUtility::addPageTSConfig('
         mod {
             wizards.newContentElement.wizardItems.plugins {
                 elements {
@@ -40,10 +47,12 @@ call_user_func(function () {
         'source' => 'EXT:cy_lending/Resources/Public/Icons/PluginLending.svg'
     ]);
 
+    /*
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
         'cylending',
         'setup',
         "@import 'EXT:cy_lending/Configuration/TypoScript/setup.typoscript'"
      );
+     */
 
 });

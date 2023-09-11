@@ -36,12 +36,12 @@ class Lending extends AbstractEntity
 	/** 
 	 * @var string 
 	 * */
-	protected $from = 0;
+	protected $from = '0';
 
 	/** 
 	 * @var string
 	 * */
-	protected $until = 0;
+	protected $until = '0';
 
 	/** @var boolean */
 	protected $lendingAllowed = false;
@@ -70,7 +70,7 @@ class Lending extends AbstractEntity
 	 * @param LendingObject $object 
 	 * @return self
 	 */
-	public function setObject(LendingObject $object): self
+	public function setObject(?LendingObject $object): self
 	{
 		$this->object = $object;
 		return $this;
