@@ -1,7 +1,8 @@
 {
     "name": "cylancer/cy_lending",
-    "description": "A simple TYPO3 extension for lending of objects.",
     "type": "typo3-cms-extension",
+    "license" : "GPL-2.0-or-later",
+    "description": "A simple TYPO3 extension for lending of objects.",
     "authors": [
         {
             "name": "Clemens Gogolin",
