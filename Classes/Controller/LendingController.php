@@ -114,10 +114,8 @@ class LendingController extends ActionController
             /** @var \Cylancer\CyLending\Domain\Model\FrontendUserGroup $approverGroup */
             $approverGroup = $lendingObject->getApproverGroup();
             if ($approverGroup != null) {
-                //   debug($approverGroup, 'approverGroup');
                 $approverGroupUid = $lendingObject->getApproverGroup()->getUid();
                 foreach ($this->frontendUserService->getCurrentUser()->getUsergroup() as $frontendUserGroup) {
-                    //  debug($frontendUserGroup, 'frontendUserGroup');
                     if ($this->frontendUserService->contains($frontendUserGroup, $approverGroupUid)) {
                         $canApproveLendingObjects[$lendingObject->getUid()] = $lendingObject;
                     }
@@ -144,8 +142,6 @@ class LendingController extends ActionController
         $this->view->assign('lendingObjects', $lendingObjects);
 
         $canApproveLendingObjects = $this->getAllCanApproveLendingObject();
-
-        // debug($canApproveLendingObjects);
 
         $availabilityRequestValidationResults = $this->request->hasArgument(LendingController::AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY)
             ? $this->request->getArgument(LendingController::AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY)
@@ -212,8 +208,6 @@ class LendingController extends ActionController
         $toReserve->setState(Lending::STATE_AVAILABILITY_REQUEST);
         $toReserve->setFrom($this->toDBDateTime($toReserve->getFrom()));
         $toReserve->setUntil($this->toDBDateTime($toReserve->getUntil()));
-        debug($toReserve);
-
 
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validate($toReserve);
