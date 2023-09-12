@@ -32,6 +32,6 @@ $EM_CONF[$_EXTKEY] = [
  *  1.1.0 :: ADD : Add ajax connect for dynamic reloading of the events (lendings).
  *  1.1.1 :: FIX : Repaire the date format.
  *  1.1.2 :: FIX : Remove debug outputs.
- *  1.1.2 :: ADD : Add licence entry in the composer file.
+ *  1.1.3 :: ADD : Add licence entry in the composer file.
  * 
  */
