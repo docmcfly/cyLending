@@ -41,19 +41,14 @@
 					id="nav-calendar" role="calendar" aria-labelledby="nav-calendar-tab">
 					<f:render partial="calendar" arguments="{_all}" />
 				</div>
-				</div>
 				<div class="tab-pane fade {f:if(condition:'{tab} === {lending} ', then: 'show active')} pt-3"
 					id="nav-lending" role="tabpanel" aria-labelledby="nav-lending-tab">
-					<f:render partial="reserveFormSummary"
-						arguments="{availabilityRequests:availabilityRequests, toReserveSummary:toReserveSummary, availabilityRequestValidationResults:availabilityRequestValidationResults}" />
-
+					<f:render partial="reserveFormSummary"  arguments="{_all}" />
 				</div>
 				<f:if condition="{isApprover}">
-					<div class="tab-pane fade pt-3 {f:if(condition:'{tab} === {approval} ', then: 'show active')}"
+					<div class="tab-pane fade {f:if(condition:'{tab} === {approval} ', then: 'show active')} pt-3"
 						id="nav-approval" role="tabpanel" aria-labelledby="nav-Lendapprovaling-tab">
-						
-						<f:render partial="approveForm"
-						arguments="{approvalValidationResults:approvalValidationResults, availabilityRequestEmpty:availabilityRequestEmpty, availabilityRequests: availabilityRequests}" />
+						<f:render partial="approveForm"  arguments="{_all}" />
 					</div>
 				</f:if>
 			</div>
