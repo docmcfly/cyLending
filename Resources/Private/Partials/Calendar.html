@@ -6,7 +6,7 @@
         <script defer="defer">
             let language = '{language}'
             let currentMonthEvents = {currentMonthEvents}
-            let ajaxConnect = '{f:uri.action(pageType:"{settings.ajax.pageType}", controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{cid:cid}")}'
+            let ajaxConnect = '{f:uri.action(pageType:"{settings.ajax.pageType}", controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{lspid:allLendingStorageUids}")}'
         </script>
     </f:format.raw>
 
@@ -39,10 +39,8 @@
                         console.log(error.responseText)
                     })
                     .done(function (result) {
-                        
-
+                        //  console.log(result)
                         calendar.importEvents(JSON.parse(result))// alert(result)
-                        console.log(result)
                         calendar.renderEvents()
                     })
             },
@@ -56,14 +54,11 @@
                 }
                 )
                     .fail(function (error) {
-                        $('#output').css('border', '1px solid red')
-                        $('#output').html(error.responseText)
+                        console.log(error.responseText)
                     })
                     .done(function (result) {
-                        $('#output').css('border', '1px solid green')
-                        $('#output').html(result)
+                        //  console.log(result)
                         calendar.importEvents(JSON.parse(result))// alert(result)
-                        console.log(result)
                         calendar.renderEvents()
                     })
             },

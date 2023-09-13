@@ -49,6 +49,7 @@ class LendingService implements SingletonInterface
         $events = [];
         /** @var \Cylancer\CyLending\Domain\Model\Lending $lending*/
         foreach ($this->lendingRepository->findMonthAvailabilityRequests($year, $month) as $lending) {
+
             /** @var \Cylancer\CyLending\Domain\Model\LendingObject $lendingObject*/
             $lendingObject = $lending->getObject();
 
@@ -60,7 +61,7 @@ class LendingService implements SingletonInterface
             $event['description'] = $lending->getPurpose();
             $event['responsible'] = $lending->getBorrower()->getFirstName() . ' ' . $lending->getBorrower()->getLastName();
             $event['backgroundColor'] = $lendingObject->getColor();
-            $event['striped'] = ($lending->getState() == Lending::STATE_AVAILABILITY_REQUEST ? 'true' : 'false');
+            $event['striped'] = $lending->getState() == Lending::STATE_AVAILABILITY_REQUEST;
 
             $events[] = $event;
         }

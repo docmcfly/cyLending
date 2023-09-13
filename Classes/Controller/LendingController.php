@@ -18,6 +18,7 @@ use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use Cylancer\CyLending\Domain\Model\FrontendUser;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 
@@ -122,7 +123,6 @@ class LendingController extends ActionController
                 }
             }
         }
-
         return $canApproveLendingObjects;
 
     }
@@ -135,11 +135,23 @@ class LendingController extends ActionController
     {
         /** @var Lending $toReserve */
         $toReserve;
-        $lendingObjects = $this->lendingObjectRepository->findAll();
-        /** @var FrontendUser $currentUser */
-        $currentUser = $this->frontendUserService->getCurrentUser();
 
-        $this->view->assign('lendingObjects', $lendingObjects);
+        // prepare
+        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+        $querySettings->setStoragePageIds(GeneralUtility::intExplode(',', $this->settings['lendingObjectStorageUids'], TRUE));
+        $this->lendingObjectRepository->setDefaultQuerySettings($querySettings);
+
+        $allLendingStorageUids = array_merge(
+            GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE),
+            GeneralUtility::intExplode(',', $this->settings['otherLendingStorageUids'], TRUE)
+        );
+
+        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+        $querySettings->setStoragePageIds($allLendingStorageUids);
+        $this->lendingRepository->setDefaultQuerySettings($querySettings);
+
+        $lendingObjects = $this->lendingObjectRepository->findAll();
+
 
         $canApproveLendingObjects = $this->getAllCanApproveLendingObject();
 
@@ -167,16 +179,37 @@ class LendingController extends ActionController
         $tab = $this->request->hasArgument(LendingController::TAB_KEY)
             ? $this->request->getArgument(LendingController::TAB_KEY)
             : 'calendar';
-        $this->view->assign(LendingController::AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY, $availabilityRequestValidationResults);
+
+        // COMMON
+        $this->view->assign(LendingController::TAB_KEY, $tab); // active tab
+
+        // tab page APPROVE: 
         $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, $approvalValidationResults);
-        $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language());
-        $this->view->assign('currentMonthEvents', json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'], $today['mon'])));
-        $this->view->assign('purposes', empty(trim($this->settings['purposes'])) ? [] : explode("\n", $this->settings['purposes']));
-        $this->view->assign('toReserve', $toReserve);
-        $this->view->assign('untilOffset', "var untilOffset = '" . intval($this->settings['usualLendingTermHours']) . ':' . intval($this->settings['usualLendingTermMinutes']) . "';\n");
-        $this->view->assign(LendingController::TAB_KEY, $tab);
-        $this->view->assign('isApprover', !empty($canApproveLendingObjects));
-        $this->view->assign('cid', $this->configurationManager->getContentObject()->data['uid']);
+        $this->view->assign('availabilityRequests', $this->lendingRepository->findAllAvailabilityRequests($canApproveLendingObjects)); // all availability request to approve / reject
+        $this->view->assign('isApprover', !empty($canApproveLendingObjects)); // is the approver tab visible?
+
+        // tab page AVAILABILITY_REQUST:
+        $this->view->assign('lendingObjects', $lendingObjects);
+        $this->view->assign(LendingController::AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY, $availabilityRequestValidationResults); // validation results
+        $this->view->assign('purposes', empty(trim($this->settings['purposes'])) ? [] : explode("\n", $this->settings['purposes'])); // form drafts of purposes
+        $this->view->assign('toReserve', $toReserve); // form object 
+        $this->view->assign('untilOffset', "var untilOffset = '" . intval($this->settings['usualLendingTermHours']) . ':' . intval($this->settings['usualLendingTermMinutes']) . "';\n"); // for java script calculation of the until timestamp
+
+        // tab page CALENDAR:
+        $this->view->assign('allLendingStorageUids', $allLendingStorageUids);
+        $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language()); // language for the calendar.js API
+        $this->view->assign(
+            'currentMonthEvents',
+            json_encode(
+                // initilial data of the current month
+                $this->lendingService->getAvailabilityRequestsAsEventsOf(
+                    $today['year'],
+                    $today['mon'],
+                    GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE)
+                )
+            )
+        );
+
         return $this->htmlResponse();
 
     }
@@ -191,8 +224,9 @@ class LendingController extends ActionController
     }
 
 
-    private function toDBDateTime(string $dateTime) {
-        return date('Y-m-d H:i:s', strtotime($dateTime)); 
+    private function toDBDateTime(string $dateTime)
+    {
+        return date('Y-m-d H:i:s', strtotime($dateTime));
 
     }
 
@@ -204,10 +238,26 @@ class LendingController extends ActionController
      */
     public function reserveAction(Lending $toReserve = null)
     {
+
+        // prepare
+        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+        $querySettings->setStoragePageIds(GeneralUtility::intExplode(',', $this->settings['lendingObjectStorageUids'], TRUE));
+        $this->lendingObjectRepository->setDefaultQuerySettings($querySettings);
+
+        $allLendingStorageUids = array_merge(
+            GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE),
+            GeneralUtility::intExplode(',', $this->settings['otherLendingStorageUids'], TRUE)
+        );
+
+        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+        $querySettings->setStoragePageIds($allLendingStorageUids);
+        $this->lendingRepository->setDefaultQuerySettings($querySettings);
+
         $toReserve->setBorrower($this->frontendUserService->getCurrentUser());
         $toReserve->setState(Lending::STATE_AVAILABILITY_REQUEST);
         $toReserve->setFrom($this->toDBDateTime($toReserve->getFrom()));
         $toReserve->setUntil($this->toDBDateTime($toReserve->getUntil()));
+        $toReserve->setPid(intval($this->settings['lendingStorageUids']));
 
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validate($toReserve);
@@ -220,13 +270,33 @@ class LendingController extends ActionController
             $canApproveLendingObjects = $this->getAllCanApproveLendingObject();
             $today = getdate();
 
-            $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, new ValidationResults());
-            $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language());
-            $this->view->assign('currentMonthEvents', json_encode($this->lendingService->getAvailabilityRequestsAsEventsOf($today['year'], $today['mon'])));
-            $this->view->assign('toReserveSummary', $toReserve);
+            // COMMON
             $this->view->assign(LendingController::TAB_KEY, 'lending');
-            $this->view->assign('isApprover', !empty($canApproveLendingObjects));
 
+            // tab page APPROVE: 
+            $this->view->assign('availabilityRequests', $this->lendingRepository->findAllAvailabilityRequests($canApproveLendingObjects)); // all availability request to approve / reject
+            $this->view->assign('isApprover', !empty($canApproveLendingObjects)); // is the approver tab visible?
+
+            // tab page AVAILABILITY_REQUST:
+            $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, new ValidationResults()); // validation results
+            $this->view->assign('toReserveSummary', $toReserve); // form object summary
+
+
+            // tab page CALENDAR:
+            $this->view->assign('allLendingStorageUids', $allLendingStorageUids);
+            $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language()); // language for the calendar.js API
+            $this->view->assign(
+                'currentMonthEvents',
+                json_encode(
+                    // initilial data of the current month
+                    $this->lendingService->getAvailabilityRequestsAsEventsOf(
+                        $today['year'],
+                        $today['mon'],
+                        $allLendingStorageUids
+                    )
+                )
+            );
+            $this->view->assign('cid', $this->configurationManager->getContentObject()->data['uid']); // is the uid of the current content element. This is important for the ajax connect. The ajax controller has with this access to the plugin configuration. 
 
 
             /** @var \Cylancer\CyLending\Domain\Model\FrontendUserGroup  $approverGroup */
@@ -295,16 +365,19 @@ class LendingController extends ActionController
      */
     public function rejectAction(Lending $availabilityRequest = null)
     {
-        $availabilityRequest->setApprover($this->frontendUserService->getCurrentUser());
-        $availabilityRequest->setState(Lending::STATE_REJECTED);
 
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validateReject($availabilityRequest);
+
         /** @var ForwardResponse $forward */
         $forward = new ForwardResponse('show');
         if (!$validationResults->hasErrors()) {
+            $availabilityRequest->setState(Lending::STATE_REJECTED);
+            $availabilityRequest->setApprover($this->frontendUserService->getCurrentUser());
+
             $this->lendingRepository->update($availabilityRequest);
             $this->persistenceManager->persistAll();
+
             $validationResults->addInfo('successful.rejected');
             $forward = $forward->withArguments([
                 LendingController::APPROVAL_VALIDATION_RESULTS_KEY => $validationResults,
@@ -360,22 +433,31 @@ class LendingController extends ActionController
     public function approveAction(Lending $availabilityRequest = null)
     {
 
+        $allLendingStorageUids = array_merge(
+            GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE),
+            GeneralUtility::intExplode(',', $this->settings['otherLendingStorageUids'], TRUE)
+        );
+
+        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+        $querySettings->setStoragePageIds($allLendingStorageUids);
+        $this->lendingRepository->setDefaultQuerySettings($querySettings);
+
         if ($availabilityRequest == null && $this->request->hasArgument("availabilityRequest")) {
             $uid = intval($this->request->getArgument("availabilityRequest"));
             $availabilityRequest = $this->lendingRepository->findByUid($uid);
         }
-
-
-        $availabilityRequest->setApprover($this->frontendUserService->getCurrentUser());
-        $availabilityRequest->setState(Lending::STATE_APPROVED);
 
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validateApprove($availabilityRequest);
         /** @var ForwardResponse $forward */
         $forward = new ForwardResponse('show');
         if (!$validationResults->hasErrors()) {
+            $availabilityRequest->setState(Lending::STATE_APPROVED);
+            $availabilityRequest->setApprover($this->frontendUserService->getCurrentUser());
+
             $this->lendingRepository->update($availabilityRequest);
             $this->persistenceManager->persistAll();
+
             $validationResults->addInfo('successful.approved');
             $forward = $forward->withArguments([
                 LendingController::APPROVAL_VALIDATION_RESULTS_KEY => $validationResults,
@@ -484,8 +566,12 @@ class LendingController extends ActionController
             $until = strtotime($lending->getUntil());
             if ($until === false) {
                 $validationResults->addError("until.invalid");
+            } else if ($until < time()) {
+                $validationResults->addError("until.isInThePast");
             }
         }
+
+
         if ($from !== false && $until !== false && $from > $until) {
             $validationResults->addError("until.isBeforeFrom");
         }

@@ -71,9 +71,13 @@
 				<source>Lending end time is before the start time.</source>
 				<target state="tanslated">Ausleihendzeitpunkt ist vor dem Ausleihstartzeitpunkt.</target>
 			</trans-unit>
-			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isInThePast">
+			<trans-unit id="lending.overview.availabilityRequest.form.error.from.isInThePast">
 				<source>Lending start time is in the past.</source>
 				<target state="tanslated">Ausleihstartzeitpunkt ist in der Vergangenheit.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isInThePast">
+				<source>Lending end time is in the past.</source>
+				<target state="tanslated">Ausleihendzeitpunkt ist in der Vergangenheit.</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.info.successful">
 				<source>Availability request send sucessful.</source>

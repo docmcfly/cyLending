@@ -54,8 +54,11 @@
 			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isBeforeFrom">
 				<source>Lending end time is before the start time.</source>
 			</trans-unit>
-			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isInThePast">
+			<trans-unit id="lending.overview.availabilityRequest.form.error.from.isInThePast">
 				<source>Lending start time is in the past.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isInThePast">
+				<source>Lending end time is in the past.</source>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.info.successful">
 				<source>Availability request send sucessful.</source>

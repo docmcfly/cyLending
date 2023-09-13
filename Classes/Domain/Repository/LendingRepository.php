@@ -91,15 +91,23 @@ class LendingRepository extends Repository
 
         $q = $this->createQuery();
         $q->matching(
-            $q->logicalNot(
-                $q->logicalOr([
-                    $q->lessThan('until', $from),
-                    $q->greaterThanOrEqual('from', $until)
-                ])
-            )
+            $q->logicalAnd([
+                $q->logicalNot(
+                    $q->logicalOr([
+                        $q->lessThan('until', $from),
+                        $q->greaterThanOrEqual('from', $until)
+                    ])
+                ),
+                $q->logicalOr(
+                    [
+                        $q->equals("state", Lending::STATE_AVAILABILITY_REQUEST),
+                        $q->equals("state", Lending::STATE_APPROVED)
+                    ]
+                )
+            ])
         );
         return $q->execute();
-        
+
     }
 
 
