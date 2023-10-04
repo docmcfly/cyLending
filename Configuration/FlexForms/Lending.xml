@@ -131,6 +131,36 @@
 							</config>
 						</TCEforms>
 					</settings.lendingObjectStorageUids>
+					<settings.reasonsForPreventionContentElement>
+						<TCEforms>
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionContentElement
+							</label>
+							<config>
+								<type>input</type>
+								<renderType>inputLink</renderType>
+								<eval>
+									trim
+								</eval>
+								<fieldControl>
+									<linkPopup>
+										<options>
+											<blindLinkOptions>file,folder,mail,telephone,url</blindLinkOptions>
+										</options>
+									</linkPopup>
+								</fieldControl>
+							</config>
+						</TCEforms>
+					</settings.reasonsForPreventionContentElement>
+					<settings.reasonsForPreventionTSPageType>
+						<TCEforms>
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionTSPageType
+							</label>
+							<config>
+								<type>input</type>
+								<min>1</min>
+							</config>
+						</TCEforms>
+					</settings.reasonsForPreventionTSPageType>
 				</el>
 			</ROOT>
 		</sDEF>

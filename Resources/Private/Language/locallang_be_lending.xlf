@@ -36,6 +36,12 @@
 			<trans-unit id="flexforms_general.settings.lendingObjectStorageUids">
 				<source>Storage of lending objects</source>
 			</trans-unit>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionContentElement">
+				<source>Content element with reason for prevention service</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionTSPageType">
+				<source>TypoScript path of reason for prevention service page type</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -33,6 +33,12 @@
 			<trans-unit id="lending.overview.availabilityRequest.form.submit">
 				<source>Query availability</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionFound">
+				<source>Reasons for prevention</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore">
+				<source>Despite the reasons for prevention send</source>
+			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.error.object.isEmpty">
 				<source>Lending object is not specified.</source>
 			</trans-unit>

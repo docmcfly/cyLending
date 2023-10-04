@@ -3,8 +3,8 @@ namespace Cylancer\CyLending\Controller;
 
 use Cylancer\CyLending\Domain\Model\Lending;
 use Cylancer\CyLending\Domain\Model\LendingObject;
-use Cylancer\CyLending\Domain\Model\LendingsRequest;
 use Cylancer\CyLending\Domain\Model\ValidationResults;
+use Cylancer\CyLending\Domain\Repository\ContentElementRepository;
 use Cylancer\CyLending\Domain\Repository\FrontendUserGroupRepository;
 use Cylancer\CyLending\Domain\Repository\FrontendUserRepository;
 use Cylancer\CyLending\Domain\Repository\LendingObjectRepository;
@@ -13,12 +13,14 @@ use Cylancer\CyLending\Service\EmailSendService;
 use Cylancer\CyLending\Service\FrontendUserService;
 use Cylancer\CyLending\Service\LendingService;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use Cylancer\CyLending\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 
@@ -31,7 +33,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  *
  * (c) 2023 Clemens Gogolin <service@cylancer.net>
  *
- * @package CCylancer\CyLending\Controller
+ * @package Cylancer\CyLending\Controller
  */
 
 class LendingController extends ActionController
@@ -75,6 +77,9 @@ class LendingController extends ActionController
     /* @var FrontendUserRepository */
     private FrontendUserRepository $frontendUserRepository;
 
+    /* @var ContentElementRepository */
+    private ContentElementRepository $contentElementRepository;
+
     /* @var EmailSendService */
     private EmailSendService $emailSendService;
 
@@ -89,6 +94,7 @@ class LendingController extends ActionController
         LendingObjectRepository $lendingObjectRepository,
         FrontendUserGroupRepository $frontendUserGroupRepository,
         FrontendUserRepository $frontendUserRepository,
+        ContentElementRepository $contentElementRepository,
         FrontendUserService $frontendUserService,
         PersistenceManager $persistenceManager,
         EmailSendService $emailSendService,
@@ -98,6 +104,7 @@ class LendingController extends ActionController
         $this->lendingObjectRepository = $lendingObjectRepository;
         $this->frontendUserGroupRepository = $frontendUserGroupRepository;
         $this->frontendUserRepository = $frontendUserRepository;
+        $this->contentElementRepository = $contentElementRepository;
         $this->frontendUserService = $frontendUserService;
         $this->persistenceManager = $persistenceManager;
         $this->emailSendService = $emailSendService;
@@ -135,7 +142,6 @@ class LendingController extends ActionController
     {
         /** @var Lending $toReserve */
         $toReserve;
-
         // prepare
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds(GeneralUtility::intExplode(',', $this->settings['lendingObjectStorageUids'], TRUE));
@@ -180,8 +186,18 @@ class LendingController extends ActionController
             ? $this->request->getArgument(LendingController::TAB_KEY)
             : 'calendar';
 
+
         // COMMON
         $this->view->assign(LendingController::TAB_KEY, $tab); // active tab
+        $reasonsForPreventionServiceUrl = $this->getReasonsForPreventionServiceUrl();
+        if ($reasonsForPreventionServiceUrl !== false) {
+            $this->view->assign('reasonsForPreventionServiceEnabled', true);
+            $this->view->assign('reasonsForPreventionServiceUrl',$reasonsForPreventionServiceUrl);
+        } else {
+            $this->view->assign('reasonsForPreventionServiceEnabled', false);
+            $this->view->assign('reasonsForPreventionServiceUrl','');
+        }
+
 
         // tab page APPROVE: 
         $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, $approvalValidationResults);
@@ -213,6 +229,107 @@ class LendingController extends ActionController
         return $this->htmlResponse();
 
     }
+
+    const T3_LINK_PREFIX = 't3://page?uid=';
+
+
+    private function getReasonsForPreventionServiceUrl(): bool|string
+    {
+        $pagetType = $this->getReasonsForPreventionServicePageType();
+        if ($pagetType === false) {
+            return false;
+        }
+
+        $target = $this->getReasonsForPreventionService();
+        if ($target === false) {
+            return false;
+        }
+
+        return $this->uriBuilder
+            ->reset()
+            ->setTargetPageUid($target['page'])
+            ->setTargetPageType($pagetType)
+            ->setNoCache(true)
+            ->setCreateAbsoluteUri(true)
+            ->uriFor(
+                'reasonsForPrevention',
+                [
+                    'id' => $target['contentElement'],
+                ],
+                $target['controller'],
+                $target['extensionName'],
+                $target['pluginName']
+            );
+
+    }
+    /**
+     * @return bool|int
+     */
+    private function getReasonsForPreventionService(): bool|array
+    {
+        $reasonsForPreventionContentElement = $this->settings['reasonsForPreventionContentElement'];
+
+        if (empty($reasonsForPreventionContentElement)) {
+            return false;
+        }
+
+        if (str_starts_with($reasonsForPreventionContentElement, LendingController::T3_LINK_PREFIX)) {
+            $reasonsForPreventionContentElement = substr($reasonsForPreventionContentElement, strlen(LendingController::T3_LINK_PREFIX));
+            $return = [];
+            $tmp = explode('#', $reasonsForPreventionContentElement);
+            if (count($tmp) != 2 || !is_numeric($tmp[0]) || !is_numeric($tmp[1])) {
+                return false;
+            } else {
+                $return['page'] = intval($tmp[0]);
+                $return['contentElement'] = intval($tmp[1]);
+            }
+
+            $ce = $this->contentElementRepository->findByUid(intval($return['contentElement']));
+            $register = $GLOBALS['TSFE']->tmpl->setup['tt_content.']['list.']['20.'][$ce->getListType() . '.'];
+            $return['extensionName'] = $register['extensionName'];
+            $return['pluginName'] = $register['pluginName'];
+
+            $controllers = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['extbase']['extensions'][$register['extensionName']]['plugins'][$register['pluginName']]['controllers'];
+            foreach ($controllers as $controllerConfig) {
+                foreach ($controllerConfig['nonCacheableActions'] as $action) {
+                    if ($action === 'reasonsForPrevention') {
+                        $return['controller'] = $controllerConfig['alias'];
+
+                    }
+                }
+            }
+            return $return;
+
+        }
+
+
+
+        return false;
+
+    }
+
+    /**
+     * @return bool|int
+     */
+    private function getReasonsForPreventionServicePageType(): bool|int
+    {
+        $reasonsForPreventionTSPageType = $this->settings['reasonsForPreventionTSPageType'];
+        if (empty($reasonsForPreventionTSPageType)) {
+            return false;
+        }
+        $path = explode('.', $reasonsForPreventionTSPageType);
+        $typoScript = $GLOBALS['TSFE']->tmpl->setup;
+        $count = count($path) - 1;
+        for ($i = 0; $i < $count; $i++) {
+            $typoScript = $typoScript[trim($path[$i]) . '.'];
+        }
+        $pagetType = $typoScript[trim($path[$count])];
+        if (is_numeric($pagetType)) {
+            return intval($pagetType);
+        }
+        return false;
+    }
+
 
     private function createLending(): Lending
     {
