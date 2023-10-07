@@ -43,6 +43,14 @@
 				<source>Query availability</source>
 				<target state="tanslated">Verfügbarkeit abfragen</target>
 			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionFound">
+				<source>Reasons for prevention</source>
+				<target state="tanslated">Mögliche Verhinderungsgründe</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore">
+				<source>Despite the reasons for prevention send</source>
+				<target state="tanslated">Trotz der Verhinderungsgründe senden</target>
+			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.error.object.isEmpty">
 				<source>Lending object is not specified.</source>
 				<target state="tanslated">Ausleihobjekt wurde nicht angeben.</target>

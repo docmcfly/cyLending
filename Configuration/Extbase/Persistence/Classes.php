@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 return [
     \Cylancer\CyLending\Domain\Model\FrontendUser::class => [
@@ -7,5 +7,9 @@ return [
     ],
     \Cylancer\CyLending\Domain\Model\FrontendUserGroup::class => [
         'tableName' => 'fe_groups'
+    ],
+    \Cylancer\CyLending\Domain\Model\ContentElement::class => [
+        'tableName' => 'tt_content'
     ]
+
 ];

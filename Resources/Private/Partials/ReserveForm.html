@@ -10,7 +10,7 @@
 <f:asset.script identifier="reserveForm.js" defer="defer"
     src="EXT:cy_lending/Resources/Public/JavaScript/reserveForm.js" />
 
-<f:form class="form" action="reserve" method="POST" enctype="multipart/form-data" objectName="toReserve"
+<f:form class="form reserve" action="reserve" method="POST" enctype="multipart/form-data" objectName="toReserve"
     object="{toReserve}">
     <div class="row mt-3 mb-2">
         <label id="objectLabel" for="object" class="col-sm-3 col-form-label">
@@ -87,4 +87,101 @@
             </f:form.submit>
         </div>
     </div>
+    <f:if condition="{reasonsForPreventionServiceEnabled}">
+        <div class="reasonsForPrevention"></div>
+        <f:format.raw>
+            <script defer="defer">
+                let reasonsForPreventionServiceUrl = '{reasonsForPreventionServiceUrl}'
+                let reasonsForPreventionFound = '{f:translate(key:"lending.overview.availabilityRequest.form.label.reasonsForPreventionFound")}'
+                let reasonsForPreventionIgnore = '{f:translate(key:"lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore")}'
+            </script>
+        </f:format.raw>
+        <f:format.raw>
+            <script defer="defer">
+                const dateFormat = /^\d{4}-(((0[13578]|1[02])-(([012]\d)|3[01]))|((0[469]|11)-(([012]\d)|30))|02-[012]\d)T(([01]\d)|(2[0-4])):[0-5]\d$/m;
+
+                $('form.reserve input[type="submit"]').on("click", function () {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    let inputFrom = $('#from');
+                    let from = inputFrom.val();
+
+                    let error = false;
+                    if (from.match(dateFormat)) {
+                        from = from.substring(0, 10);
+                    } else {
+                        error = true;
+                    }
+
+                    let inputUntil = $('#until');
+                    let until = inputUntil.val();
+                    if (until.match(dateFormat)) {
+                        until = until.substring(0, 10);
+                    } else {
+                        error = true;
+                    }
+
+                    if (!error) {
+                        $.ajax({
+                            url: reasonsForPreventionServiceUrl,
+                            method: "POST",
+                            data: {from: from, until: until},
+                        }
+                        )
+                            .fail(function (error) {
+                                console.log(error.responseText)
+                                //  $('div#debugOutput').html(error.responseText)
+                            })
+                            .done(function (result) {
+                                console.log(result)
+                                // $('div#debugOutput').html(result)
+
+                                let tmpl = '  <div class="row  mb-2"> \
+                                                <div class="col-sm-3">###label###</div>\
+                                                <div class="col-sm-9">###content###</div>\
+                                             </div>'
+
+                                let data = JSON.parse(result).data
+                                let dataCount = data.length
+                                if (dataCount > 0) {
+                                    let checkbox = $('input#reasonsForPreventionIgnore')
+                                    if (checkbox.length > 0 && checkbox[0].checked) {
+                                        $('form.reserve').submit()
+                                    } else {
+
+                                        let reasonsForPrevention = $('div.reasonsForPrevention')
+                                        reasonsForPrevention.empty()
+                                        let check = tmpl
+                                            .replace('###label###', '&nbsp;')
+                                            .replace('###content###', '<input id="reasonsForPreventionIgnore" type="checkbox" />&nbsp;<label for="reasonsForPreventionIgnore" class="' + (checkbox.length > 0 ? 'error' : '') + '">' + reasonsForPreventionIgnore + '</label>')
+                                        reasonsForPrevention.append(check)
+                                        let reasons = '<ul>'
+                                        for (let i = 0; i < dataCount; i++) {
+                                            reasons += '<li>' + data[i].description + '</li>'
+                                        }
+                                        reasons += '</ul>'
+                                        reasonsForPrevention.append(tmpl
+                                            .replace('###label###', '<div class="error">' + reasonsForPreventionFound + '</div>')
+                                            .replace('###content###', reasons))
+                                    }
+                                } else {
+                                    $('form.reserve').submit()
+                                }
+                            })
+
+                    }
+                })
+
+
+            </script>
+        </f:format.raw>
+
+
+
+        <!-- <div id="debugOutput"></div> -->
+
+
+
+    </f:if>
 </f:form>

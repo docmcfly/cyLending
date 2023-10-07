@@ -47,6 +47,14 @@
 				<source>Storage of lending objects</source>
 				<target state="tanslated">Speicherort der Ausleihobjekte</target>
 			</trans-unit>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionContentElement">
+				<source>Content element with reason for prevention service</source>
+				<target state="tanslated">Inhaltselement welches den Verhinderungsgrundservice beinhaltet</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionTSPageType">
+				<source>TypoScript path of reason for prevention service page type</source>
+				<target state="tanslated">TypoScript-Pfad vom PageType des Verhinderungsgrundservice</target>
+			</trans-unit>
 
 
 		</body>
