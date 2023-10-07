@@ -244,7 +244,7 @@ class LendingController extends ActionController
         if ($target === false) {
             return false;
         }
-
+debug($target);
         return $this->uriBuilder
             ->reset()
             ->setTargetPageUid($target['page'])
@@ -285,6 +285,12 @@ class LendingController extends ActionController
             }
 
             $ce = $this->contentElementRepository->findByUid(intval($return['contentElement']));
+            if(empty($ce->getListType())){
+                return false;
+            }
+            if(!isset($GLOBALS['TSFE']->tmpl->setup['tt_content.']['list.']['20.'][$ce->getListType() . '.'])){
+                return false;
+            }
             $register = $GLOBALS['TSFE']->tmpl->setup['tt_content.']['list.']['20.'][$ce->getListType() . '.'];
             $return['extensionName'] = $register['extensionName'];
             $return['pluginName'] = $register['pluginName'];
@@ -294,12 +300,13 @@ class LendingController extends ActionController
                 foreach ($controllerConfig['nonCacheableActions'] as $action) {
                     if ($action === 'reasonsForPrevention') {
                         $return['controller'] = $controllerConfig['alias'];
-
                     }
                 }
             }
+            if(!isset($return['controller'])){ // no controller with reasonsForPrevention action found
+                return false;
+            }
             return $return;
-
         }
 
 
