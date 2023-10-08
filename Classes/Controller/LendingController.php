@@ -244,7 +244,6 @@ class LendingController extends ActionController
         if ($target === false) {
             return false;
         }
-debug($target);
         return $this->uriBuilder
             ->reset()
             ->setTargetPageUid($target['page'])
@@ -308,8 +307,6 @@ debug($target);
             }
             return $return;
         }
-
-
 
         return false;
 
@@ -544,6 +541,9 @@ debug($target);
         if (!$this->canApproveLendingObject($lending->getObject())) {
             $validationResults->addError('userNotApprover.reject');
         }
+        if( $lending->getApprover() != null || $lending->getState()!= Lending::STATE_AVAILABILITY_REQUEST) {
+            $validationResults->addError('requestAlreadyBeenProcessed');
+        }
         return $validationResults;
 
     }
@@ -650,7 +650,9 @@ debug($target);
         if ($this->lendingRepository->existsOverlapsAvailabilityRequests($lending)) {
             $validationResults->addError('existsOverlapsAvailabilityRequests');
         }
-
+        if( $lending->getApprover() != null || $lending->getState()!= Lending::STATE_AVAILABILITY_REQUEST) {
+            $validationResults->addError('requestAlreadyBeenProcessed');
+        }
         return $validationResults;
 
     }
