@@ -83,10 +83,6 @@
 				<source>Lending start time is in the past.</source>
 				<target state="tanslated">Ausleihstartzeitpunkt ist in der Vergangenheit.</target>
 			</trans-unit>
-			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isInThePast">
-				<source>Lending end time is in the past.</source>
-				<target state="tanslated">Ausleihendzeitpunkt ist in der Vergangenheit.</target>
-			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.info.successful">
 				<source>Availability request send sucessful.</source>
 				<target state="tanslated">Ausleihanfrage erfolgreich abgeben.</target>
@@ -168,6 +164,14 @@
 			<trans-unit id="lending.overview.approval.form.error.from.isInThePast">
 				<source>Lending start time is in the past.</source>
 				<target state="tanslated">Ausleihstartzeitpunkt ist in der Vergangenheit.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.requestAlreadyBeenProcessed">
+				<source>The request has already been processed</source>
+				<target state="tanslated">Die Anfrage wurde bereits bearbeitet.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.requestDeleted">
+				<source>The request is already deleted</source>
+				<target state="tanslated">Die Anfrage wurde bereits gelöscht.</target>
 			</trans-unit>
 
 

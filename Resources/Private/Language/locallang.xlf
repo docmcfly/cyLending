@@ -132,6 +132,12 @@
 			<trans-unit id="lending.overview.approval.form.error.from.isInThePast">
 				<source>Lending start time is in the past.</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.requestAlreadyBeenProcessed">
+				<source>The request has already been processed</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.requestDeleted">
+				<source>The request is already deleted</source>
+			</trans-unit>
 
 
 			<trans-unit id="message.approver.email.subject">

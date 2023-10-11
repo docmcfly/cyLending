@@ -7,7 +7,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'beta',
     'clearCacheOnLoad' => 1,
-    'version' => '1.2.1',
+    'version' => '1.2.4',
     'constraints' => [
         'depends' => [
             'typo3' => '11.5.0-11.99.99',
@@ -24,6 +24,9 @@ $EM_CONF[$_EXTKEY] = [
 /**
  ** CHANGELOG:
  *
+ *  1.2.4 :: FIX : Prevent two double requests (UI).
+ *  1.2.3 :: FIX : Better handling with deleted requests.
+ *  1.2.2 :: FIX : Prevent two different permits.
  *  1.2.1 :: ADD : Make the configuration parser stable. 
  *  1.2.0 :: ADD : Add an reasons for prevention request API. 
  *  1.1.7 :: UPD : Release the flexform select tree level. 
