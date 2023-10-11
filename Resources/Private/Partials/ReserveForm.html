@@ -81,107 +81,123 @@
             &nbsp;
         </div>
         <div class="col-sm-9">
-            <f:form.submit name="submit" class="btn btn-primary"
-                value="{f:translate(key:'lending.overview.availabilityRequest.form.submit')}">
+            <button class="btn btn-primary submit">
                 <f:translate key="lending.overview.availabilityRequest.form.submit" />
-            </f:form.submit>
+            </button>
         </div>
     </div>
+    <script defer="defer">
+        let submit = $('form.reserve button.submit')
+        let submitText = submit.text()
+    </script>
     <f:if condition="{reasonsForPreventionServiceEnabled}">
-        <div class="reasonsForPrevention"></div>
-        <f:format.raw>
-            <script defer="defer">
-                let reasonsForPreventionServiceUrl = '{reasonsForPreventionServiceUrl}'
-                let reasonsForPreventionFound = '{f:translate(key:"lending.overview.availabilityRequest.form.label.reasonsForPreventionFound")}'
-                let reasonsForPreventionIgnore = '{f:translate(key:"lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore")}'
-            </script>
-        </f:format.raw>
-        <f:format.raw>
-            <script defer="defer">
-                const dateFormat = /^\d{4}-(((0[13578]|1[02])-(([012]\d)|3[01]))|((0[469]|11)-(([012]\d)|30))|02-[012]\d)T(([01]\d)|(2[0-4])):[0-5]\d$/m;
+        <f:then>
+            <div class="reasonsForPrevention"></div>
+            <f:format.raw>
+                <script defer="defer">
+                    let reasonsForPreventionServiceUrl = '{reasonsForPreventionServiceUrl}'
+                    let reasonsForPreventionFound = '{f:translate(key:"lending.overview.availabilityRequest.form.label.reasonsForPreventionFound")}'
+                    let reasonsForPreventionIgnore = '{f:translate(key:"lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore")}'
+                </script>
+            </f:format.raw>
+            <f:format.raw>
+                <script defer="defer">
+                    const dateFormat = /^\d{4}-(((0[13578]|1[02])-(([012]\d)|3[01]))|((0[469]|11)-(([012]\d)|30))|02-[012]\d)T(([01]\d)|(2[0-4])):[0-5]\d$/m;
 
-                $('form.reserve input[type="submit"]').on("click", function () {
-                    event.preventDefault();
-                    event.stopPropagation();
+                    submit.on("click", function () {
+                        event.preventDefault();
+                        event.stopPropagation();
 
-                    let inputFrom = $('#from');
-                    let from = inputFrom.val();
+                        let inputFrom = $('#from');
+                        let from = inputFrom.val();
 
-                    let error = false;
-                    if (from.match(dateFormat)) {
-                        from = from.substring(0, 10);
-                    } else {
-                        error = true;
-                    }
-
-                    let inputUntil = $('#until');
-                    let until = inputUntil.val();
-                    if (until.match(dateFormat)) {
-                        until = until.substring(0, 10);
-                    } else {
-                        error = true;
-                    }
-
-                    if (!error) {
-                        $.ajax({
-                            url: reasonsForPreventionServiceUrl,
-                            method: "POST",
-                            data: {from: from, until: until},
+                        let error = false;
+                        if (from.match(dateFormat)) {
+                            from = from.substring(0, 10);
+                        } else {
+                            error = true;
                         }
-                        )
-                            .fail(function (error) {
-                                console.log(error.responseText)
-                                //  $('div#debugOutput').html(error.responseText)
-                            })
-                            .done(function (result) {
-                                console.log(result)
-                                // $('div#debugOutput').html(result)
 
-                                let tmpl = '  <div class="row  mb-2"> \
+                        let inputUntil = $('#until');
+                        let until = inputUntil.val();
+                        if (until.match(dateFormat)) {
+                            until = until.substring(0, 10);
+                        } else {
+                            error = true;
+                        }
+
+                        if (!error) {
+                            submit.prop('disabled', true)
+                            submit.text('⌛' + submitText)
+                            $.ajax({
+                                url: reasonsForPreventionServiceUrl,
+                                method: "POST",
+                                data: { from: from, until: until },
+                            }
+                            )
+                                .fail(function (error) {
+                                    console.log(error.responseText)
+                                    //  $('div#debugOutput').html(error.responseText)
+                                })
+                                .done(function (result) {
+                                    console.log(result)
+                                    // $('div#debugOutput').html(result)
+
+                                    let tmpl = '  <div class="row  mb-2"> \
                                                 <div class="col-sm-3">###label###</div>\
                                                 <div class="col-sm-9">###content###</div>\
                                              </div>'
 
-                                let data = JSON.parse(result).data
-                                let dataCount = data.length
-                                if (dataCount > 0) {
-                                    let checkbox = $('input#reasonsForPreventionIgnore')
-                                    if (checkbox.length > 0 && checkbox[0].checked) {
-                                        $('form.reserve').submit()
-                                    } else {
-
-                                        let reasonsForPrevention = $('div.reasonsForPrevention')
-                                        reasonsForPrevention.empty()
-                                        let check = tmpl
-                                            .replace('###label###', '&nbsp;')
-                                            .replace('###content###', '<input id="reasonsForPreventionIgnore" type="checkbox" />&nbsp;<label for="reasonsForPreventionIgnore" class="' + (checkbox.length > 0 ? 'error' : '') + '">' + reasonsForPreventionIgnore + '</label>')
-                                        reasonsForPrevention.append(check)
-                                        let reasons = '<ul>'
-                                        for (let i = 0; i < dataCount; i++) {
-                                            reasons += '<li>' + data[i].description + '</li>'
+                                    let data = JSON.parse(result).data
+                                    let dataCount = data.length
+                                    if (dataCount > 0) {
+                                        let checkbox = $('input#reasonsForPreventionIgnore')
+                                        if (checkbox.length > 0 && checkbox[0].checked) {
+                                            $('form.reserve').submit()
+                                        } else {
+                                            submit.prop('disabled', false)
+                                            submit.text(submitText)
+                                            let reasonsForPrevention = $('div.reasonsForPrevention')
+                                            reasonsForPrevention.empty()
+                                            let check = tmpl
+                                                .replace('###label###', '&nbsp;')
+                                                .replace('###content###', '<input id="reasonsForPreventionIgnore" type="checkbox" />&nbsp;<label for="reasonsForPreventionIgnore" class="' + (checkbox.length > 0 ? 'error' : '') + '">' + reasonsForPreventionIgnore + '</label>')
+                                            reasonsForPrevention.append(check)
+                                            let reasons = '<ul>'
+                                            for (let i = 0; i < dataCount; i++) {
+                                                reasons += '<li>' + data[i].description + '</li>'
+                                            }
+                                            reasons += '</ul>'
+                                            reasonsForPrevention.append(tmpl
+                                                .replace('###label###', '<div class="error">' + reasonsForPreventionFound + '</div>')
+                                                .replace('###content###', reasons))
                                         }
-                                        reasons += '</ul>'
-                                        reasonsForPrevention.append(tmpl
-                                            .replace('###label###', '<div class="error">' + reasonsForPreventionFound + '</div>')
-                                            .replace('###content###', reasons))
+                                    } else {
+                                        $('form.reserve').submit()
                                     }
-                                } else {
-                                    $('form.reserve').submit()
-                                }
-                            })
+                                })
 
-                    }
+                        }
+                    })
+
+
+                </script>
+            </f:format.raw>
+
+
+
+            <!-- <div id="debugOutput"></div> -->
+
+        </f:then>
+        <f:else>
+            <script defer="defer">
+                submit.on("click", function () {
+                    submit.prop('disabled', true)
+                    submit.text('⌛' + submitText)
+                    $('form.reserve').submit()
                 })
-
-
             </script>
-        </f:format.raw>
-
-
-
-        <!-- <div id="debugOutput"></div> -->
-
-
+        </f:else>
 
     </f:if>
 </f:form>

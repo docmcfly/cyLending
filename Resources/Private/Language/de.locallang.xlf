@@ -169,6 +169,10 @@
 				<source>The request has already been processed</source>
 				<target state="tanslated">Die Anfrage wurde bereits bearbeitet.</target>
 			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.requestDeleted">
+				<source>The request is already deleted</source>
+				<target state="tanslated">Die Anfrage wurde bereits gelöscht.</target>
+			</trans-unit>
 
 
 
