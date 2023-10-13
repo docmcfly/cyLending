@@ -17,9 +17,9 @@ use Cylancer\CyLending\Domain\Model\FrontendUser;
  */
 class Lending extends AbstractEntity
 {
-	const STATE_UNKNOWN = 0;		
-	const STATE_AVAILABILITY_REQUEST = 1;		
-	const STATE_APPROVED = 2;		
+	const STATE_UNKNOWN = 0;
+	const STATE_AVAILABILITY_REQUEST = 1;
+	const STATE_APPROVED = 2;
 	const STATE_REJECTED = 3;
 
 
@@ -54,7 +54,8 @@ class Lending extends AbstractEntity
 	/** @var int */
 	protected $state = 0;
 
-
+	/** @var bool */
+	protected $highPriority = false;
 
 	/**
 	 * 
@@ -83,16 +84,6 @@ class Lending extends AbstractEntity
 	{
 		return $this->until;
 	}
-
-	/**
-	 * @return int
-	 */
-	public function getUntilUnixTime():int
-	{
-		return \DateTimeImmutable::createFromFormat($this->getUntil(),'Y-m-d H:i:s')->getTimestamp();
-	}
-
-
 
 	/**
 	 * @param string $until 
@@ -188,16 +179,18 @@ class Lending extends AbstractEntity
 	 * 
 	 * @return int
 	 */
-	public function getState() {
+	public function getState()
+	{
 		return $this->state;
 	}
-	
+
 	/**
 	 * 
 	 * @param int $state 
 	 * @return self
 	 */
-	public function setState($state): self {
+	public function setState($state): self
+	{
 		$this->state = $state;
 		return $this;
 	}
@@ -206,17 +199,39 @@ class Lending extends AbstractEntity
 	 * 
 	 * @return FrontendUser
 	 */
-	public function getApprover() {
+	public function getApprover()
+	{
 		return $this->approver;
 	}
-	
+
 	/**
 	 * 
 	 * @param FrontendUser $approver 
 	 * @return self
 	 */
-	public function setApprover($approver): self {
+	public function setApprover($approver): self
+	{
 		$this->approver = $approver;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return bool
+	 */
+	public function getHighPriority()
+	{
+		return $this->highPriority;
+	}
+
+	/**
+	 * 
+	 * @param bool $highPriority 
+	 * @return self
+	 */
+	public function setHighPriority($highPriority): self
+	{
+		$this->highPriority = $highPriority;
 		return $this;
 	}
 }

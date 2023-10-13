@@ -59,6 +59,19 @@
             </f:if>
         </div>
     </div>
+    <f:if condition="{isApprover}">
+        <div class="row  mb-2">
+            <div class="col-sm-3 col-form-label">
+                &nbsp;
+            </div>
+            <div class="col-sm-9">
+                <f:form.checkbox class="form-check-input" property="highPriority" id="highPriority" value="1"/>
+                <label id="purposeLabel" for="highPriority"  class="form-check-label">
+                    <f:translate key="lending.overview.availabilityRequest.form.highPriority" />
+                </label>
+            </div>
+        </div>
+    </f:if>
     <div class="row  mb-2">
         <label id="fromLabel" for="from" class="col-sm-3 col-form-label">
             <f:translate key="lending.overview.availabilityRequest.form.from" />

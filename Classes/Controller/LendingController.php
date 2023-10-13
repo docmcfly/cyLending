@@ -44,7 +44,7 @@ class LendingController extends ActionController
     const APPROVER_MAIL_TEMPLATE = 'ApproverMessageMail';
 
     const AVAILABILITY_REQUST_RESULT_MAIL_TEMPLATE = 'AvailabilityRequestResultMail';
-
+    const INFORM_PREVIOUS_BORROWER_MAIL_TEMPLATE = 'InformPreviousBorrowerMail';
     const OBSERVER_MAIL_TEMPLATE = 'ObserverMessageMail';
 
     const AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY = 'availabilityRequestValidationResults';
@@ -281,9 +281,11 @@ class LendingController extends ActionController
             }
 
             $ce = $this->contentElementRepository->findByUid(intval($return['contentElement']));
-            if ($ce == null 
+            if (
+                $ce == null
                 || empty($ce->getListType())
-                || !isset($GLOBALS['TSFE']->tmpl->setup['tt_content.']['list.']['20.'][$ce->getListType() . '.'])) {
+                || !isset($GLOBALS['TSFE']->tmpl->setup['tt_content.']['list.']['20.'][$ce->getListType() . '.'])
+            ) {
                 return false;
             }
 
@@ -420,9 +422,7 @@ class LendingController extends ActionController
             $this->view->assign('cid', $this->configurationManager->getContentObject()->data['uid']);
             // is the uid of the current content element. This is important for the ajax connect. The ajax controller has with this access to the plugin configuration.
 
-            /** @var \Cylancer\CyLending\Domain\Model\FrontendUserGroup  $approverGroup */
-            $approverGroup = $toReserve->getObject()->getApproverGroup();
-            if ($approverGroup == null) {
+            if ($toReserve->getHighPriority() || $toReserve->getObject()->getApproverGroup() == null) {
                 $toReserve = $this->lendingRepository->findByUid($toReserve->getUid());
 
                 /** @var ForwardResponse $forward */
@@ -540,7 +540,7 @@ class LendingController extends ActionController
             if (!$this->canApproveLendingObject($lending->getObject())) {
                 $validationResults->addError('userNotApprover.reject');
             }
-            if ($lending->getApprover() != null || $lending->getState() != Lending::STATE_AVAILABILITY_REQUEST) {
+            if ($lending->getState() != Lending::STATE_AVAILABILITY_REQUEST) {
                 $validationResults->addError('requestAlreadyBeenProcessed');
             }
         }
@@ -580,6 +580,18 @@ class LendingController extends ActionController
             $availabilityRequest->setApprover($this->frontendUserService->getCurrentUser());
 
             $this->lendingRepository->update($availabilityRequest);
+
+            if ($availabilityRequest->getHighPriority()) {
+                foreach ($this->lendingRepository->getOverlapsAvailabilityRequests($availabilityRequest) as $req) {
+                    if ($req->getState() == Lending::STATE_APPROVED) {
+                        $req->setApprover($this->frontendUserService->getCurrentUser());
+                        $req->setState(Lending::STATE_AVAILABILITY_REQUEST);
+                        $this->lendingRepository->update($req);
+                        $this->informPreviousBorrower($req);
+                    }
+                }
+            }
+
             $this->persistenceManager->persistAll();
 
             $validationResults->addInfo('successful.approved');
@@ -600,6 +612,28 @@ class LendingController extends ActionController
         // $this->htmlResponse();
     }
 
+    /**
+     * @param Lending $availabilityRequest
+     */
+    private function informPreviousBorrower(Lending $availabilityRequest): void
+    {
+        $receiver = $availabilityRequest->getBorrower();
+        if (!empty($receiver->getEmail())) {
+            $this->emailSendService->sendTemplateEmail(
+                [($receiver->getFirstName() . ' ' . $receiver->getLastName()) => $receiver->getEmail()],
+                [\TYPO3\CMS\Core\Utility\MailUtility::getSystemFromAddress()],
+                [],
+                LocalizationUtility::translate('message.borrower.email.subject', 'cy_lending'),
+                LendingController::INFORM_PREVIOUS_BORROWER_MAIL_TEMPLATE,
+                LendingController::EXTENSION_NAME,
+                ['availabilityRequest' => $availabilityRequest, 'user' => $receiver]
+            );
+        }
+    }
+
+    /**
+     * @param Lending $availabilityRequest
+     */
     private function sendAvailabilityRequestResultMail(Lending $availabilityRequest)
     {
         $receiver = $availabilityRequest->getBorrower();
@@ -649,11 +683,14 @@ class LendingController extends ActionController
         } else {
             if (!$this->canApproveLendingObject($lending->getObject())) {
                 $validationResults->addError('userNotApprover.approve');
+                if ($lending->getHighPriority()) {
+                    $validationResults->addError('userNotApprover.highPriorityNotAllowed');
+                }
             }
-            if ($this->lendingRepository->existsOverlapsAvailabilityRequests($lending)) {
+            if (!$lending->getHighPriority() && $this->lendingRepository->existsOverlapsAvailabilityRequests($lending)) {
                 $validationResults->addError('existsOverlapsAvailabilityRequests');
             }
-            if ($lending->getApprover() != null || $lending->getState() != Lending::STATE_AVAILABILITY_REQUEST) {
+            if ($lending->getState() != Lending::STATE_AVAILABILITY_REQUEST) {
                 $validationResults->addError('requestAlreadyBeenProcessed');
             }
         }
