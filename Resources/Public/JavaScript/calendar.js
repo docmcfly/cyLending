@@ -504,14 +504,14 @@ class Calendar {
                     || event.start.getHours() !== 0 || event.start.getMinutes() !== 0
                     || event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
 
-                    if (startDate !== d || (event.start.getHours() === 0 || event.start.getMinutes() === 0)) {
+                    if (startDate !== currentDay || (event.start.getHours() === 0 && event.start.getMinutes() === 0)) {
                         add += event.start.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
                     }
                     if (event.start.getHours() !== 0 || event.start.getMinutes() !== 0) {
                         add += event.start.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
                     }
                     add += "&nbsp;-&nbsp;"
-                    if (endDate !== d) {
+                    if (endDate !== currentDay) {
                         add += event.end.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
                     }
                     if (event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
