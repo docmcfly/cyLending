@@ -30,13 +30,11 @@ class Calendar {
 
         // default date formatter
         formatter: {
-            de: {
-                date: 'j.n.y',
-            },
-            en: {
-                date: 'm/d/y',
-            }
+            dateOptions: {"year": "numeric", "month": "numeric", "day": "numeric"},
+            timeOptions: {hour: "numeric", minute: "2-digit"},
         },
+
+
 
         previousMonthButtonHook: function (calendar) {alert(1)},
         nextMonthButtonHook: function (calendar) {alert(2)},
@@ -462,12 +460,19 @@ class Calendar {
             + (event.description ? (' | ' + event.description) : '')
             + (event.responsible ? (' | ' + event.responsible) : '')
             + ' | '
-            + event.start.toLocaleDateString(this.contains.language) + ' - ' + event.end.toLocaleDateString(this.language)
+            + event.start.toLocaleDateString(this.language, this.properties.formatter.dateOptions)
+            + ' '
+            + event.start.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
+            + ' - '
+            + event.end.toLocaleDateString(this.language, this.properties.formatter.dateOptions)
+            + ' '
+            + event.end.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
     }
 
     updateDetails(obj) {
         let d = obj.attr('data-date')
         let day = this.parseDate(d)
+        let currentDay = this.formatDate(day);;
         let details = $(this.selector + ' .details')
         details.empty()
         let add = '<h3 class="p-2" >' + day.toLocaleDateString(this.language) + '</h3>' + "\n"
@@ -496,22 +501,22 @@ class Calendar {
                 }
                 let startDate = this.formatDate(event.start);
                 let endDate = this.formatDate(event.end);
-                if (startDate !== d || endDate !== d
+                if (startDate !== currentDay || endDate !== currentDay
                     || event.start.getHours() !== 0 || event.start.getMinutes() !== 0
                     || event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
 
                     if (startDate !== d || (event.start.getHours() === 0 || event.start.getMinutes() === 0)) {
-                        add += event.start.toLocaleDateString(this.language) + ' '
+                        add += event.start.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
                     }
                     if (event.start.getHours() !== 0 || event.start.getMinutes() !== 0) {
-                        add += this.formatTime(event.start)
+                        add += event.start.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
                     }
                     add += "&nbsp;-&nbsp;"
                     if (endDate !== d) {
-                        add += event.end.toLocaleDateString(this.language) + ' '
+                        add += event.end.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
                     }
                     if (event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
-                        add += this.formatTime(event.end)
+                        add += event.end.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
                     }
                     if (event.description) {
                         add += ')'
@@ -538,13 +543,13 @@ class Calendar {
 
     renderEvent(event) {
 
-        $('[data-eventbox][data-idx='+event.idx+']').each(function(index){
+        $('[data-eventbox][data-idx=' + event.idx + ']').each(function (index) {
             let eb = $(this)
             eb.attr('data-empty', 'true')
             eb.attr('data-idx', '')
             eb.attr('title', '')
             eb.html('<div class="content fs-6 overflowHidden p-0 px-1 m-1 me-2" >&nbsp;</div>')
-        } )
+        })
 
         let start = event.start
         let end = event.end
