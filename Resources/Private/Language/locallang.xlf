@@ -21,6 +21,9 @@
 			<trans-unit id="lending.overview.availabilityRequest.form.purpose.placeholder">
 				<source>Press cursor down for poposals</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.highPriority">
+				<source>High priority</source>
+			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.from">
 				<source>From</source>
 			</trans-unit>
@@ -86,6 +89,9 @@
 
 			<trans-unit id="lending.overview.approval.form.error.userNotApprover.approve">
 				<source>You has not the rights to approve a availability request.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.userNotApprover.highPriorityNotAllowed">
+				<source>You has not the rights to approve a high priotrity availability request.</source>
 			</trans-unit>
 			<trans-unit id="lending.overview.approval.form.error.existsOverlapsAvailabilityRequests">
 				<source>The object is already borrowed in this period.</source>
@@ -210,6 +216,9 @@
 			<trans-unit id="message.observer.email.purpose">
 				<source>Purpose</source>
 			</trans-unit>
+			<trans-unit id="message.observer.email.withHighPriority">
+				<source>With high priority!</source>
+			</trans-unit>
 			<trans-unit id="message.observer.email.from">
 				<source>From</source>
 			</trans-unit>
@@ -223,6 +232,30 @@
 				<source>Approver</source>
 			</trans-unit>
 
+			<trans-unit id="message.informReviousBorrorer.email.subject">
+				<source>Your borrowing authorization withdrawn for urgent reasons</source>
+			</trans-unit>
+			<trans-unit id="message.informReviousBorrorer.email.salutation">
+				<source>Hello %s %s.</source>
+			</trans-unit>
+			<trans-unit id="message.informReviousBorrorer.email.requestCanceled">
+				<source>Your approved loan was unfortunately withdrawn for urgent reasons and reset to a request.</source>
+			</trans-unit>
+			<trans-unit id="message.informReviousBorrorer.email.object">
+				<source>Your lending object</source>
+			</trans-unit>
+			<trans-unit id="message.informReviousBorrorer.email.purpose">
+				<source>Your purpose</source>
+			</trans-unit>
+			<trans-unit id="message.informReviousBorrorer.email.from">
+				<source>From</source>
+			</trans-unit>
+			<trans-unit id="message.informReviousBorrorer.email.until">
+				<source>Until</source>
+			</trans-unit>
+			<trans-unit id="message.informReviousBorrorer.email.inquiries">
+				<source>If you have any questions, please contact %s.</source>
+			</trans-unit>
 
 		</body>
 	</file>

@@ -35,8 +35,8 @@
 						<f:translate
 							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.from" />&nbsp;&nbsp;
 					</td>
-					<td>
-						<f:format.date format="d.m.Y H:i">{availabilityRequest.from}</f:format.date>
+					<td>{settings.language}
+						<f:format.date format="l, d.m.Y H:i">{availabilityRequest.from}</f:format.date>
 					</td>
 				</tr>
 				<tr>
@@ -45,7 +45,7 @@
 							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.until" />&nbsp;&nbsp;
 					</td>
 					<td>
-						<f:format.date format="d.m.Y H:i">{availabilityRequest.until}</f:format.date>
+						<f:format.date format="l, d.m.Y H:i">{availabilityRequest.until}</f:format.date>
 					</td>
 				</tr>
 				<tr>

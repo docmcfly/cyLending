@@ -21,11 +21,11 @@
 
 <f:translate
 	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.borrower.email.from" />:
-<f:format.date format="d.m.Y H:i">{availabilityRequest.from}</f:format.date>
+<f:format.date format="l, d.m.Y H:i">{availabilityRequest.from}</f:format.date>
 
 <f:translate
 	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.borrower.email.until" />:
-<f:format.date format="d.m.Y H:i">{availabilityRequest.until}</f:format.date>
+<f:format.date format="l, d.m.Y H:i">{availabilityRequest.until}</f:format.date>
 
 <f:translate
 		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.borrower.email.borrower" />:

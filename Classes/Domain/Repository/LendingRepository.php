@@ -114,32 +114,37 @@ class LendingRepository extends Repository
 
     function existsOverlapsAvailabilityRequests(Lending $lending): bool
     {
-        $q = $this->createQuery();
-        $q->setLimit(1)
-            ->matching(
-                $q->logicalAnd(
-                    [
-                        $q->logicalNot(
-                            $q->equals('uid', $lending->getUid()),
-                        ),
-                        $q->equals('object', $lending->getObject()->getUid()),
-                        $q->equals('state', Lending::STATE_APPROVED),
-                        $q->logicalNot(
-                            $q->logicalOr(
-                                [
-                                    $q->greaterThanOrEqual('from', $lending->getUntil()),
-                                    $q->lessThanOrEqual('until', $lending->getFrom())
-                                ]
-                            )
-                        )
-                    ]
-                )
-            );
-
-        return $q->count() > 0;
+        return count($this->getOverlapsAvailabilityRequests($lending, 1)->toArray()) > 0;
     }
 
 
+    function getOverlapsAvailabilityRequests(Lending $lending, int $limit = 0): QueryResult
+    {
+        $q = $this->createQuery();
+        if ($limit > 0) {
+            $q->setLimit($limit);
+        }
+        $q->matching(
+            $q->logicalAnd(
+                [
+                    $q->logicalNot(
+                        $q->equals('uid', $lending->getUid()),
+                    ),
+                    $q->equals('object', $lending->getObject()->getUid()),
+                    $q->equals('state', Lending::STATE_APPROVED),
+                    $q->logicalNot(
+                        $q->logicalOr(
+                            [
+                                $q->greaterThanOrEqual('from', $lending->getUntil()),
+                                $q->lessThanOrEqual('until', $lending->getFrom())
+                            ]
+                        )
+                    )
+                ]
+            )
+        );
 
+        return $q->execute();
+    }
 
 }

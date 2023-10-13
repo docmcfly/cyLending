@@ -48,7 +48,7 @@ class EmailSendService implements SingletonInterface
      *            'size' : file size ]
      * @return boolean TRUE on success, otherwise false
      */
-    public function sendTemplateEmail(array $bccRecipients, array $sender, array $replyTo = [], String $subject, String $templateName, String $extensionName, array $variables = array(), $attachments = array())
+    public function sendTemplateEmail(array $bccRecipients, array $sender, array $replyTo = [], string $subject, string $templateName, string $extensionName, array $variables = array(), $attachments = array())
     {
 
         /* @var ConfigurationManager $configurationManager */
@@ -59,7 +59,7 @@ class EmailSendService implements SingletonInterface
         /** @var \TYPO3\CMS\Fluid\View\StandaloneView $emailView */
         $emailView = GeneralUtility::makeInstance(StandaloneView::class);
         $emailView->getRequest()->setControllerExtensionName($extensionName);
-        
+
 
         $viewDefinitions = $extbaseFrameworkConfiguration['plugin.']['tx_' . strtolower($extensionName) . '.']['view.'];
 
@@ -101,7 +101,7 @@ class EmailSendService implements SingletonInterface
         $emailBodyTxt = strip_tags(htmlspecialchars_decode($emailBodyTxt));
         $emailBodyTxt = str_replace('&hellip;', '…', $emailBodyTxt);
 
-        $message->text($emailBodyTxt);
+        $message->text(EmailSendService::translateWeekdays($emailBodyTxt));
 
         // transform new lines to div tags.
         // $emailBodyHtml = nl2br($emailBodyHtml);
@@ -110,9 +110,41 @@ class EmailSendService implements SingletonInterface
         // debug($emailBodyHtml);
         // throw new \Exception();
 
-        $message->html($emailBodyHtml);
+        $message->html(EmailSendService::translateWeekdays($emailBodyHtml));
         $message->send();
         // debug($emailBodyTxt);
         return $message->isSent();
     }
+
+
+    private static function translateWeekdays(string $text): string
+    {
+        return
+            str_replace(
+                'Monday',
+                'Montag',
+                str_replace(
+                    'Tuesday',
+                    'Dienstag',
+                    str_replace(
+                        'Wednesday',
+                        'Mittwoch',
+                        str_replace(
+                            'Thursday',
+                            'Donnerstag',
+                            str_replace(
+                                'Friday',
+                                'Freitag',
+                                str_replace(
+                                    'Saturday',
+                                    'Samstag',
+                                    str_replace('Sunday', 'Sonntag', $text)
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+    }
+
 }
