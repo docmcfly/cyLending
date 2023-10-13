@@ -7,7 +7,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'beta',
     'clearCacheOnLoad' => 1,
-    'version' => '1.2.7',
+    'version' => '1.2.8',
     'constraints' => [
         'depends' => [
             'typo3' => '11.5.0-11.99.99',
@@ -24,6 +24,7 @@ $EM_CONF[$_EXTKEY] = [
 /**
  ** CHANGELOG:
  *
+ *  1.2.8 :: CHG : Detail show displays the times better.
  *  1.2.7 :: UPD : High priority is persistent now.
  *  1.2.6 :: FIX : Fix the time rendering in the calendar.
  *  1.2.5 :: UPD : Approvers can create lendings with high priority. (Overrides exists lendings.)

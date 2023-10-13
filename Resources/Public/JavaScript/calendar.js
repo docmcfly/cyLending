@@ -496,8 +496,7 @@ class Calendar {
                     add += event.responsible + '<br>'
                 }
                 if (event.description) {
-                    add += event.description
-                    add += '&nbsp;('
+                    add += event.description + '<br>'
                 }
                 let startDate = this.formatDate(event.start);
                 let endDate = this.formatDate(event.end);
@@ -517,9 +516,6 @@ class Calendar {
                     }
                     if (event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
                         add += event.end.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
-                    }
-                    if (event.description) {
-                        add += ')'
                     }
                 }
                 add += '</div>' + "\n"
