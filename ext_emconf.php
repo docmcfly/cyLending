@@ -7,7 +7,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'beta',
     'clearCacheOnLoad' => 1,
-    'version' => '1.2.6',
+    'version' => '1.2.7',
     'constraints' => [
         'depends' => [
             'typo3' => '11.5.0-11.99.99',
@@ -24,8 +24,9 @@ $EM_CONF[$_EXTKEY] = [
 /**
  ** CHANGELOG:
  *
+ *  1.2.7 :: UPD : High priority is persistent now.
  *  1.2.6 :: FIX : Fix the time rendering in the calendar.
- *  1.2.5 :: UPD : Approvers can create lendings with heigh priority. (Overrides exists lendings.)
+ *  1.2.5 :: UPD : Approvers can create lendings with high priority. (Overrides exists lendings.)
  *  1.2.4 :: FIX : Prevent two double requests (UI).
  *  1.2.3 :: FIX : Better handling with deleted requests.
  *  1.2.2 :: FIX : Prevent two different permits.

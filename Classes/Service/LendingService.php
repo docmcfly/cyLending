@@ -57,7 +57,7 @@ class LendingService implements SingletonInterface
             $event['idx'] = $lending->getUid();
             $event['start'] = $lending->getFrom();
             $event['end'] = $lending->getUntil();
-            $event['title'] = $lendingObject->getTitle();
+            $event['title'] = ($lending->getHighPriority() ? '❗' :'') . $lendingObject->getTitle();
             $event['description'] = $lending->getPurpose();
             $event['responsible'] = $lending->getBorrower()->getFirstName() . ' ' . $lending->getBorrower()->getLastName();
             $event['backgroundColor'] = $lendingObject->getColor();

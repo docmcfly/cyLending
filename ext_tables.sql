@@ -16,7 +16,8 @@ CREATE TABLE tx_cylending_domain_model_lending (
     purpose                      text                        DEFAULT '',
     `state`                      SMALLINT (5) UNSIGNED       DEFAULT '0' NOT NULL,
     approver                     int(11) UNSIGNED            DEFAULT '0' NOT NULL,
-    lending_allowed              SMALLINT (5) UNSIGNED       DEFAULT '0' NOT NULL
+    lending_allowed              SMALLINT (5) UNSIGNED       DEFAULT '0' NOT NULL,
+    high_priority                SMALLINT (5) UNSIGNED       DEFAULT '0' NOT NULL,
 );       
 
 ALTER TABLE `tx_cylending_domain_model_lending` ADD INDEX `IDX_UNTIL` (`until`); 

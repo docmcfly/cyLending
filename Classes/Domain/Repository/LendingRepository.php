@@ -3,6 +3,7 @@ namespace Cylancer\CyLending\Domain\Repository;
 
 use Cylancer\CyLending\Domain\Model\Lending;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
@@ -106,6 +107,11 @@ class LendingRepository extends Repository
                 )
             ])
         );
+        $q->setOrderings([
+            'high_priority' => QueryInterface::ORDER_DESCENDING,
+            'from' => QueryInterface::ORDER_ASCENDING,
+            'purpose' => QueryInterface::ORDER_ASCENDING,
+        ]);
         return $q->execute();
 
     }
