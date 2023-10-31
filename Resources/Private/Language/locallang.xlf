@@ -144,7 +144,9 @@
 			<trans-unit id="lending.overview.approval.form.error.requestDeleted">
 				<source>The request is already deleted</source>
 			</trans-unit>
-
+			<trans-unit id="lending.overview.approval.form.option.ignoreOverlapping">
+				<source>Ignore the time overlapping</source>
+			</trans-unit>
 
 			<trans-unit id="message.approver.email.subject">
 				<source>A new the availability request</source>

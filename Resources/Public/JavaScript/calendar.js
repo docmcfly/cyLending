@@ -36,8 +36,8 @@ class Calendar {
 
 
 
-        previousMonthButtonHook: function (calendar) {alert(1)},
-        nextMonthButtonHook: function (calendar) {alert(2)},
+        previousMonthButtonHook: function (calendar) {},
+        nextMonthButtonHook: function (calendar) {},
 
         // translations
         texts: {
@@ -283,6 +283,7 @@ class Calendar {
         $(this.selector + ' .btn.toToday').on('click', {calendar: this}, function (event) {
             let calendar = event.data.calendar
             calendar.currentDay = new Date()
+            calendar.currentDay = calendar.currentDay.setDate(1)
             calendar.renderMonth()
             $(".today").get(0).scrollIntoView({behavior: 'smooth'});
         })
@@ -310,9 +311,9 @@ class Calendar {
         // 2. set to the first day of the month
         day.setDate(1)
         // 3. subtract from the first month day the week day counter... 
-        day.setDate(day.getDate() - day.getDay() + 1)
+        day.setDate(day.getDate() - ((day.getDay() + 6) % 7))
 
-        // 
+
         let currentMonth = this.currentDay.getMonth();
         let currentMonthTag = $(this.selector + ' .currentMonth')
         currentMonthTag.text(this.t().monthNames[this.currentDay.getMonth()] + " " + this.currentDay.getFullYear());

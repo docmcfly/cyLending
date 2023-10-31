@@ -130,10 +130,18 @@ class LendingController extends ActionController
         return $canApproveLendingObjects;
     }
 
+
+    private function getAllLendingStorageUids():array {
+        return array_merge(
+            GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE),
+            GeneralUtility::intExplode(',', $this->settings['otherLendingStorageUids'], TRUE)
+        );
+
+    }
+
     /**
      * @return ResponseInterface
      */
-
     public function showAction(): ResponseInterface
     {
         /** @var Lending $toReserve */
@@ -142,11 +150,8 @@ class LendingController extends ActionController
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds(GeneralUtility::intExplode(',', $this->settings['lendingObjectStorageUids'], TRUE));
         $this->lendingObjectRepository->setDefaultQuerySettings($querySettings);
-
-        $allLendingStorageUids = array_merge(
-            GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE),
-            GeneralUtility::intExplode(',', $this->settings['otherLendingStorageUids'], TRUE)
-        );
+        
+        $allLendingStorageUids = $this->getAllLendingStorageUids();
 
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds($allLendingStorageUids);
@@ -191,15 +196,30 @@ class LendingController extends ActionController
             $this->view->assign('reasonsForPreventionServiceUrl', '');
         }
 
+        $allAvailabilityRequests = $this->lendingRepository->findAllAvailabilityRequests($canApproveLendingObjects);
+        if (
+            $approvalValidationResults->getObject() != null
+            && isset($approvalValidationResults->getErrors()['error.existsOverlapsAvailabilityRequests'])
+        ) {
+
+            $tmp = $approvalValidationResults->getObject();
+            foreach ($allAvailabilityRequests as $ar) {
+                if ($tmp->getUid() === $ar->getUid()) {
+                    $ar->setDisplayIgnoreOverlapping(true);
+                }
+            }
+        }
+
         // tab page APPROVE:
         $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, $approvalValidationResults);
-        $this->view->assign('availabilityRequests', $this->lendingRepository->findAllAvailabilityRequests($canApproveLendingObjects));
+        $this->view->assign('availabilityRequests', $allAvailabilityRequests);
         // all availability request to approve / reject
         $this->view->assign('isApprover', !empty($canApproveLendingObjects));
         // is the approver tab visible?
 
         // tab page AVAILABILITY_REQUST:
         $this->view->assign('lendingObjects', $lendingObjects);
+
         $this->view->assign(LendingController::AVAILABILITY_REQUST_VALIDATION_RESULTS_KEY, $availabilityRequestValidationResults);
         // validation results
         $this->view->assign('purposes', empty(trim($this->settings['purposes'])) ? [] : explode('\n', $this->settings['purposes']));
@@ -217,10 +237,10 @@ class LendingController extends ActionController
             'currentMonthEvents',
             json_encode(
                 // initilial data of the current month
-                $this->lendingService->getAvailabilityRequestsAsEventsOf(
+                $this->lendingService->getVisualAvailabilityRequestsAsEventsOf(
                     $today['year'],
                     $today['mon'],
-                    GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE)
+                    $allLendingStorageUids
                 )
             )
         );
@@ -345,8 +365,9 @@ class LendingController extends ActionController
 
     private function toDBDateTime(string $dateTime)
     {
-        return date('Y-m-d H:i:s', strtotime($dateTime));
+        return date(LendingRepository::SQL_DATE_FORMAT, strtotime($dateTime));
     }
+   
 
     /**
      *
@@ -363,10 +384,7 @@ class LendingController extends ActionController
         $querySettings->setStoragePageIds(GeneralUtility::intExplode(',', $this->settings['lendingObjectStorageUids'], TRUE));
         $this->lendingObjectRepository->setDefaultQuerySettings($querySettings);
 
-        $allLendingStorageUids = array_merge(
-            GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE),
-            GeneralUtility::intExplode(',', $this->settings['otherLendingStorageUids'], TRUE)
-        );
+        $allLendingStorageUids = $this->getAllLendingStorageUids();
 
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds($allLendingStorageUids);
@@ -407,12 +425,13 @@ class LendingController extends ActionController
             // tab page CALENDAR:
             $this->view->assign('allLendingStorageUids', $allLendingStorageUids);
             $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language());
+           
             // language for the calendar.js API
             $this->view->assign(
                 'currentMonthEvents',
                 json_encode(
                     // initilial data of the current month
-                    $this->lendingService->getAvailabilityRequestsAsEventsOf(
+                    $this->lendingService->getVisualAvailabilityRequestsAsEventsOf(
                         $today['year'],
                         $today['mon'],
                         $allLendingStorageUids
@@ -502,6 +521,7 @@ class LendingController extends ActionController
             $forward = $forward->withArguments([
                 LendingController::APPROVAL_VALIDATION_RESULTS_KEY => $validationResults,
                 LendingController::TAB_KEY => 'approval'
+
             ]);
             $this->sendAvailabilityRequestResultMail($availabilityRequest);
             $this->informObserverGroup($availabilityRequest);
@@ -554,7 +574,7 @@ class LendingController extends ActionController
      *  @\TYPO3\CMS\Extbase\Annotation\Validate( param = "availabilityRequest", validator = "Cylancer\CyLending\Domain\Validator\LendingValidator" )
      */
 
-    public function approveAction(Lending $availabilityRequest = null)
+    public function approveAction(Lending $availabilityRequest = null): ForwardResponse
     {
 
         $allLendingStorageUids = array_merge(
@@ -571,11 +591,14 @@ class LendingController extends ActionController
             $availabilityRequest = $this->lendingRepository->findByUid($uid);
         }
 
-        /** @var ValidationResults $validationResults */
-        $validationResults = $this->validateApprove($availabilityRequest);
         /** @var ForwardResponse $forward */
         $forward = new ForwardResponse('show');
+
+        /** @var ValidationResults $validationResults */
+        $validationResults = $this->validateApprove($availabilityRequest);
+
         if (!$validationResults->hasErrors()) {
+
             $availabilityRequest->setState(Lending::STATE_APPROVED);
             $availabilityRequest->setApprover($this->frontendUserService->getCurrentUser());
 
@@ -687,9 +710,10 @@ class LendingController extends ActionController
                     $validationResults->addError('userNotApprover.highPriorityNotAllowed');
                 }
             }
-            if (!$lending->getHighPriority() && $this->lendingRepository->existsOverlapsAvailabilityRequests($lending)) {
+            if (!$lending->getHighPriority() && !$lending->getIgnoreOverlapping() && $this->lendingRepository->existsOverlapsAvailabilityRequests($lending)) {
                 $validationResults->addError('existsOverlapsAvailabilityRequests');
             }
+
             if ($lending->getState() != Lending::STATE_AVAILABILITY_REQUEST) {
                 $validationResults->addError('requestAlreadyBeenProcessed');
             }
@@ -705,7 +729,9 @@ class LendingController extends ActionController
     {
 
         /** @var ValidationResults $validationResults */
-        $validationResults = new ValidationResults();
+        // Workaround: forward argument + database object creates an endless loop
+        $validationResults = new ValidationResults(new Lending());
+        $validationResults->getObject()->setUid($lending->getUid());
 
         if ($lending->getObject() == null) {
             $validationResults->addError('object.isEmpty');

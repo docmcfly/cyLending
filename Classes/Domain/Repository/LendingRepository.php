@@ -20,11 +20,11 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class LendingRepository extends Repository
 {
-    // {
+    const SQL_DATE_FORMAT = "Y-m-d H:i:s";
 
-    function findAllNotRejectedSince($until)
+    public function findAllNotRejectedSince($until)
     {
-        $today = date('Y-m-d H:i:s', time());
+        $today = date(LendingRepository::SQL_DATE_FORMAT, time());
         $this->persistenceManager->clearState();
 
         /** @var \TYPO3\CMS\Extbase\Persistence\QueryInterface $q*/
@@ -49,14 +49,14 @@ class LendingRepository extends Repository
             ]),
         );
         $q->setOrderings([
-            'from' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
-            'state' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING,
+            'from' => QueryInterface::ORDER_ASCENDING,
+            'state' => QueryInterface::ORDER_DESCENDING,
         ]);
 
         return $q->execute();
     }
 
-    function findAllAvailabilityRequests(array $canApproveLendingObjects)
+    public function findAllAvailabilityRequests(array $canApproveLendingObjects)
     {
 
         /** @var \TYPO3\CMS\Extbase\Persistence\QueryInterface $q*/
@@ -65,38 +65,27 @@ class LendingRepository extends Repository
             $q->logicalAnd([
                 $q->equals('state', Lending::STATE_AVAILABILITY_REQUEST),
                 $q->logicalNot(
-                    $q->lessThanOrEqual('until', date('Y-m-d H:i:s', time()))
+                    $q->lessThanOrEqual('until', date(LendingRepository::SQL_DATE_FORMAT, time()))
                 ),
                 $q->in('object', array_keys($canApproveLendingObjects))
             ])
         );
-        $q->setOrderings(['from' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING]);
+        $q->setOrderings(['from' => QueryInterface::ORDER_ASCENDING]);
 
         return $q->execute();
     }
 
 
-    function findMonthAvailabilityRequests(int $year, int $month): QueryResult
+
+    public function findFromUntilAvailabilityRequests(\DateTime $from, \DateTime $until): QueryResult
     {
-        $from = new \DateTimeImmutable();
-        $from = $from->setDate($year, $month, 1)
-            ->setTime(0, 0, 0, 0)
-            ->format('Y-m-d H:i:s');
-
-        $until = new \DateTimeImmutable();
-        $until = $until->setDate($year, $month, 1)
-            ->setTime(0, 0, 0, 0)
-            ->add(new \DateInterval('P1M'))
-            // ->sub(new \DateInterval('P1D'))
-            ->format('Y-m-d H:i:s');
-
         $q = $this->createQuery();
         $q->matching(
             $q->logicalAnd([
                 $q->logicalNot(
                     $q->logicalOr([
-                        $q->lessThan('until', $from),
-                        $q->greaterThanOrEqual('from', $until)
+                        $q->lessThan('until', $from->format(LendingRepository::SQL_DATE_FORMAT)),
+                        $q->greaterThanOrEqual('from', $until->format(LendingRepository::SQL_DATE_FORMAT))
                     ])
                 ),
                 $q->logicalOr(
@@ -117,14 +106,21 @@ class LendingRepository extends Repository
     }
 
 
+    public function findMonthAvailabilityRequests(int $year, int $month): QueryResult
+    {
+        $from = LendingRepository::toDateTime($year, $month);
+        $until = LendingRepository::addMonths($from, 1);
 
-    function existsOverlapsAvailabilityRequests(Lending $lending): bool
+        return $this->findFromUntilAvailabilityRequests($from, $until);
+
+    }
+
+    public function existsOverlapsAvailabilityRequests(Lending $lending): bool
     {
         return count($this->getOverlapsAvailabilityRequests($lending, 1)->toArray()) > 0;
     }
 
-
-    function getOverlapsAvailabilityRequests(Lending $lending, int $limit = 0): QueryResult
+    public function getOverlapsAvailabilityRequests(Lending $lending, int $limit = 0): QueryResult
     {
         $q = $this->createQuery();
         if ($limit > 0) {
@@ -152,5 +148,26 @@ class LendingRepository extends Repository
 
         return $q->execute();
     }
+
+    public static function toDateTime(int $year, $month, $day = 1): \DateTime
+    {
+        $return = new \DateTime();
+        return $return
+            ->setDate($year, $month, $day)
+            ->setTime(0, 0, 0, 0);
+    }
+
+    public static function addMonths(\DateTime $date, int $offset = 1): \DateTime
+    {
+        $interval = new \DateInterval('P' . abs($offset) . 'M');
+        return $offset < 0 ? $date->sub($interval) : $date->add($interval);
+    }
+    public static function addDays(\DateTime $date, int $offset = 1): \DateTime
+    {
+        $interval = new \DateInterval('P' . abs($offset) . 'D');
+        return $offset < 0 ? $date->sub($interval) : $date->add($interval);
+    }
+
+
 
 }

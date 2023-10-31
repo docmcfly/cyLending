@@ -7,7 +7,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'beta',
     'clearCacheOnLoad' => 1,
-    'version' => '1.2.9',
+    'version' => '1.3.0',
     'constraints' => [
         'depends' => [
             'typo3' => '11.5.0-11.99.99',
@@ -24,6 +24,7 @@ $EM_CONF[$_EXTKEY] = [
 /**
  ** CHANGELOG:
  *
+ *  1.3.0 :: UPD : Add ignore time overlapping function
  *  1.2.9 :: CHG : The fix reduces unused detail times.
  *  1.2.8 :: CHG : Detail show displays the times better.
  *  1.2.7 :: UPD : High priority is persistent now.

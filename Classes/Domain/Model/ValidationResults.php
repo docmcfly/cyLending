@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 namespace Cylancer\CyLending\Domain\Model;
 
 /**
@@ -17,41 +17,40 @@ namespace Cylancer\CyLending\Domain\Model;
 class ValidationResults
 {
 
+    /** @var object */
+    protected $object;
+
+
     /**
      *
      * @var array
      */
     protected $infos = array();
 
-    /**
-     *
-     * @var array
-     */
+    /** @var array  */
     protected $errors = array();
 
-    /**
-     *
-     * @return array of srings
-     */
+
+    public function __construct(object $object = null)
+    {
+        $this->object = $object;
+    }
+
+
+    /** @return array of srings  */
     public function getInfos()
     {
         return $this->infos;
     }
 
-    /**
-     *
-     * @return array of srings
-     */
+    /** @return array of srings  */
     public function getErrors()
     {
         return $this->errors;
     }
 
-    /**
-     *
-     * @return array of srings
-     */
-    public function hasErrors():bool
+    /** @return array of srings   */
+    public function hasErrors(): bool
     {
         return !empty($this->errors);
     }
@@ -60,7 +59,7 @@ class ValidationResults
      *
      * @return array of srings
      */
-    public function hasInfos():bool
+    public function hasInfos(): bool
     {
         return !empty($this->infos);
     }
@@ -70,7 +69,7 @@ class ValidationResults
      * @param string $errorKey
      * @param array $arguments
      */
-    public function addInfo(String $infoKey, array $arguments = []): void
+    public function addInfo(string $infoKey, array $arguments = []): void
     {
         $keySplit = explode('.', $infoKey, 2);
         $this->infos['info.' . $infoKey]['arguments'] = $arguments;
@@ -82,7 +81,7 @@ class ValidationResults
      * @param string $errorKey
      * @param array $arguments
      */
-    public function addError(String $errorKey, array $arguments = []): void
+    public function addError(string $errorKey, array $arguments = []): void
     {
         $keySplit = explode('.', $errorKey, 2);
         $this->errors['error.' . $errorKey]['arguments'] = $arguments;
@@ -112,4 +111,12 @@ class ValidationResults
             $this->addError($error);
         }
     }
+
+	/**
+	 * 
+	 * @return object|null
+	 */
+	public function getObject():?object {
+		return $this->object;
+	}
 }

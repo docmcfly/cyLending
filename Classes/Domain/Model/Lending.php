@@ -17,11 +17,10 @@ use Cylancer\CyLending\Domain\Model\FrontendUser;
  */
 class Lending extends AbstractEntity
 {
-	const STATE_UNKNOWN = 0;
-	const STATE_AVAILABILITY_REQUEST = 1;
-	const STATE_APPROVED = 2;
-	const STATE_REJECTED = 3;
-
+	public const STATE_UNKNOWN = 0;
+	public const STATE_AVAILABILITY_REQUEST = 1;
+	public const STATE_APPROVED = 2;
+	public const STATE_REJECTED = 3;
 
 
 	/** @var FrontendUser */
@@ -43,7 +42,7 @@ class Lending extends AbstractEntity
 	 * */
 	protected $until = '0';
 
-	/** @var boolean */
+	/** @var bool */
 	protected $lendingAllowed = false;
 
 	/** 
@@ -52,10 +51,27 @@ class Lending extends AbstractEntity
 	protected $purpose = '';
 
 	/** @var int */
-	protected $state = 0;
+	protected $state = Lending::STATE_UNKNOWN;
 
 	/** @var bool */
 	protected $highPriority = false;
+
+	/** @var bool */
+	protected $displayIgnoreOverlapping = false;
+
+	/** @var bool */
+	protected $ignoreOverlapping = false;
+
+
+	/**
+	 * 
+	 * @param int $uid 
+	 * @return self
+	 */
+	public function setUid($uid): self {
+		$this->uid = $uid;
+		return $this;
+	}
 
 	/**
 	 * 
@@ -234,4 +250,42 @@ class Lending extends AbstractEntity
 		$this->highPriority = $highPriority;
 		return $this;
 	}
+
+	/**
+	 * 
+	 * @return bool
+	 */
+	public function getIgnoreOverlapping() {
+		return $this->ignoreOverlapping;
+	}
+	
+	/**
+	 * 
+	 * @param bool $ignoreOverlapping 
+	 * @return self
+	 */
+	public function setIgnoreOverlapping($ignoreOverlapping): self {
+		$this->ignoreOverlapping = $ignoreOverlapping;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return bool
+	 */
+	public function getDisplayIgnoreOverlapping() {
+		return $this->displayIgnoreOverlapping;
+	}
+	
+	/**
+	 * 
+	 * @param bool $displayIgnoreOverlapping 
+	 * @return self
+	 */
+	public function setDisplayIgnoreOverlapping($displayIgnoreOverlapping): self {
+		$this->displayIgnoreOverlapping = $displayIgnoreOverlapping;
+		return $this;
+	}
+
+
 }

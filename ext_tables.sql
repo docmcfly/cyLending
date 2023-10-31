@@ -5,7 +5,7 @@ CREATE TABLE tx_cylending_domain_model_lendingobject (
     `color`                      varchar(7)                  DEFAULT '#123456'  NOT NULL,
     approver_group               int (11) UNSIGNED           DEFAULT '0' NOT NULL,
     observer_group               int (11) UNSIGNED           DEFAULT '0' NOT NULL,
-    group_name                   varchar(255)                DEFAULT ''  NOT NULL
+    group_name                   varchar(255)                DEFAULT ''  NOT NULL,
 );
 
 CREATE TABLE tx_cylending_domain_model_lending (

@@ -181,8 +181,10 @@
 				<source>The request is already deleted</source>
 				<target state="tanslated">Die Anfrage wurde bereits gelöscht.</target>
 			</trans-unit>
-
-
+			<trans-unit id="lending.overview.approval.form.option.ignoreOverlapping">
+				<source>Ignore the time overlapping</source>
+				<target state="tanslated">Die Zeitüberplappung ignorieren</target>
+			</trans-unit>
 
 
 			<trans-unit id="message.approver.email.subject">
