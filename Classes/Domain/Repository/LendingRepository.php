@@ -105,7 +105,9 @@ class LendingRepository extends Repository
 
     }
 
-
+    /**
+     * @deprecated 
+     */
     public function findMonthAvailabilityRequests(int $year, int $month): QueryResult
     {
         $from = LendingRepository::toDateTime($year, $month);
