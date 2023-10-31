@@ -87,6 +87,7 @@ class Calendar {
     	text-overflow: ellipsis;\
         overflow: hidden;\
     	margin: 0;\
+    	margin-bottom: 1px;\
     }\
     .today{\
     	background-color: '+ this.properties.todayBgColor + ';\
