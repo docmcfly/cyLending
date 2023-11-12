@@ -15,6 +15,10 @@
 				<source>Calendar</source>
 				<target state="tanslated">Kalender</target>
 			</trans-unit>
+			<trans-unit id="lending.overview.tab.myLendings">
+				<source>My lendings</source>
+				<target state="tanslated">Meine Ausleihen</target>
+			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.object">
 				<source>Lending object</source>
 				<target state="tanslated">Ausleihobjekt</target>
@@ -50,6 +54,14 @@
 			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionFound">
 				<source>Reasons for prevention</source>
 				<target state="tanslated">Mögliche Verhinderungsgründe</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore">
+				<source>Despite the reasons for prevention send</source>
+				<target state="tanslated">Trotz der Verhinderungsgründe senden</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.label.ignoreExistLendings">
+				<source>&lt;strong&gt;Exist lendings:&lt;/strong&gt; I made arrangements with the other borrower. </source>
+				<target state="tanslated">&lt;strong&gt;Bestehende Ausleihen:&lt;/strong&gt; Ich habe mich mit dem anderen Ausleiher abgesprochen.</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore">
 				<source>Despite the reasons for prevention send</source>
@@ -186,6 +198,26 @@
 				<target state="tanslated">Die Zeitüberplappung ignorieren</target>
 			</trans-unit>
 
+			<trans-unit id="lending.overview.myLending.form.object">
+				<source>Lending object</source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.purpose">
+				<source>Purpose</source>
+				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.from">
+				<source>From</source>
+				<target state="tanslated">Von</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.until">
+				<source>Until</source>
+				<target state="tanslated">Bis</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.action.cancel">
+				<source>Cancel lending</source>
+				<target state="tanslated">Ausleihe stornieren</target>
+			</trans-unit>
 
 			<trans-unit id="message.approver.email.subject">
 				<source>A new the availability request</source>
@@ -230,11 +262,11 @@
 			</trans-unit>
 			<trans-unit id="message.borrower.email.yourRequestIsApproved">
 				<source>Your availability request is approved.</source>
-				<target state="tanslated">Deine Ausleihanfrage wurde genehmingt.</target>
+				<target state="tanslated">Deine Ausleihanfrage wurde &lt;strong style="color:green; "&gt;genehmingt&lt;/strong&gt;.</target>
 			</trans-unit>
 			<trans-unit id="message.borrower.email.yourRequestIsRejected">
 				<source>Your availability request is rejected.</source>
-				<target state="tanslated">Deine Ausleihanfrage wurde abgelehnt.</target>
+				<target state="tanslated">Deine Ausleihanfrage wurde <span style="color:red; weight:bolder;">abgelehnt</span>.</target>
 			</trans-unit>
 			<trans-unit id="message.borrower.email.object">
 				<source>Lending object</source>
@@ -263,11 +295,11 @@
 			</trans-unit>
 			<trans-unit id="message.observer.email.requestIsApproved">
 				<source>An availability request is approved.</source>
-				<target state="tanslated">Eine Ausleihanfrage wurde genehmingt.</target>
+				<target state="tanslated">Eine Ausleihanfrage wurde <span style="color:green; weight:bold;">genehmingt</span>.</target>
 			</trans-unit>
 			<trans-unit id="message.observer.email.requestIsRejected">
 				<source>An availability request is rejected.</source>
-				<target state="tanslated">Eine Ausleihanfrage wurde abgelehnt.</target>
+				<target state="tanslated">Eine Ausleihanfrage wurde <span style="color:red; weight:bold;">abgelehnt</span>.</target>
 			</trans-unit>
 			<trans-unit id="message.observer.email.object">
 				<source>Lending object</source>
@@ -331,6 +363,38 @@
 				<target state="tanslated">Bei Rückfragen wende Dich bitte an %s %s.</target>
 			</trans-unit>
 
+			<trans-unit id="message.cancel.email.subject">
+				<source>A approved borrowing was withdrawn</source>
+				<target state="tanslated">Eine genehmigte Ausleihe wurde zurückgezogen</target>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.salutation">
+				<source>Hello %s %s.</source>
+				<target state="tanslated">Hallo %s %s.</target>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.lendingCanceled">
+				<source>The approved borrowing of % %s was withdrawn:</source>
+				<target state="tanslated">Die genehmigte Ausleihe von %s %s wurde zurückgezogen:</target>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.object">
+				<source>Lending object</source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.purpose">
+				<source>Purpose</source>
+				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.from">
+				<source>From</source>
+				<target state="tanslated">Von</target>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.until">
+				<source>Until</source>
+				<target state="tanslated">Bis</target>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.borrower">
+				<source>Borrower</source>
+				<target state="tanslated">Ausleiher:in</target>
+			</trans-unit>
 
 
 		</body>

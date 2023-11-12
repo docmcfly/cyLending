@@ -93,6 +93,7 @@ return
                         ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.availabilityRequest', 1],
                         ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.approved', 2],
                         ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.rejected', 3],
+                        ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.canceled', 4],
                     ],
                     'minitems' => 1,
                     'maxitems' => 1,

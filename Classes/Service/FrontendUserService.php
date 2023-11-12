@@ -27,12 +27,12 @@ class FrontendUserService implements SingletonInterface
     /** @var FrontendUserRepository   */
     private $frontendUserRepository = null;
 
-     /**
+    /**
      *
      * @param string $table
      * @return QueryBuilder
      */
-    protected function getQueryBuilder(String $table): QueryBuilder
+    protected function getQueryBuilder(string $table): QueryBuilder
     {
         return GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
     }
@@ -51,10 +51,10 @@ class FrontendUserService implements SingletonInterface
      *
      * @return FrontendUser Returns the current frontend user
      */
-    public function getCurrentUser(): bool|FrontendUser
+    public function getCurrentUser(): ?FrontendUser
     {
         if (!$this->isLogged()) {
-            return false;
+            return null;
         }
         return $this->frontendUserRepository->findByUid($this->getCurrentUserUid());
     }
@@ -113,18 +113,20 @@ class FrontendUserService implements SingletonInterface
      * @param array $loopProtect
      * @return array
      */
-    public function getAllGroups($userGroup, &$return = array()): array
+    public function getAllGroups(?FrontendUserGroup $userGroup, array &$return = array()): array
     {
-        if (!in_array($userGroup->getUid(), $return)) {
+        if ($userGroup == null) {
+            return [];
+        } else if (!in_array($userGroup->getUid(), $return)) {
             $return[] = $userGroup->getUid();
             foreach ($userGroup->getSubgroup() as $sg) {
-               $this->getAllGroups($sg, $return );
+                $this->getAllGroups($sg, $return);
             }
         }
         return $return;
     }
 
- /**
+    /**
      * Returns all groups from the frontend user to all his leafs in the hierachy tree...
      *
      * @param FrontendUser $frontendUser
@@ -157,11 +159,11 @@ class FrontendUserService implements SingletonInterface
         $s = $qb->select('fe_groups.uid')
             ->from('fe_groups')
             ->where($qb->expr()
-            ->inSet('subgroup', $ug))
+                ->inSet('subgroup', $ug))
             ->execute();
         while ($row = $s->fetch()) {
             $uid = intVal($row['uid']);
-            if (! in_array($uid, $return)) {
+            if (!in_array($uid, $return)) {
                 $return = array_unique(array_merge($return, $this->_getTopGroups($uid, $return)));
             }
         }

@@ -12,13 +12,13 @@ call_user_func(function () {
         'CyLending',
         'Lending',
         [
-            LendingController::class => 'show, reserve, approve, reject',
-            AjaxConnectController::class => 'getEvents'
+            LendingController::class => 'show, reserve, approve, reject, cancel',
+            AjaxConnectController::class => 'getEvents, existsEventOverlapping'
         ],
         // non-cacheable actions
         [
-            LendingController::class => 'show, reserve, approve, reject',
-            AjaxConnectController::class => 'getEvents'
+            LendingController::class => 'show, reserve, approve, reject, cancel',
+            AjaxConnectController::class => 'getEvents, existsEventOverlapping'
         ]
     );
 

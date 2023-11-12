@@ -12,6 +12,9 @@
 			<trans-unit id="lending.overview.tab.calendar">
 				<source>Calendar</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.tab.myLendings">
+				<source>My lendings</source>
+			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.object">
 				<source>Lending object</source>
 			</trans-unit>
@@ -41,6 +44,9 @@
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore">
 				<source>Despite the reasons for prevention send</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.label.ignoreExistLendings">
+				<source>&lt;strong&gt;Exist lendings:&lt;/strong&gt; I made arrangements with the other borrower. </source>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.error.object.isEmpty">
 				<source>Lending object is not specified.</source>
@@ -146,6 +152,22 @@
 			</trans-unit>
 			<trans-unit id="lending.overview.approval.form.option.ignoreOverlapping">
 				<source>Ignore the time overlapping</source>
+			</trans-unit>
+
+			<trans-unit id="lending.overview.myLending.form.object">
+				<source>Lending object</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.purpose">
+				<source>Purpose</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.from">
+				<source>From</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.until">
+				<source>Until</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.action.cancel">
+				<source>Cancel lending</source>
 			</trans-unit>
 
 			<trans-unit id="message.approver.email.subject">
@@ -257,6 +279,31 @@
 			</trans-unit>
 			<trans-unit id="message.informReviousBorrorer.email.inquiries">
 				<source>If you have any questions, please contact %s.</source>
+			</trans-unit>
+
+			<trans-unit id="message.cancel.email.subject">
+				<source>A new the availability request</source>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.salutation">
+				<source>Hello %s %s.</source>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.lendingCanceled">
+				<source>The approved borrowing of % %s was withdrawn:</source>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.object">
+				<source>Lending object</source>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.purpose">
+				<source>Purpose</source>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.from">
+				<source>From</source>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.until">
+				<source>Until</source>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.borrower">
+				<source>Borrower</source>
 			</trans-unit>
 
 		</body>

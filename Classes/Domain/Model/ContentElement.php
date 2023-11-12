@@ -23,6 +23,12 @@ class ContentElement extends AbstractEntity
     protected $listType;
 
     /**
+     * @var string
+     */
+    protected $piFlexform;
+
+
+    /**
      * 
      * @return string
      */
@@ -41,4 +47,12 @@ class ContentElement extends AbstractEntity
         $this->listType = $listType;
         return $this;
     }
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function getPiFlexform() {
+		return $this->piFlexform;
+	}
 }

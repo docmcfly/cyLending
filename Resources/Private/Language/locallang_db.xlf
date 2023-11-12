@@ -39,6 +39,9 @@
 			<trans-unit id="tx_cylending_domain_model_product_lending.state.rejected">
 				<source>Rejected</source>
 			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.state.canceled">
+				<source>Canceled</source>
+			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lending.approver">
 				<source>Approver</source>
 			</trans-unit>

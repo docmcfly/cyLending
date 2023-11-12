@@ -17,7 +17,7 @@ namespace Cylancer\CyLending\Domain\Model;
 class ValidationResults
 {
 
-    /** @var object */
+
     protected $object;
 
 
@@ -31,7 +31,7 @@ class ValidationResults
     protected $errors = array();
 
 
-    public function __construct(object $object = null)
+    public function __construct($object = null)
     {
         $this->object = $object;
     }
@@ -116,7 +116,7 @@ class ValidationResults
 	 * 
 	 * @return object|null
 	 */
-	public function getObject():?object {
+	public function getObject() {
 		return $this->object;
 	}
 }

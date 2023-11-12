@@ -51,6 +51,10 @@
 				<source>Rejected</source>
 				<target state="tanslated">Abgelehnt</target>
 			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.state.canceled">
+				<source>Canceled</source>
+				<target state="tanslated">Storniert</target>
+			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lending.approver">
 				<source>Approver</source>
 				<target state="tanslated">Genehmigende Person</target>

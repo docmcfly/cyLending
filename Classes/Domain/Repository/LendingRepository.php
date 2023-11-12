@@ -1,7 +1,9 @@
 <?php
 namespace Cylancer\CyLending\Domain\Repository;
 
+use Cylancer\CyLending\Domain\Model\FrontendUser;
 use Cylancer\CyLending\Domain\Model\Lending;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -21,6 +23,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 class LendingRepository extends Repository
 {
     const SQL_DATE_FORMAT = "Y-m-d H:i:s";
+    const DATE_FORMAT = "Y-m-d";
 
     public function findAllNotRejectedSince($until)
     {
@@ -59,7 +62,7 @@ class LendingRepository extends Repository
     public function findAllAvailabilityRequests(array $canApproveLendingObjects)
     {
 
-        /** @var \TYPO3\CMS\Extbase\Persistence\QueryInterface $q*/
+        /** @var QueryInterface $q*/
         $q = $this->createQuery();
         $q->matching(
             $q->logicalAnd([
@@ -68,6 +71,29 @@ class LendingRepository extends Repository
                     $q->lessThanOrEqual('until', date(LendingRepository::SQL_DATE_FORMAT, time()))
                 ),
                 $q->in('object', array_keys($canApproveLendingObjects))
+            ])
+        );
+        $q->setOrderings(['from' => QueryInterface::ORDER_ASCENDING]);
+
+        return $q->execute();
+    }
+
+
+
+    public function findMyLendings(?FrontendUser $frontendUser): ?QueryResult
+    {
+        if ($frontendUser == null) {
+            return null;
+        }
+        /** @var QueryInterface $q*/
+        $q = $this->createQuery();
+        $q->matching(
+            $q->logicalAnd([
+                $q->equals('state', Lending::STATE_APPROVED),
+                $q->logicalNot(
+                    $q->lessThanOrEqual('until', date(LendingRepository::SQL_DATE_FORMAT, time()))
+                ),
+                $q->equals('borrower', $frontendUser->getUid())
             ])
         );
         $q->setOrderings(['from' => QueryInterface::ORDER_ASCENDING]);
@@ -122,36 +148,60 @@ class LendingRepository extends Repository
         return count($this->getOverlapsAvailabilityRequests($lending, 1)->toArray()) > 0;
     }
 
-    public function getOverlapsAvailabilityRequests(Lending $lending, int $limit = 0): QueryResult
+    public function getOverlapsAvailabilityRequests(Lending $lending, int $limit = 0)
     {
         $q = $this->createQuery();
+
         if ($limit > 0) {
             $q->setLimit($limit);
         }
-        $q->matching(
-            $q->logicalAnd(
-                [
-                    $q->logicalNot(
-                        $q->equals('uid', $lending->getUid()),
-                    ),
-                    $q->equals('object', $lending->getObject()->getUid()),
-                    $q->equals('state', Lending::STATE_APPROVED),
-                    $q->logicalNot(
-                        $q->logicalOr(
-                            [
-                                $q->greaterThanOrEqual('from', $lending->getUntil()),
-                                $q->lessThanOrEqual('until', $lending->getFrom())
-                            ]
-                        )
-                    )
-                ]
+
+        $conditions = [
+            $q->equals('state', Lending::STATE_APPROVED),
+            $q->logicalNot(
+                $q->logicalOr(
+                    [
+                        $q->greaterThanOrEqual('from', $lending->getUntil()),
+                        $q->lessThanOrEqual('until', $lending->getFrom())
+                    ]
+                )
             )
-        );
+        ];
+
+        if ($lending->getUid() != null) {
+            $conditions[] = $q->logicalNot(
+                $q->equals('uid', $lending->getUid()),
+            );
+        }
+
+        if ($lending->getObject() != null) {
+            $conditions[] = $q->equals('object', $lending->getObject()->getUid());
+        }
+
+        $q->matching($q->logicalAnd($conditions));
 
         return $q->execute();
+        // $queryParser = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class);
+        // return $queryParser->convertQueryToDoctrineQueryBuilder($q)->getSQL();
+
+
     }
 
-    public static function toDateTime(int $year, $month, $day = 1): \DateTime
+    public static function stringDatetoDateTime(string $date): \DateTime
+    {
+        $parseResult = date_parse_from_format(LendingRepository::DATE_FORMAT, $date);
+        if ($parseResult['error_count'] > 0) {
+            throw new \Exception("Date format is invalid: " . $date);
+        }
+
+        $return = new \DateTime();
+        return $return
+            ->setDate($parseResult['year'], $parseResult['month'], $parseResult['day'])
+            ->setTime(0, 0, 0, 0);
+    }
+
+
+    public static function toDateTime(int $year, int $month, int $day = 1): \DateTime
     {
         $return = new \DateTime();
         return $return

@@ -22,6 +22,8 @@ class Lending extends AbstractEntity
 	public const STATE_APPROVED = 2;
 	public const STATE_REJECTED = 3;
 
+	public const STATE_CANCELED = 4;
+
 
 	/** @var FrontendUser */
 	protected $borrower = '';
@@ -68,7 +70,8 @@ class Lending extends AbstractEntity
 	 * @param int $uid 
 	 * @return self
 	 */
-	public function setUid($uid): self {
+	public function setUid($uid): self
+	{
 		$this->uid = $uid;
 		return $this;
 	}
@@ -255,16 +258,18 @@ class Lending extends AbstractEntity
 	 * 
 	 * @return bool
 	 */
-	public function getIgnoreOverlapping() {
+	public function getIgnoreOverlapping()
+	{
 		return $this->ignoreOverlapping;
 	}
-	
+
 	/**
 	 * 
 	 * @param bool $ignoreOverlapping 
 	 * @return self
 	 */
-	public function setIgnoreOverlapping($ignoreOverlapping): self {
+	public function setIgnoreOverlapping($ignoreOverlapping): self
+	{
 		$this->ignoreOverlapping = $ignoreOverlapping;
 		return $this;
 	}
@@ -273,16 +278,18 @@ class Lending extends AbstractEntity
 	 * 
 	 * @return bool
 	 */
-	public function getDisplayIgnoreOverlapping() {
+	public function getDisplayIgnoreOverlapping()
+	{
 		return $this->displayIgnoreOverlapping;
 	}
-	
+
 	/**
 	 * 
 	 * @param bool $displayIgnoreOverlapping 
 	 * @return self
 	 */
-	public function setDisplayIgnoreOverlapping($displayIgnoreOverlapping): self {
+	public function setDisplayIgnoreOverlapping($displayIgnoreOverlapping): self
+	{
 		$this->displayIgnoreOverlapping = $displayIgnoreOverlapping;
 		return $this;
 	}
