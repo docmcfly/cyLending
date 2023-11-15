@@ -169,6 +169,40 @@
 			<trans-unit id="lending.overview.myLending.action.cancel">
 				<source>Cancel lending</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.object.isEmpty">
+				<source>Lending object is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.purpose.isEmpty">
+				<source>The purpose is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.from.isEmpty">
+				<source>Lending start time is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.until.isEmpty">
+				<source>Lending end time is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.from.invalid">
+				<source>Lending start time is invalid.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.until.invalid">
+				<source>Lending end time is invalid.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.until.isBeforeFrom">
+				<source>Lending end time is before the start time.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.from.isInThePast">
+				<source>Lending start time is in the past.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.requestAlreadyBeenProcessed">
+				<source>The request has already been processed</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.requestDeleted">
+				<source>The request is already deleted</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.option.ignoreOverlapping">
+				<source>Ignore the time overlapping</source>
+			</trans-unit>
+
 
 			<trans-unit id="message.approver.email.subject">
 				<source>A new the availability request</source>
@@ -305,6 +339,34 @@
 			<trans-unit id="message.cancel.email.borrower">
 				<source>Borrower</source>
 			</trans-unit>
+
+
+			<trans-unit id="message.weekday.Monday">
+				<source>Monday</source>
+			</trans-unit>
+			<trans-unit id="message.weekday.Tuesday">
+				<source>Tuesday</source>
+			</trans-unit>
+			<trans-unit id="message.weekday.Wednesday">
+				<source>Wednesday</source>
+			</trans-unit>
+			<trans-unit id="message.weekday.Thursday">
+				<source>Thursday</source>
+			</trans-unit>
+			<trans-unit id="message.weekday.Friday">
+				<source>Friday</source>
+			</trans-unit>
+			<trans-unit id="message.weekday.Saturday">
+				<source>Saturday</source>
+			</trans-unit>
+			<trans-unit id="message.weekday.Sunday">
+				<source>Sunday</source>
+			</trans-unit>
+
+
+
+
+
 
 		</body>
 	</file>

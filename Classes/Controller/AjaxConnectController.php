@@ -5,6 +5,7 @@ use Cylancer\CyLending\Domain\Model\Lending;
 use Cylancer\CyLending\Domain\Repository\ContentElementRepository;
 use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use Cylancer\CyLending\Service\LendingService;
+use Cylancer\CyLending\Service\MiscService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
@@ -31,22 +32,20 @@ class AjaxConnectController extends ActionController
     /* @var LendingRepository */
     private LendingRepository $lendingRepository;
 
-    /* @var ContentElementRepository */
-    private ContentElementRepository $contentElementRepository;
+    /* @var MiscService */
+    private MiscService $miscService;
 
 
 
     public function __construct(
         LendingService $lendingService,
         LendingRepository $lendingRepository,
-        ContentElementRepository $contentElementRepository
+        MiscService $miscService
     ) {
         $this->lendingService = $lendingService;
         $this->lendingRepository = $lendingRepository;
-        $this->contentElementRepository = $contentElementRepository;
+        $this->miscService = $miscService;
     }
-
-
 
     /**
      * @param array $lspid
@@ -74,7 +73,8 @@ class AjaxConnectController extends ActionController
             $tmp = new Lending();
             $tmp->setFrom($from);
             $tmp->setUntil($until);
-            $settings = $this->getSourceSettings($uid);
+            
+            $settings = $this->miscService->getFlexformSettings($uid, 'lendingStorageUids', 'otherLendingStorageUids');
 
             $storageUids = array_merge(
                 GeneralUtility::intExplode(',', $settings['lendingStorageUids']),
@@ -96,30 +96,5 @@ class AjaxConnectController extends ActionController
         return json_encode([]);
 
     }
-
-
-
-    /**
-     *
-     * @param int $id
-     * @throws \Exception
-     * @return array
-     */
-    private function getSourceSettings(int $id): array
-    {
-        $piFlexform = null;
-        /** @var \Cylancer\CyLending\Domain\Model\ContentElement $ce */
-        $ce = $this->contentElementRepository->findByUid($id);
-        if ($ce->getListType() != 'cylending_lending') {
-            throw new \Exception($ce->getListType() . ' is not supported!');
-        }
-        $settings = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($ce->getPiFlexform())['data']['sDEF']['lDEF'];
-        $return = [];
-        $return['lendingStorageUids'] = $settings['settings.lendingStorageUids']['vDEF'];
-        $return['otherLendingStorageUids'] = $settings['settings.otherLendingStorageUids']['vDEF'];
-
-        return $return;
-    }
-
 
 }

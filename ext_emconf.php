@@ -7,7 +7,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'beta',
     'clearCacheOnLoad' => 1,
-    'version' => '1.3.1',
+    'version' => '1.4.0',
     'constraints' => [
         'depends' => [
             'typo3' => '11.5.0-11.99.99',
@@ -23,7 +23,7 @@ $EM_CONF[$_EXTKEY] = [
 
 /**
  ** CHANGELOG:
- *
+ *  1.4.0 :: UPD : Add sub lendings.
  *  1.3.1 :: CHG : Add small border bottom to an event in the calendar. 
  *  1.3.0 :: UPD : Add ignore time overlapping function
  *  1.2.9 :: CHG : The fix reduces unused detail times.

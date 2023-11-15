@@ -25,7 +25,7 @@
 	</script>
 
 	<f:for each="{validationResults.errors}" as="error" key="errorKey">
-		<div class="alert alert-danger">
+		<div class="alert alert-danger" title="{prefix}.{errorKey}">
 			<f:translate key="{prefix}.{errorKey}" arguments="{error.arguments}"/>
 		</div>
 	</f:for>

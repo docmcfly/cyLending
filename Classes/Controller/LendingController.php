@@ -13,6 +13,7 @@ use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use Cylancer\CyLending\Service\EmailSendService;
 use Cylancer\CyLending\Service\FrontendUserService;
 use Cylancer\CyLending\Service\LendingService;
+use Cylancer\CyLending\Service\MiscService;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
@@ -54,6 +55,7 @@ class LendingController extends ActionController
     const RESET_AVAILABILITY_REQUEST = 'resetAvailabilityRequest';
     const SUCCESSFUL_AVAILABILITY_REQUEST = 'successfulAvailabilityRequest';
     const OPEN_AVAILABILITY_REQUEST = 'openAvailabilityRequest';
+    const CONTEXT_ELEMENT = 'contentElement';
 
     const ID_KEY = 'id';
     const TAB_KEY = 'tab';
@@ -78,8 +80,12 @@ class LendingController extends ActionController
     /* @var FrontendUserRepository */
     private FrontendUserRepository $frontendUserRepository;
 
-    /* @var ContentElementRepository */
+    /* @var ContentElementRepository contentElementRepository */
     private ContentElementRepository $contentElementRepository;
+
+    /* @var MiscService */
+    private MiscService $miscService;
+
 
     /* @var EmailSendService */
     private EmailSendService $emailSendService;
@@ -95,6 +101,7 @@ class LendingController extends ActionController
         FrontendUserGroupRepository $frontendUserGroupRepository,
         FrontendUserRepository $frontendUserRepository,
         ContentElementRepository $contentElementRepository,
+        MiscService $miscService,
         FrontendUserService $frontendUserService,
         PersistenceManager $persistenceManager,
         EmailSendService $emailSendService,
@@ -105,6 +112,7 @@ class LendingController extends ActionController
         $this->frontendUserGroupRepository = $frontendUserGroupRepository;
         $this->frontendUserRepository = $frontendUserRepository;
         $this->contentElementRepository = $contentElementRepository;
+        $this->miscService = $miscService;
         $this->frontendUserService = $frontendUserService;
         $this->persistenceManager = $persistenceManager;
         $this->emailSendService = $emailSendService;
@@ -136,11 +144,19 @@ class LendingController extends ActionController
     }
 
 
-    private function getAllLendingStorageUids(): array
+    private function getSetting($key, ?int $uid = null)
+    {
+        if ($uid != null && !isset($this->settings[$key])) {
+            array_merge($this->settings, $this->miscService->getFlexformSettings($uid, $key));
+        }
+        return $this->settings[$key];
+    }
+
+    private function getAllLendingStorageUids(?int $uid = null): array
     {
         return array_merge(
-            GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE),
-            GeneralUtility::intExplode(',', $this->settings['otherLendingStorageUids'], TRUE)
+            GeneralUtility::intExplode(',', $this->getSetting('lendingStorageUids', $uid), TRUE),
+            GeneralUtility::intExplode(',', $this->getSetting('otherLendingStorageUids', $uid), TRUE)
         );
 
     }
@@ -150,14 +166,16 @@ class LendingController extends ActionController
      */
     public function showAction(): ResponseInterface
     {
+        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
+
         /** @var Lending $toReserve */
         $toReserve;
         // prepare
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
-        $querySettings->setStoragePageIds(GeneralUtility::intExplode(',', $this->settings['lendingObjectStorageUids'], TRUE));
+        $querySettings->setStoragePageIds(GeneralUtility::intExplode(',', $this->getSetting('lendingObjectStorageUids', $ceUid), TRUE));
         $this->lendingObjectRepository->setDefaultQuerySettings($querySettings);
 
-        $allLendingStorageUids = $this->getAllLendingStorageUids();
+        $allLendingStorageUids = $this->getAllLendingStorageUids($ceUid);
 
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds($allLendingStorageUids);
@@ -174,6 +192,11 @@ class LendingController extends ActionController
         $approvalValidationResults = $this->request->hasArgument(LendingController::APPROVAL_VALIDATION_RESULTS_KEY)
             ? $this->request->getArgument(LendingController::APPROVAL_VALIDATION_RESULTS_KEY)
             : new ValidationResults();
+        $myLendingslValidationResults = $this->request->hasArgument(LendingController::MY_LENDING_VALIDATION_RESULTS_KEY)
+            ? $this->request->getArgument(LendingController::MY_LENDING_VALIDATION_RESULTS_KEY)
+            : new ValidationResults();
+
+
 
 
         if (!$availabilityRequestValidationResults->hasErrors() && !$availabilityRequestValidationResults->hasInfos()) {
@@ -201,13 +224,15 @@ class LendingController extends ActionController
             && isset($approvalValidationResults->getErrors()['error.existsOverlapsAvailabilityRequests'])
         ) {
 
-            $tmp = $approvalValidationResults->getObject();
+            $tmp = $this->fromArray($approvalValidationResults->getObject());
             foreach ($allAvailabilityRequests as $ar) {
                 if ($tmp->getUid() === $ar->getUid()) {
                     $ar->setDisplayIgnoreOverlapping(true);
                 }
             }
         }
+        // COMMON
+        $this->view->assign(LendingController::CONTEXT_ELEMENT, $ceUid);
 
         // tab page APPROVE:
         $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, $approvalValidationResults);
@@ -218,7 +243,7 @@ class LendingController extends ActionController
 
 
         // tab page MY_LENDINGS:
-        $this->view->assign(LendingController::APPROVAL_VALIDATION_RESULTS_KEY, $approvalValidationResults);
+        $this->view->assign(LendingController::MY_LENDING_VALIDATION_RESULTS_KEY, $myLendingslValidationResults);
         $myLendings = $this->lendingRepository->findMyLendings($this->frontendUserService->getCurrentUser());
         // all availability request to approve / reject
         $this->view->assign('myLendings', $myLendings);
@@ -236,9 +261,9 @@ class LendingController extends ActionController
         $this->view->assign('toReserve', $toReserve);
         // form object
         $this->view->assign('untilOffset', "var untilOffset = '" . intval($this->settings['usualLendingTermHours']) . ':' . intval($this->settings['usualLendingTermMinutes']) . "';\n");
-        
-        $this->view->assign('existOverlappingLendingsUrl', $this->getExistOverlappingLendingsUrl());
-       
+
+        $this->view->assign('existOverlappingLendingsUrl', $this->getExistOverlappingLendingsUrl($ceUid));
+
         $reasonsForPreventionServiceUrl = $this->getReasonsForPreventionServiceUrl();
         if ($reasonsForPreventionServiceUrl !== false) {
             $this->view->assign('reasonsForPreventionServiceEnabled', true);
@@ -267,7 +292,7 @@ class LendingController extends ActionController
         );
 
         // COMMON
-        if(count($myLendings) == 0 && $tab === LendingController::MY_LENDINGS_TAB){
+        if (count($myLendings) == 0 && $tab === LendingController::MY_LENDINGS_TAB) {
             $tab = LendingController::CALENDAR_TAB;
         }
 
@@ -277,7 +302,7 @@ class LendingController extends ActionController
     }
 
     const T3_LINK_PREFIX = 't3://page?uid=';
-    private function getExistOverlappingLendingsUrl(): bool|string
+    private function getExistOverlappingLendingsUrl(int $contextElement): bool|string
     {
         return $this->uriBuilder
             ->reset()
@@ -286,7 +311,7 @@ class LendingController extends ActionController
             ->setCreateAbsoluteUri(true)
             ->uriFor(
                 'existsEventOverlapping',
-                ['uid'=>  $this->configurationManager->getContentObject()->data['uid'] ],
+                ['uid' => $contextElement],
                 'AjaxConnect',
             );
     }
@@ -294,17 +319,17 @@ class LendingController extends ActionController
 
     private function getReasonsForPreventionServiceUrl(): bool|string
     {
-      //  debug($this->getReasonsForPreventionServicePageType());
+        //  debug($this->getReasonsForPreventionServicePageType());
         $pagetType = $this->getReasonsForPreventionServicePageType();
         if ($pagetType === false) {
             return false;
         }
-        
+
         $target = $this->getReasonsForPreventionService();
         if ($target === false) {
             return false;
         }
-      //  debug($target);
+        //  debug($target);
         return $this->uriBuilder
             ->reset()
             ->setTargetPageUid($target['page'])
@@ -328,7 +353,7 @@ class LendingController extends ActionController
     private function getReasonsForPreventionService(): bool|array
     {
         $reasonsForPreventionContentElement = $this->settings['reasonsForPreventionContentElement'];
-        
+
         if (empty($reasonsForPreventionContentElement)) {
             return false;
         }
@@ -343,7 +368,7 @@ class LendingController extends ActionController
                 $return['page'] = intval($tmp[0]);
                 $return['contentElement'] = intval($tmp[1]);
             }
-            
+
             $ce = $this->contentElementRepository->findByUid(intval($return['contentElement']));
             if (
                 $ce == null
@@ -352,7 +377,7 @@ class LendingController extends ActionController
             ) {
                 return false;
             }
-            
+
             $register = $GLOBALS['TSFE']->tmpl->setup['tt_content.']['list.']['20.'][$ce->getListType() . '.'];
             $return['extensionName'] = $register['extensionName'];
             $return['pluginName'] = $register['pluginName'];
@@ -423,6 +448,8 @@ class LendingController extends ActionController
 
     public function cancelAction(Lending $myLending = null)
     {
+        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
+
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validateCancel($myLending);
         /** @var ForwardResponse $forward */
@@ -438,11 +465,14 @@ class LendingController extends ActionController
 
         }
 
-        $arguments = [
+        $forwardArguments = [
             LendingController::MY_LENDING_VALIDATION_RESULTS_KEY => $validationResults,
             LendingController::TAB_KEY => LendingController::MY_LENDINGS_TAB,
+            LendingController::CONTEXT_ELEMENT => $ceUid,
+
         ];
-        $forward = $forward->withArguments($arguments);
+
+        $forward = $forward->withArguments($forwardArguments);
         return $forward;
     }
 
@@ -500,6 +530,8 @@ class LendingController extends ActionController
     public function reserveAction(Lending $toReserve = null)
     {
 
+        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
+
         // prepare
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds(GeneralUtility::intExplode(',', $this->settings['lendingObjectStorageUids'], TRUE));
@@ -552,6 +584,7 @@ class LendingController extends ActionController
 
         $forwardArguments[LendingController::AVAILABILITY_REQUEST_VALIDATION_RESULTS_KEY] = $validationResults;
         $forwardArguments[LendingController::TAB_KEY] = LendingController::LENDING_TAB;
+        $forwardArguments[LendingController::CONTEXT_ELEMENT] = $ceUid;
 
         $forward = $forward->withArguments($forwardArguments);
         return $forward;
@@ -591,6 +624,9 @@ class LendingController extends ActionController
     public function rejectAction(Lending $availabilityRequest = null)
     {
 
+        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
+
+
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validateReject($availabilityRequest);
 
@@ -618,13 +654,18 @@ class LendingController extends ActionController
 
         $forwardArguments[LendingController::APPROVAL_VALIDATION_RESULTS_KEY] = $validationResults;
         $forwardArguments[LendingController::TAB_KEY] = LendingController::APROVAL_TAB;
+        $forwardArguments[LendingController::CONTEXT_ELEMENT] = $ceUid;
 
         $forward = $forward->withArguments($forwardArguments);
         return $forward;
     }
 
-    private function canApproveLendingObject(LendingObject $lendingObject): bool
+    private function canApproveLendingObject(?LendingObject $lendingObject): bool
     {
+        if ($lendingObject == null) {
+            return false;
+        }
+
         if ($lendingObject->getApproverGroup() == null) {
             return true;
         }
@@ -641,7 +682,7 @@ class LendingController extends ActionController
     {
 
         /** @var ValidationResults $validationResults */
-        $validationResults = $this->validate($lending);
+        $validationResults = new ValidationResults($this->toArray($lending));
         if ($this->lendingRepository->findByUid($lending->getUid()) == null) {
             $validationResults->addError('requestDeleted');
         } else {
@@ -664,6 +705,8 @@ class LendingController extends ActionController
 
     public function approveAction(Lending $availabilityRequest = null): ForwardResponse
     {
+
+        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
 
         $allLendingStorageUids = array_merge(
             GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE),
@@ -716,6 +759,7 @@ class LendingController extends ActionController
 
         $forwardArguments[LendingController::APPROVAL_VALIDATION_RESULTS_KEY] = $validationResults;
         $forwardArguments[LendingController::TAB_KEY] = LendingController::APROVAL_TAB;
+        $forwardArguments[LendingController::CONTEXT_ELEMENT] = $ceUid;
 
         $forward = $forward->withArguments($forwardArguments);
 
@@ -862,7 +906,7 @@ class LendingController extends ActionController
             'uid' => $lending->getUid(),
             'borrower' => $lending->getBorrower() != null ? $lending->getBorrower()->getUid() : null,
             'approver' => $lending->getApprover() != null ? $lending->getApprover()->getUid() : null,
-            'object =' => $lending->getObject() != null ? $lending->getObject()->getUid() : null,
+            'object' => $lending->getObject() != null ? $lending->getObject()->getUid() : null,
             'from' => $lending->getFrom(),
             'until' => $lending->getUntil(),
             'lendingAllowed' => $lending->getLendingAllowed(),

@@ -59,11 +59,11 @@
             <div class="row border-bottom mt-3 pb-4">
                 <div class="col-md-3">&nbsp;</div>
                 <div class="col-md-4">
-                    <f:form action="approve" name="availabilityRequest" object="{availabilityRequest}"
+                    <f:form action="approve" name="availabilityRequest" object="{availabilityRequest}"  arguments="{'contextElement': contextElement}"
                         enctype="multipart/form-data">
                         <f:form.submit class="btn btn-primary mb-2"
                             value="{f:translate(key:'lending.overview.approval.action.approve')} " />
-                        <f:if condition="{availabilityRequest.displayIgnoreOverlapping}">
+                        <f:if condition="{availabilityRequest.displayIgnoreOverlapping} ">
                             <div class="mb-2">
                                 <f:form.checkbox class="form-check-input" id="ignoreOverlapping"
                                     property="ignoreOverlapping" value="1" />
@@ -75,7 +75,7 @@
                     </f:form>
                 </div>
                 <div class="col-md-4">
-                    <f:form action="reject" name="availabilityRequest" object="{availabilityRequest}"
+                    <f:form action="reject" name="availabilityRequest" object="{availabilityRequest}"  arguments="{'contextElement': contextElement}"
                         enctype="multipart/form-data">
                         <f:form.submit class="btn btn-dark mb-2"
                             value="{f:translate(key:'lending.overview.approval.action.reject')} " />

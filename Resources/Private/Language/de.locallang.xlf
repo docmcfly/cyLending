@@ -61,7 +61,7 @@
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.label.ignoreExistLendings">
 				<source>&lt;strong&gt;Exist lendings:&lt;/strong&gt; I made arrangements with the other borrower. </source>
-				<target state="tanslated">&lt;strong&gt;Bestehende Ausleihen:&lt;/strong&gt; Ich habe mich mit dem anderen Ausleiher abgesprochen.</target>
+				<target state="tanslated">&lt;strong&gt;Bestehende Ausleihen:&lt;/strong&gt; Ich habe mich mit der anderen Ausleiherin bzw. dem anderen Ausleiher abgesprochen.</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore">
 				<source>Despite the reasons for prevention send</source>
@@ -218,6 +218,50 @@
 				<source>Cancel lending</source>
 				<target state="tanslated">Ausleihe stornieren</target>
 			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.object.isEmpty">
+				<source>Lending object is not specified.</source>
+				<target state="tanslated">Ausleihobjekt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.purpose.isEmpty">
+				<source>The purpose is not specified.</source>
+				<target state="tanslated">Der Zweck (Ausleihgrund) wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.from.isEmpty">
+				<source>Lending start time is not specified.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.until.isEmpty">
+				<source>Lending end time is not specified.</source>
+				<target state="tanslated">Ausleihendzeitpunkt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.from.invalid">
+				<source>Lending start time is invalid.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt ist ungültig.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.until.invalid">
+				<source>Lending end time is invalid.</source>
+				<target state="tanslated">Ausleihendzeitpunkt ist ungültig.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.until.isBeforeFrom">
+				<source>Lending end time is before the start time.</source>
+				<target state="tanslated">Ausleihendzeitpunkt ist vor dem Ausleihstartzeitpunkt.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.from.isInThePast">
+				<source>Lending start time is in the past.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt ist in der Vergangenheit.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.requestAlreadyBeenProcessed">
+				<source>The request has already been processed</source>
+				<target state="tanslated">Die Anfrage wurde bereits bearbeitet.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.error.requestDeleted">
+				<source>The request is already deleted</source>
+				<target state="tanslated">Die Anfrage wurde bereits gelöscht.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.option.ignoreOverlapping">
+				<source>Ignore the time overlapping</source>
+				<target state="tanslated">Die Zeitüberplappung ignorieren</target>
+			</trans-unit>
 
 			<trans-unit id="message.approver.email.subject">
 				<source>A new the availability request</source>
@@ -261,12 +305,12 @@
 				<target state="tanslated">Hallo %s %s.</target>
 			</trans-unit>
 			<trans-unit id="message.borrower.email.yourRequestIsApproved">
-				<source>Your availability request is approved.</source>
+				<source>Your availability request is &lt;strong style="color:green; "&gt;approved&lt;/strong&gt;.</source>
 				<target state="tanslated">Deine Ausleihanfrage wurde &lt;strong style="color:green; "&gt;genehmingt&lt;/strong&gt;.</target>
 			</trans-unit>
 			<trans-unit id="message.borrower.email.yourRequestIsRejected">
-				<source>Your availability request is rejected.</source>
-				<target state="tanslated">Deine Ausleihanfrage wurde <span style="color:red; weight:bolder;">abgelehnt</span>.</target>
+				<source>Your availability request is &lt;strong style="color:red; "&gt;rejected&lt;/strong&gt;.</source>
+				<target state="tanslated">Deine Ausleihanfrage wurde &lt;strong style="color:red; "&gt;abgelehnt&lt;/strong&gt;.</target>
 			</trans-unit>
 			<trans-unit id="message.borrower.email.object">
 				<source>Lending object</source>
@@ -294,12 +338,12 @@
 				<target state="tanslated">Hallo %s %s.</target>
 			</trans-unit>
 			<trans-unit id="message.observer.email.requestIsApproved">
-				<source>An availability request is approved.</source>
-				<target state="tanslated">Eine Ausleihanfrage wurde <span style="color:green; weight:bold;">genehmingt</span>.</target>
+				<source>An availability request is &lt;strong style="color:green; "&gt;approved&lt;/strong&gt;.</source>
+				<target state="tanslated">Eine Ausleihanfrage wurde &lt;strong style="color:green; "&gt;genehmingt&lt;/strong&gt;.</target>
 			</trans-unit>
 			<trans-unit id="message.observer.email.requestIsRejected">
-				<source>An availability request is rejected.</source>
-				<target state="tanslated">Eine Ausleihanfrage wurde <span style="color:red; weight:bold;">abgelehnt</span>.</target>
+				<source>An availability request is &lt;strong style="color:red; "&gt;rejected&lt;/strong&gt;.</source>
+				<target state="tanslated">Eine Ausleihanfrage wurde &lt;strong style="color:red; "&gt;abgelehnt&lt;/strong&gt;.</target>
 			</trans-unit>
 			<trans-unit id="message.observer.email.object">
 				<source>Lending object</source>
@@ -395,6 +439,36 @@
 				<source>Borrower</source>
 				<target state="tanslated">Ausleiher:in</target>
 			</trans-unit>
+
+			<trans-unit id="message.weekday.Monday">
+				<source>Monday</source>
+				<target state="tanslated">Montag</target>
+			</trans-unit>
+			<trans-unit id="message.weekday.Tuesday">
+				<source>Tuesday</source>
+				<target state="tanslated">Dienstag</target>
+			</trans-unit>
+			<trans-unit id="message.weekday.Wednesday">
+				<source>Wednesday</source>
+				<target state="tanslated">Mittwoch</target>
+			</trans-unit>
+			<trans-unit id="message.weekday.Thursday">
+				<source>Thursday</source>
+				<target state="tanslated">Donnerstag</target>
+			</trans-unit>
+			<trans-unit id="message.weekday.Friday">
+				<source>Friday</source>
+				<target state="tanslated">Freitag</target>
+			</trans-unit>
+			<trans-unit id="message.weekday.Saturday">
+				<source>Saturday</source>
+				<target state="tanslated">Samstag</target>
+			</trans-unit>
+			<trans-unit id="message.weekday.Sunday">
+				<source>Sunday</source>
+				<target state="tanslated">Sonntag</target>
+			</trans-unit>
+
 
 
 		</body>

@@ -63,14 +63,14 @@
 					<td style="background-color:#e05e36; padding:0.5em; margin:0.5em; color:white; ">
 						<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}"
 							action="approve" pluginName="lending" controller="Lending" absolute="true" noCache="true"
-							arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid}">
+							arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid, 'contextElement': contextElement}">
 							<f:translate key="lending.overview.approval.action.approve" />
 						</f:link.action>
 					</td>
 					<td style="background-color:#e05e36; padding:0.5em; margin:0.5em; color:white; ">
 						<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}"
 							action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true"
-							arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid}">
+							arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid,'contextElement': contextElement}">
 							<f:translate key="lending.overview.approval.action.reject" />
 						</f:link.action>
 					</td>

@@ -56,7 +56,6 @@ class LendingService implements SingletonInterface
 
             /** @var LendingObject $lendingObject*/
             $lendingObject = $lending->getObject();
-
             $event = [];
             $event['idx'] = $lending->getUid();
             $event['start'] = $lending->getFrom();

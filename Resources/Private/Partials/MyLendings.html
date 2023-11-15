@@ -51,7 +51,7 @@
             <div class="row border-bottom mt-3 pb-4">
                 <div class="col-md-3">&nbsp;</div>
                 <div class="col-md-4">
-                    <f:form class="cancel" action="cancel" name="myLending" object="{myLending}"
+                    <f:form class="cancel" action="cancel" name="myLending" object="{myLending}"  arguments="{'contextElement': contextElement}"
                         enctype="multipart/form-data">
                         <f:form.submit class="btn btn-primary mb-2" 
                             value="{f:translate(key:'lending.overview.myLending.action.cancel')} " />
@@ -61,13 +61,13 @@
         </f:for>
 
         <script defer="defer">
-            $("form.cancel input[type='submit']").each(function(){
+       /*     $("form.cancel input[type='submit']").each(function(){
                 let e = $(this)
                 e.data('text', e.text())
                 e.on("click", function () { 
                     alert( $(this).data('text') ) 
                 })
-            });    
+            });    */
         </script>
     </f:else>
 </f:if>

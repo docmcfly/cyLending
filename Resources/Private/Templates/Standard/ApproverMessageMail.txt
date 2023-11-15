@@ -33,10 +33,10 @@
 {availabilityRequest.borrower.firstName} {availabilityRequest.borrower.lastName}
 
 <f:translate key="lending.overview.approval.action.approve" />:
-<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}" action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true" 	arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid}"></f:link.action>
+<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}" action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true" 	arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid,'contextElement': contextElement}"></f:link.action>
 
 <f:translate key="lending.overview.approval.action.reject" />:
-<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}" action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true" arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid}"></f:link.action>
+<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}" action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true" arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid,'contextElement': contextElement}"></f:link.action>
 </f:section>
 </body></html>
 

@@ -85,19 +85,21 @@ class LendingRepository extends Repository
         if ($frontendUser == null) {
             return null;
         }
+       
         /** @var QueryInterface $q*/
         $q = $this->createQuery();
         $q->matching(
             $q->logicalAnd([
                 $q->equals('state', Lending::STATE_APPROVED),
                 $q->logicalNot(
-                    $q->lessThanOrEqual('until', date(LendingRepository::SQL_DATE_FORMAT, time()))
+                    $q->lessThanOrEqual('from', date(LendingRepository::SQL_DATE_FORMAT, time()))
                 ),
                 $q->equals('borrower', $frontendUser->getUid())
             ])
         );
         $q->setOrderings(['from' => QueryInterface::ORDER_ASCENDING]);
-
+    // $queryParser = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class);
+    //      debug($queryParser->convertQueryToDoctrineQueryBuilder($q)->getSQL());
         return $q->execute();
     }
 
@@ -127,7 +129,7 @@ class LendingRepository extends Repository
             'from' => QueryInterface::ORDER_ASCENDING,
             'purpose' => QueryInterface::ORDER_ASCENDING,
         ]);
-        return $q->execute();
+        return  $q->execute();
 
     }
 
