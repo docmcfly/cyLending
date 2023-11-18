@@ -2,59 +2,77 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true"
 	xmlns="http://www.w.org//xhtml" xml:lang="en" lang="en">
 
-	<head>
-		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	</head>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+</head>
 
-	<body>
+<body>
 
-		<f:layout name="Default" />
-		<f:section name="content">
-			<f:asset.script identifier="jquery.min.js" priority="true"
-				src="EXT:cy_lending/Resources/Public/JavaScript/jquery/jquery.min.js" />
-
-			<nav>
-				<f:variable name="calendar" value="calendar" />
-				<f:variable name="lending" value="lending" />
-				<f:variable name="approval" value="approval" />
-				<div class="nav nav-tabs" id="nav-tab" role="tablist">
-					<button class="nav-link {f:if(condition:'{tab} === {calendar} ', then: 'active')}"
-						id="nav-calendar-tab" data-bs-toggle="tab" data-bs-target="#nav-calendar" type="button"
-						role="tab" aria-controls="nav-calendar" aria-selected="true">
-						<f:translate key="lending.overview.tab.calendar" />
+	<f:layout name="Default" />
+	<f:section name="content">
+		<f:asset.script identifier="jquery.min.js" priority="true"
+			src="EXT:cy_lending/Resources/Public/JavaScript/jquery/jquery.min.js" />
+		<nav>
+			<f:variable name="calendarTab" value="calendar" />
+			<f:variable name="lending" value="lending" />
+			<f:variable name="approval" value="approval" />
+			<div class="nav nav-tabs" id="nav-tab" role="tablist">
+				<button class="nav-link {f:if(condition:'{tab} == \'calendar\' ', then: 'active')}" id="nav-calendar-tab"
+					data-bs-toggle="tab" data-bs-target="#nav-calendar" type="button" role="tab"
+					aria-controls="nav-calendar" aria-selected="true">
+					<f:translate key="lending.overview.tab.calendar" />
+				</button>
+				<button class="nav-link {f:if(condition:'{tab} === \'lending\' ', then: 'active')}" id="nav-lending-tab"
+					data-bs-toggle="tab" data-bs-target="#nav-lending" type="button" role="tab"
+					aria-controls="nav-lending" aria-selected="false">
+					<f:translate key="lending.overview.tab.lending" />
+				</button>
+				<f:if condition="{myLendings->f:count()} > 0">
+					<button class="nav-link {f:if(condition:'{tab} === \'myLending\' ', then: 'active')}"
+						id="nav-myLending-tab" data-bs-toggle="tab" data-bs-target="#nav-myLending" type="button"
+						role="tab" aria-controls="nav-myLending" aria-selected="false">
+						<f:translate key="lending.overview.tab.myLendings" />
 					</button>
-					<button class="nav-link {f:if(condition:'{tab} === {lending} ', then: 'active')}"
-						id="nav-lending-tab" data-bs-toggle="tab" data-bs-target="#nav-lending" type="button" role="tab"
-						aria-controls="nav-lending" aria-selected="false">
-						<f:translate key="lending.overview.tab.lending" />
-					</button>
-					<f:if condition="{isApprover}">
-						<button class="nav-link {f:if(condition:'{tab} === {approval} ', then: 'active')}"
-							id="nav-approval-tab" data-bs-toggle="tab" data-bs-target="#nav-approval" type="button"
-							role="tab" aria-controls="nav-approval" aria-selected="false">
-							<f:translate key="lending.overview.tab.approval" />
-						</button>
-					</f:if>
-				</div>
-			</nav>
-			<div class="tab-content" id="nav-tabContent">
-				<div class="tab-pane fade {f:if(condition:'{tab} === {calendar} ', then: 'show active')} "
-					id="nav-calendar" role="calendar" aria-labelledby="nav-calendar-tab">
-					<f:render partial="calendar" arguments="{_all}" />
-				</div>
-				<div class="tab-pane fade {f:if(condition:'{tab} === {lending} ', then: 'show active')} pt-3"
-					id="nav-lending" role="tabpanel" aria-labelledby="nav-lending-tab">
-					<f:render partial="reserveForm" arguments="{_all}" />
-
-				</div>
+				</f:if>
 				<f:if condition="{isApprover}">
-					<div class="tab-pane fade {f:if(condition:'{tab} === {approval} ', then: 'show active')} pt-3"
-						id="nav-approval" role="tabpanel" aria-labelledby="nav-Lendapprovaling-tab">
-						<f:render partial="approveForm" arguments="{_all}" />
-					</div>
+					<button class="nav-link {f:if(condition:'{tab} === \'approval\' ', then: 'active')}"
+						id="nav-approval-tab" data-bs-toggle="tab" data-bs-target="#nav-approval" type="button"
+						role="tab" aria-controls="nav-approval" aria-selected="false">
+						<f:translate key="lending.overview.tab.approval" />
+					</button>
 				</f:if>
 			</div>
-		</f:section>
-	</body>
+		</nav>
+		<div class="tab-content" id="nav-tabContent">
+			<div class="tab-pane fade {f:if(condition:'{tab} === \'calendar\'', then: 'show active')} " id="nav-calendar"
+				role="calendar" aria-labelledby="nav-calendar-tab">
+				<f:render partial="calendar" arguments="{_all}" />
+			</div>
+			<div class="tab-pane fade {f:if(condition:'{tab} === \'lending\' ', then: 'show active')} pt-3"
+				id="nav-lending" role="lending" aria-labelledby="nav-lending-tab">
+				<f:if condition="{availabilityRequestValidationResults.infos->f:count()} > 0">
+					<f:then>
+						<f:render partial="reserveFormSummary" arguments="{_all}" />
+					</f:then>
+					<f:else>
+						<f:render partial="reserveForm" arguments="{_all}" />
+					</f:else>
+				</f:if>
+			</div>
+			<f:if condition="{myLendings->f:count()} > 0">
+				<div class="tab-pane fade {f:if(condition:'{tab} === \'myLendings\'', then: 'show active')} pt-3"
+					id="nav-myLending" role="myLending" aria-labelledby="nav-myLending-tab">
+					<f:render partial="myLendings" arguments="{_all}" />
+				</div>
+			</f:if>
+			<f:if condition="{isApprover}">
+				<div class="tab-pane fade {f:if(condition:'{tab} === \'approval\' ', then: 'show active')} pt-3"
+					id="nav-approval" role="approval" aria-labelledby="nav-approval-tab">
+					<f:render partial="approveForm" arguments="{_all}" />
+				</div>
+			</f:if>
+		</div>
+	</f:section>
+</body>
 
 </html>

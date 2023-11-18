@@ -40,10 +40,7 @@ tx_cylending_ajaxConnect {
       pluginName = Lending
       vendorName = cylancer
   }
-
-
-   # 10 < tt_content.list.20.txcylending_calendarsupplier
-  
+ 
    config {
       disableAllHeaderCode = 1
       additionalHeaders = Content-type:application/json

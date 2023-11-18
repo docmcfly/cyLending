@@ -4,6 +4,7 @@ namespace Cylancer\CyLending\Service;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -122,23 +123,24 @@ class EmailSendService implements SingletonInterface
         return
             str_replace(
                 'Monday',
-                'Montag',
+                LocalizationUtility::translate('message.weekday.Monday', 'cy_lending'),
                 str_replace(
                     'Tuesday',
-                    'Dienstag',
+                    LocalizationUtility::translate('message.weekday.Tuesday', 'cy_lending'),
                     str_replace(
                         'Wednesday',
-                        'Mittwoch',
+                        LocalizationUtility::translate('message.weekday.Wednesday', 'cy_lending'),
                         str_replace(
                             'Thursday',
-                            'Donnerstag',
+                            LocalizationUtility::translate('message.weekday.Thursday', 'cy_lending'),
                             str_replace(
                                 'Friday',
-                                'Freitag',
+                                LocalizationUtility::translate('message.weekday.Friday', 'cy_lending'),
                                 str_replace(
                                     'Saturday',
-                                    'Samstag',
-                                    str_replace('Sunday', 'Sonntag', $text)
+                                    LocalizationUtility::translate('message.weekday.Saturday', 'cy_lending'),
+                                    str_replace('Sunday', LocalizationUtility::translate('message.weekday.Sunday', 'cy_lending'),
+                                     $text)
                                 )
                             )
                         )

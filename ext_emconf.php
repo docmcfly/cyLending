@@ -7,7 +7,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'beta',
     'clearCacheOnLoad' => 1,
-    'version' => '1.2.5',
+    'version' => '1.4.0',
     'constraints' => [
         'depends' => [
             'typo3' => '11.5.0-11.99.99',
@@ -23,8 +23,14 @@ $EM_CONF[$_EXTKEY] = [
 
 /**
  ** CHANGELOG:
- *
- *  1.2.5 :: UPD : Approvers can create lendings with heigh priority. (Overrides exists lendings.)
+ *  1.4.0 :: UPD : Add sub lendings.
+ *  1.3.1 :: CHG : Add small border bottom to an event in the calendar. 
+ *  1.3.0 :: UPD : Add ignore time overlapping function
+ *  1.2.9 :: CHG : The fix reduces unused detail times.
+ *  1.2.8 :: CHG : Detail show displays the times better.
+ *  1.2.7 :: UPD : High priority is persistent now.
+ *  1.2.6 :: FIX : Fix the time rendering in the calendar.
+ *  1.2.5 :: UPD : Approvers can create lendings with high priority. (Overrides exists lendings.)
  *  1.2.4 :: FIX : Prevent two double requests (UI).
  *  1.2.3 :: FIX : Better handling with deleted requests.
  *  1.2.2 :: FIX : Prevent two different permits.

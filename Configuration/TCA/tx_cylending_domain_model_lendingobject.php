@@ -13,7 +13,7 @@ return
         ],
         'types' => [
             '1' => [
-                'showitem' => 'group_name, title, color, approver_group, observer_group'
+                'showitem' => 'group_name, title, approver_group, observer_group, color'
             ]
         ],
         'columns' => [
@@ -67,7 +67,19 @@ return
                     'minitems' => 0,
                 ]
             ],
+            // 'quantity' => [
+            //     'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lendingobject.quantity',
+            //     'config' => [
+            //         'type' => 'input',
+            //         'eval' => 'int',
+            //         'required' => true,
+            //         'default' => 1,
+            //         'range' => [
+            //             'lower' => 1,
+            //             'upper' => 1000
+            //         ],
+            //     ],
+            // ],
         ]
 
     ];
-

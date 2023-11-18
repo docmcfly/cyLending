@@ -21,6 +21,9 @@
 			<trans-unit id="tx_cylending_domain_model_product_lending.purpose">
 				<source>Purpose</source>
 			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.highPriority">
+				<source>High priority</source>
+			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lending.state">
 				<source>State</source>
 			</trans-unit>
@@ -35,6 +38,9 @@
 			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lending.state.rejected">
 				<source>Rejected</source>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.state.canceled">
+				<source>Canceled</source>
 			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lending.approver">
 				<source>Approver</source>

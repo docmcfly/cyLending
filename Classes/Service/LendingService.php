@@ -1,17 +1,12 @@
 <?php
 namespace Cylancer\CyLending\Service;
 
-use Cylancer\CyLending\Controller\AjaxConnectController;
 use Cylancer\CyLending\Domain\Model\Lending;
+use Cylancer\CyLending\Domain\Model\LendingObject;
 use Cylancer\CyLending\Domain\Repository\LendingRepository;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
-use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Core\Mail\MailMessage;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  *
@@ -38,7 +33,7 @@ class LendingService implements SingletonInterface
         $this->lendingRepository = $lendingRepository;
     }
 
-    public function getAvailabilityRequestsAsEventsOf(int $year, int $month, array $storagePids = NULL): array
+    public function getVisualAvailabilityRequestsAsEventsOf(int $year, int $month, array $storagePids = NULL): array
     {
         if ($storagePids != null) {
             $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
@@ -46,18 +41,26 @@ class LendingService implements SingletonInterface
             $this->lendingRepository->setDefaultQuerySettings($querySettings);
         }
 
+        /** @var \DateTime $startDate */
+        $startDate = LendingRepository::toDateTime($year, $month);
+        $startDate = LendingRepository::addDays($startDate, 1- intval($startDate->format("N")));
+
+        /** @var \DateTime $endDate */
+        $endDate = LendingRepository::toDateTime($year, $month);
+        $endDate = LendingRepository::addMonths($endDate, 1);
+        $endDate = LendingRepository::addDays($endDate, 7 - intval($endDate->format("N")));
+
         $events = [];
-        /** @var \Cylancer\CyLending\Domain\Model\Lending $lending*/
-        foreach ($this->lendingRepository->findMonthAvailabilityRequests($year, $month) as $lending) {
+        /** @var Lending $lending*/
+        foreach ($this->lendingRepository->findFromUntilAvailabilityRequests($startDate, $endDate) as $lending) {
 
-            /** @var \Cylancer\CyLending\Domain\Model\LendingObject $lendingObject*/
+            /** @var LendingObject $lendingObject*/
             $lendingObject = $lending->getObject();
-
             $event = [];
             $event['idx'] = $lending->getUid();
             $event['start'] = $lending->getFrom();
             $event['end'] = $lending->getUntil();
-            $event['title'] = $lendingObject->getTitle();
+            $event['title'] = ($lending->getHighPriority() ? '❗' : '') . $lendingObject->getTitle();
             $event['description'] = $lending->getPurpose();
             $event['responsible'] = $lending->getBorrower()->getFirstName() . ' ' . $lending->getBorrower()->getLastName();
             $event['backgroundColor'] = $lendingObject->getColor();
@@ -69,7 +72,6 @@ class LendingService implements SingletonInterface
 
 
     }
-
 
 
 }

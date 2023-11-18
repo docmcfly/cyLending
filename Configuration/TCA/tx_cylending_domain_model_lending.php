@@ -7,13 +7,13 @@ return
             'tstamp' => 'tstamp',
             'crdate' => 'crdate',
             'delete' => 'deleted',
-            'default_sortby' => 'from',
+            'default_sortby' => 'from DESC, purpose ASC ',
             'iconfile' => 'EXT:cy_lending/Resources/Public/Icons/LendingObject.svg',
-            'searchFields' => 'object, from, borrower, approver, state, purpose',
+            'searchFields' => 'object, from, borrower, purpose, approver, state, purpose, high_priority',
         ],
         'types' => [
             '1' => [
-                'showitem' => 'object, from, until, borrower, purpose, state, borrower_comment, public_borrower_comment, approver, approver_comment, public_approver_comment'
+                'showitem' => 'object, from, until, borrower, purpose, high_priority, state, borrower_comment, public_borrower_comment, approver, approver_comment, public_approver_comment'
             ]
         ],
         'columns' => [
@@ -69,6 +69,20 @@ return
                     'readOnly' => false,
                 ]
             ],
+            'high_priority' => [
+                'exclude' => false,
+                'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.highPriority',
+                'config' => [
+                    'type' => 'check',
+                    'renderType' => 'checkboxToggle',
+                    'items' => [
+                       [
+                          0 => '',
+                          1 => '',
+                       ]
+                    ],
+                ]
+            ],
             'state' => [
                 'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state',
                 'config' => [
@@ -79,6 +93,7 @@ return
                         ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.availabilityRequest', 1],
                         ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.approved', 2],
                         ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.rejected', 3],
+                        ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.canceled', 4],
                     ],
                     'minitems' => 1,
                     'maxitems' => 1,
