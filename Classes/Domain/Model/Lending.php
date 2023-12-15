@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace Cylancer\CyLending\Domain\Model;
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use Cylancer\CyLending\Domain\Model\FrontendUser;
 
 /**
@@ -44,8 +43,6 @@ class Lending extends AbstractEntity
 	 * */
 	protected $until = '0';
 
-	/** @var bool */
-	protected $lendingAllowed = false;
 
 	/** 
 	 * @var string 
@@ -58,12 +55,13 @@ class Lending extends AbstractEntity
 	/** @var bool */
 	protected $highPriority = false;
 
-	/** @var bool */
-	protected $displayIgnoreOverlapping = false;
+	/** @var int */
+	protected $quantity = 1;
 
-	/** @var bool */
-	protected $ignoreOverlapping = false;
-
+	public function __construct()
+	{
+		parent::__construct();
+	}
 
 	/**
 	 * 
@@ -134,25 +132,6 @@ class Lending extends AbstractEntity
 		return $this;
 	}
 
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public function getLendingAllowed()
-	{
-		return $this->lendingAllowed;
-	}
-
-	/**
-	 * 
-	 * @param boolean $lendingAllowed 
-	 * @return self
-	 */
-	public function setLendingAllowed($lendingAllowed): self
-	{
-		$this->lendingAllowed = $lendingAllowed;
-		return $this;
-	}
 
 	/**
 	 * 
@@ -256,41 +235,21 @@ class Lending extends AbstractEntity
 
 	/**
 	 * 
-	 * @return bool
+	 * @return int
 	 */
-	public function getIgnoreOverlapping()
+	public function getQuantity()
 	{
-		return $this->ignoreOverlapping;
+		return $this->quantity;
 	}
 
 	/**
 	 * 
-	 * @param bool $ignoreOverlapping 
+	 * @param int $quantity 
 	 * @return self
 	 */
-	public function setIgnoreOverlapping($ignoreOverlapping): self
+	public function setQuantity($quantity): self
 	{
-		$this->ignoreOverlapping = $ignoreOverlapping;
-		return $this;
-	}
-
-	/**
-	 * 
-	 * @return bool
-	 */
-	public function getDisplayIgnoreOverlapping()
-	{
-		return $this->displayIgnoreOverlapping;
-	}
-
-	/**
-	 * 
-	 * @param bool $displayIgnoreOverlapping 
-	 * @return self
-	 */
-	public function setDisplayIgnoreOverlapping($displayIgnoreOverlapping): self
-	{
-		$this->displayIgnoreOverlapping = $displayIgnoreOverlapping;
+		$this->quantity = $quantity;
 		return $this;
 	}
 

@@ -59,6 +59,10 @@
 				<source>Approver</source>
 				<target state="tanslated">Genehmigende Person</target>
 			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lending.quantity">
+				<source>Total amount</source>
+				<target state="tanslated">Gesamtmenge</target>
+			</trans-unit>
 
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.object">
 				<source>Lending object </source>

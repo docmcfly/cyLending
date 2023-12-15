@@ -25,6 +25,8 @@ class LendingRepository extends Repository
     const SQL_DATE_FORMAT = "Y-m-d H:i:s";
     const DATE_FORMAT = "Y-m-d";
 
+    const NO_LIMIT = -1;
+
     public function findAllNotRejectedSince($until)
     {
         $today = date(LendingRepository::SQL_DATE_FORMAT, time());
@@ -59,9 +61,16 @@ class LendingRepository extends Repository
         return $q->execute();
     }
 
-    public function findAllAvailabilityRequests(array $canApproveLendingObjects)
+    /**
+     * @param array $canApproveLendingObjects
+     * @return array
+     */
+    public function findAllAvailabilityRequests(array $canApproveLendingObjects):array
     {
-
+        if( count(array_keys($canApproveLendingObjects)) == 0) {
+            return [];
+        }
+        
         /** @var QueryInterface $q*/
         $q = $this->createQuery();
         $q->matching(
@@ -75,15 +84,15 @@ class LendingRepository extends Repository
         );
         $q->setOrderings(['from' => QueryInterface::ORDER_ASCENDING]);
 
-        return $q->execute();
+        return $q->execute()->toArray();
     }
 
 
 
-    public function findMyLendings(?FrontendUser $frontendUser): ?QueryResult
+    public function findMyLendings(?FrontendUser $frontendUser): array
     {
         if ($frontendUser == null) {
-            return null;
+            return [];
         }
        
         /** @var QueryInterface $q*/
@@ -100,7 +109,7 @@ class LendingRepository extends Repository
         $q->setOrderings(['from' => QueryInterface::ORDER_ASCENDING]);
     // $queryParser = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class);
     //      debug($queryParser->convertQueryToDoctrineQueryBuilder($q)->getSQL());
-        return $q->execute();
+        return $q->execute()->toArray();
     }
 
 
@@ -150,16 +159,16 @@ class LendingRepository extends Repository
         return count($this->getOverlapsAvailabilityRequests($lending, 1)->toArray()) > 0;
     }
 
-    public function getOverlapsAvailabilityRequests(Lending $lending, int $limit = 0)
+    public function getOverlapsAvailabilityRequests(Lending $lending, int $limit = LendingRepository::NO_LIMIT, int $state = Lending::STATE_APPROVED)
     {
         $q = $this->createQuery();
 
-        if ($limit > 0) {
+        if ($limit !== LendingRepository::NO_LIMIT) {
             $q->setLimit($limit);
         }
 
         $conditions = [
-            $q->equals('state', Lending::STATE_APPROVED),
+            $q->equals('state', $state),
             $q->logicalNot(
                 $q->logicalOr(
                     [
@@ -188,6 +197,20 @@ class LendingRepository extends Repository
 
 
     }
+
+    public static function stringDateTimetoDate(string $dateTime): \DateTime
+    {
+        $parseResult = date_parse_from_format(LendingRepository::SQL_DATE_FORMAT, $dateTime);
+        if ($parseResult['error_count'] > 0) {
+            throw new \Exception("Date format is invalid: " . $dateTime);
+        }
+
+        $return = new \DateTime();
+        return $return
+            ->setDate($parseResult['year'], $parseResult['month'], $parseResult['day'])
+            ->setTime(0, 0, 0, 0);
+    }
+
 
     public static function stringDatetoDateTime(string $date): \DateTime
     {

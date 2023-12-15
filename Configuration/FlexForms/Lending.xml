@@ -131,36 +131,52 @@
 							</config>
 						</TCEforms>
 					</settings.lendingObjectStorageUids>
-					<settings.reasonsForPreventionContentElement>
+					<settings.reasonsForPreventionServiceTitle>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionContentElement
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionServiceTitle
 							</label>
 							<config>
 								<type>input</type>
-								<renderType>inputLink</renderType>
 								<eval>
 									trim
 								</eval>
-								<fieldControl>
-									<linkPopup>
-										<options>
-											<blindLinkOptions>file,folder,mail,telephone,url</blindLinkOptions>
-										</options>
-									</linkPopup>
-								</fieldControl>
 							</config>
 						</TCEforms>
-					</settings.reasonsForPreventionContentElement>
-					<settings.reasonsForPreventionTSPageType>
+					</settings.reasonsForPreventionServiceTitle>
+					<settings.reasonsForPreventionService>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionTSPageType
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionService
 							</label>
+							<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionService.description
+							</description>
 							<config>
 								<type>input</type>
-								<min>1</min>
+								<eval>
+									trim
+								</eval>
 							</config>
 						</TCEforms>
-					</settings.reasonsForPreventionTSPageType>
+					</settings.reasonsForPreventionService>
+					<settings.reasonsForPreventionServiceStorageUids>
+						<TCEforms>
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionServiceStorageUids
+							</label>
+							<config>
+								<type>select</type>
+								<renderType>selectTree</renderType>
+								<foreign_table>pages</foreign_table>
+								<foreign_table_where>ORDER BY pages.sorting</foreign_table_where>
+								<size>20</size>
+								<treeConfig>
+									<parentField>pid</parentField>
+									<appearance>
+										<maxLevels>7</maxLevels>
+									</appearance>
+								</treeConfig>
+								<minitems>0</minitems>
+							</config>
+						</TCEforms>
+					</settings.reasonsForPreventionServiceStorageUids>
 				</el>
 			</ROOT>
 		</sDEF>

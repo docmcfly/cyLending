@@ -3,6 +3,13 @@
 	<file source-language="en" datatype="plaintext" original="EXT:cy_lending/Resources/Private/Language/locallang_db.xlf" date="2020-01-09T21:28:55Z" product-name="cylending">
 		<header />
 		<body>
+			<trans-unit id="pieces">
+				<source>Pieces</source>
+			</trans-unit>
+			<trans-unit id="piece">
+				<source>Piece</source>
+			</trans-unit>
+			
 			<trans-unit id="lending.overview.tab.lending">
 				<source>Lending</source>
 			</trans-unit>
@@ -15,6 +22,7 @@
 			<trans-unit id="lending.overview.tab.myLendings">
 				<source>My lendings</source>
 			</trans-unit>
+
 			<trans-unit id="lending.overview.availabilityRequest.form.object">
 				<source>Lending object</source>
 			</trans-unit>
@@ -23,6 +31,9 @@
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.purpose.placeholder">
 				<source>Press cursor down for poposals</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.quantity">
+				<source>Quantity</source>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.highPriority">
 				<source>High priority</source>
@@ -41,12 +52,6 @@
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionFound">
 				<source>Reasons for prevention</source>
-			</trans-unit>
-			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore">
-				<source>Despite the reasons for prevention send</source>
-			</trans-unit>
-			<trans-unit id="lending.overview.availabilityRequest.form.label.ignoreExistLendings">
-				<source>&lt;strong&gt;Exist lendings:&lt;/strong&gt; I made arrangements with the other borrower. </source>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.error.object.isEmpty">
 				<source>Lending object is not specified.</source>
@@ -75,6 +80,18 @@
 			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isInThePast">
 				<source>Lending end time is in the past.</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.quantity.tooLarge">
+				<source>The loan quantity is too large. Only %s %s are available.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.warning.existsOverlapsAvailabilityRequests">
+				<source>&lt;strong&gt;Exist lendings:&lt;/strong&gt; I made arrangements with the other borrower. </source>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.warning.reasonsForPrevention">
+				<source>List of possible reasons for prevention: %s</source>
+			</trans-unit>
+
+			
+
 			<trans-unit id="lending.overview.availabilityRequest.form.info.successful">
 				<source>Availability request send sucessful.</source>
 			</trans-unit>
@@ -89,10 +106,6 @@
 				<source>Back</source>
 			</trans-unit>
 
-			<trans-unit id="lending.overview.availabilityRequest.object">
-				<source>Lending object</source>
-			</trans-unit>
-
 			<trans-unit id="lending.overview.approval.form.error.userNotApprover.approve">
 				<source>You has not the rights to approve a availability request.</source>
 			</trans-unit>
@@ -105,6 +118,13 @@
 			<trans-unit id="lending.overview.approval.form.error.userNotApprover.reject">
 				<source>You has not the rights to reject a availability request.</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.warning.existsOverlapsAvailabilityRequests">
+				<source>The loan period overlaps with other loans.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.warning.reasonsForPrevention">
+				<source>List of possible reasons for prevention: %s</source>
+			</trans-unit>
+			
 			<trans-unit id="lending.overview.approval.form.info.successful.approved">
 				<source>You have approve the availability request successful.</source>
 			</trans-unit>
@@ -147,6 +167,9 @@
 			<trans-unit id="lending.overview.approval.form.error.requestAlreadyBeenProcessed">
 				<source>The request has already been processed</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.quantity.tooLarge">
+				<source>The loan quantity is too large. Only %s %s are available.</source>
+			</trans-unit>
 			<trans-unit id="lending.overview.approval.form.error.requestDeleted">
 				<source>The request is already deleted</source>
 			</trans-unit>
@@ -160,6 +183,9 @@
 			<trans-unit id="lending.overview.myLending.form.purpose">
 				<source>Purpose</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.quantity">
+				<source>Quantity</source>
+			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.from">
 				<source>From</source>
 			</trans-unit>
@@ -168,6 +194,9 @@
 			</trans-unit>
 			<trans-unit id="lending.overview.myLending.action.cancel">
 				<source>Cancel lending</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.info.successful">
+				<source>Availability request canceled sucessful.</source>
 			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.error.object.isEmpty">
 				<source>Lending object is not specified.</source>
@@ -203,15 +232,14 @@
 				<source>Ignore the time overlapping</source>
 			</trans-unit>
 
-
 			<trans-unit id="message.approver.email.subject">
 				<source>A new the availability request</source>
 			</trans-unit>
 			<trans-unit id="message.approver.email.salutation">
-				<source>Hello %s.</source>
+				<source>Hello %s %s.</source>
 			</trans-unit>
 			<trans-unit id="message.approver.email.youHaveRequest">
-				<source>You have availability request: </source>
+				<source>You have availability request:</source>
 			</trans-unit>
 			<trans-unit id="message.approver.email.object">
 				<source>Lending object</source>
@@ -229,7 +257,6 @@
 				<source>Borrower</source>
 			</trans-unit>
 
-
 			<trans-unit id="message.borrower.email.subject">
 				<source>Your availability request</source>
 			</trans-unit>
@@ -237,10 +264,10 @@
 				<source>Hello %s %s.</source>
 			</trans-unit>
 			<trans-unit id="message.borrower.email.yourRequestIsApproved">
-				<source>Your availability request is approved.</source>
+				<source>Your availability request is &lt;strong style="color:green; "&gt;approved&lt;/strong&gt;.</source>
 			</trans-unit>
 			<trans-unit id="message.borrower.email.yourRequestIsRejected">
-				<source>Your availability request is rejected.</source>
+				<source>Your availability request is &lt;strong style="color:red; "&gt;rejected&lt;/strong&gt;.</source>
 			</trans-unit>
 			<trans-unit id="message.borrower.email.object">
 				<source>Lending object</source>
@@ -255,7 +282,6 @@
 				<source>Until</source>
 			</trans-unit>
 
-
 			<trans-unit id="message.observer.email.subject">
 				<source>State of an availability request</source>
 			</trans-unit>
@@ -263,16 +289,19 @@
 				<source>Hello %s %s.</source>
 			</trans-unit>
 			<trans-unit id="message.observer.email.requestIsApproved">
-				<source>An availability request is approved.</source>
+				<source>An availability request is &lt;strong style="color:green; "&gt;approved&lt;/strong&gt;.</source>
 			</trans-unit>
 			<trans-unit id="message.observer.email.requestIsRejected">
-				<source>An availability request is rejected.</source>
+				<source>An availability request is &lt;strong style="color:red; "&gt;rejected&lt;/strong&gt;.</source>
 			</trans-unit>
 			<trans-unit id="message.observer.email.object">
 				<source>Lending object</source>
 			</trans-unit>
 			<trans-unit id="message.observer.email.purpose">
 				<source>Purpose</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.quantity">
+				<source>Quantity</source>
 			</trans-unit>
 			<trans-unit id="message.observer.email.withHighPriority">
 				<source>With high priority!</source>
@@ -312,11 +341,11 @@
 				<source>Until</source>
 			</trans-unit>
 			<trans-unit id="message.informReviousBorrorer.email.inquiries">
-				<source>If you have any questions, please contact %s.</source>
+				<source>If you have any questions, please contact %s %s.</source>
 			</trans-unit>
 
 			<trans-unit id="message.cancel.email.subject">
-				<source>A new the availability request</source>
+				<source>A approved borrowing was withdrawn</source>
 			</trans-unit>
 			<trans-unit id="message.cancel.email.salutation">
 				<source>Hello %s %s.</source>
@@ -340,7 +369,6 @@
 				<source>Borrower</source>
 			</trans-unit>
 
-
 			<trans-unit id="message.weekday.Monday">
 				<source>Monday</source>
 			</trans-unit>
@@ -362,9 +390,6 @@
 			<trans-unit id="message.weekday.Sunday">
 				<source>Sunday</source>
 			</trans-unit>
-
-
-
 
 
 

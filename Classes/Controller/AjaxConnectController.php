@@ -2,7 +2,7 @@
 namespace Cylancer\CyLending\Controller;
 
 use Cylancer\CyLending\Domain\Model\Lending;
-use Cylancer\CyLending\Domain\Repository\ContentElementRepository;
+use Cylancer\CyLending\Domain\Repository\LendingObjectRepository;
 use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use Cylancer\CyLending\Service\LendingService;
 use Cylancer\CyLending\Service\MiscService;
@@ -32,6 +32,9 @@ class AjaxConnectController extends ActionController
     /* @var LendingRepository */
     private LendingRepository $lendingRepository;
 
+    /* @var LendingRepository */
+    private LendingObjectRepository $lendingObjectRepository;
+
     /* @var MiscService */
     private MiscService $miscService;
 
@@ -39,11 +42,13 @@ class AjaxConnectController extends ActionController
 
     public function __construct(
         LendingService $lendingService,
+        LendingObjectRepository $lendingObjectRepository,
         LendingRepository $lendingRepository,
         MiscService $miscService
     ) {
         $this->lendingService = $lendingService;
         $this->lendingRepository = $lendingRepository;
+        $this->lendingObjectRepository = $lendingObjectRepository;
         $this->miscService = $miscService;
     }
 
@@ -73,7 +78,7 @@ class AjaxConnectController extends ActionController
             $tmp = new Lending();
             $tmp->setFrom($from);
             $tmp->setUntil($until);
-            
+
             $settings = $this->miscService->getFlexformSettings($uid, 'lendingStorageUids', 'otherLendingStorageUids');
 
             $storageUids = array_merge(
@@ -89,12 +94,48 @@ class AjaxConnectController extends ActionController
             return json_encode([
                 'result' => $this->lendingRepository->existsOverlapsAvailabilityRequests($tmp),
                 'debug' => var_export($tmp, true),
-
-
             ]);
         }
         return json_encode([]);
+    }
+
+    /**
+     * @param int  $uid
+     */
+    public function getMaxQuantityAction(int $uid)
+    {
+        $parsedBody = $this->request->getParsedBody();
+        if (is_array($parsedBody)) {
+            $from = $parsedBody['from'];
+            $until = $parsedBody['until'];
+            $objUid = intval($parsedBody['object']);
+            $tmp = new Lending();
+            $tmp->setFrom($from);
+            $tmp->setUntil($until);
+            $obj = $this->lendingObjectRepository->findByUid($objUid);
+            $tmp->setObject($obj);
+
+            $settings = $this->miscService->getFlexformSettings($uid, 'lendingStorageUids', 'otherLendingStorageUids');
+
+            $storageUids = array_merge(
+                GeneralUtility::intExplode(',', $settings['lendingStorageUids']),
+                GeneralUtility::intExplode(',', $settings['otherLendingStorageUids']),
+            );
+
+            $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+            $querySettings->setStoragePageIds($storageUids);
+            $this->lendingRepository->setDefaultQuerySettings($querySettings);
+
+            // debug($tmp);
+            return json_encode([
+                'result' => $obj->getQuantity()- $this->lendingService->caluculateMaximum($this->lendingRepository->getOverlapsAvailabilityRequests($tmp))
+            ]);
+
+
+        }
+
 
     }
+
 
 }

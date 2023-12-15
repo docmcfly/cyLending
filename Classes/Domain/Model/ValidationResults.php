@@ -17,33 +17,40 @@ namespace Cylancer\CyLending\Domain\Model;
 class ValidationResults
 {
 
-
-    protected $object;
-
-
     /**
      *
      * @var array
      */
-    protected $infos = array();
+    protected $infos;
 
     /** @var array  */
-    protected $errors = array();
+    protected $errors;
+
+    /** @var array  */
+    protected $warnings;
+
+    /** @var array  */
+    protected $confirmedWarnings;
 
 
-    public function __construct($object = null)
+    /**
+     *
+     */
+    public function __construct()
     {
-        $this->object = $object;
+        $this->infos = [];
+        $this->errors = [];
+        $this->warnings = [];
+        $this->confirmedWarnings = [];
     }
 
-
-    /** @return array of srings  */
+    /** @return array of stings  */
     public function getInfos()
     {
         return $this->infos;
     }
 
-    /** @return array of srings  */
+    /** @return array of strings  */
     public function getErrors()
     {
         return $this->errors;
@@ -57,11 +64,34 @@ class ValidationResults
 
     /**
      *
-     * @return array of srings
+     * @return array of strings
      */
     public function hasInfos(): bool
     {
         return !empty($this->infos);
+    }
+
+    /**
+     * @return array of strings
+     */
+    public function hasWarnings(): bool
+    {
+        return !empty($this->warnings);
+    }
+
+    public function isOkay(): bool
+    {
+        if ($this->hasErrors()) {
+            return false;
+        }
+        if ($this->hasWarnings()) {
+            foreach ($this->warnings as $warning) {
+                if (!in_array($warning['id'], $this->confirmedWarnings)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -78,8 +108,6 @@ class ValidationResults
 
     /**
      *
-     * @param string $errorKey
-     * @param array $arguments
      */
     public function addError(string $errorKey, array $arguments = []): void
     {
@@ -89,9 +117,21 @@ class ValidationResults
     }
 
     /**
+     * 
+     * @param string $warningKey
+     * @param array $arguments
+     */
+    public function addWarning(string $warningKey, array $arguments = []): void
+    {
+        $keySplit = explode('.', $warningKey, 2);
+        $this->warnings['warning.' . $warningKey]['arguments'] = $arguments;
+        $this->warnings['warning.' . $warningKey]['id'] = count($keySplit) == 2 ? $keySplit[0] : $warningKey;
+    }
+
+
+    /**
      *
-     * @param
-     *            array
+     * @param array $infos
      */
     public function addInfos(array $infos)
     {
@@ -102,8 +142,8 @@ class ValidationResults
 
     /**
      *
-     * @param
-     *            array
+     * @param array $errors
+     * 
      */
     public function addErrors(array $errors)
     {
@@ -112,11 +152,55 @@ class ValidationResults
         }
     }
 
-	/**
-	 * 
-	 * @return object|null
-	 */
-	public function getObject() {
-		return $this->object;
-	}
+    /**
+     * @param array $warnings
+     */
+    public function addWarnings(array $warnings)
+    {
+        foreach ($warnings as $warning) {
+            $this->addWarning($warning);
+        }
+    }
+
+    public function isConfirmed(string $warningKey): bool
+    {
+        return in_array($warningKey, $this->confirmedWarnings);
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getWarnings()
+    {
+        return $this->warnings;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getConfirmedWarnings()
+    {
+        return $this->confirmedWarnings;
+    }
+
+    /**
+     * 
+     * @param array $confirmedWarnings 
+     * @return self
+     */
+    public function setConfirmedWarnings($confirmedWarnings): self
+    {
+        $this->confirmedWarnings = $confirmedWarnings;
+        return $this;
+    }
+
+    public function clear(): void
+    {
+        $this->infos = [];
+        $this->errors = [];
+        $this->warnings = [];
+        $this->confirmedWarnings = [];
+    }
 }

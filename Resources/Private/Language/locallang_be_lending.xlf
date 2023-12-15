@@ -36,11 +36,18 @@
 			<trans-unit id="flexforms_general.settings.lendingObjectStorageUids">
 				<source>Storage of lending objects</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.reasonsForPreventionContentElement">
-				<source>Content element with reason for prevention service</source>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionServiceTitle">
+				<source>Title of prevention reason finder</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.reasonsForPreventionTSPageType">
-				<source>TypoScript path of reason for prevention service page type</source>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionService">
+				<source>Prevention reason finder</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionService.description">
+				<source>Complete class path where a the method:
+					public static function reasonsForPreventionAction(array $storageUids, \DateTime $from, \DateTime $until, string $visibility = 'ALL'): array is provided:</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionServiceStorageUids">
+				<source>Storage location of the prevention reasons</source>
 			</trans-unit>
 		</body>
 	</file>

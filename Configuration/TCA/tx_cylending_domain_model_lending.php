@@ -13,7 +13,7 @@ return
         ],
         'types' => [
             '1' => [
-                'showitem' => 'object, from, until, borrower, purpose, high_priority, state, borrower_comment, public_borrower_comment, approver, approver_comment, public_approver_comment'
+                'showitem' => 'object, quantity, from, until, borrower, purpose, high_priority, state, borrower_comment, public_borrower_comment, approver, approver_comment, public_approver_comment'
             ]
         ],
         'columns' => [
@@ -112,6 +112,19 @@ return
                     'maxitems' => 1,
                     'required' => true,
                 ]
+            ],
+            'quantity' => [
+                'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.quantity',
+                'config' => [
+                    'type' => 'input',
+                    'eval' => 'int',
+                    'required' => true,
+                    'default' => 1,
+                    'range' => [
+                        'lower' => 1,
+                        'upper' => 1000
+                    ],
+                ],
             ],
         ]
 

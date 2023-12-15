@@ -47,13 +47,23 @@
 				<source>Storage of lending objects</source>
 				<target state="tanslated">Speicherort der Ausleihobjekte</target>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.reasonsForPreventionContentElement">
-				<source>Content element with reason for prevention service</source>
-				<target state="tanslated">Inhaltselement welches den Verhinderungsgrundservice beinhaltet</target>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionServiceTitle">
+				<source>Title of prevention reason finder</source>
+				<target state="tanslated">Titel des Verhinderungsgrund-Finder</target>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.reasonsForPreventionTSPageType">
-				<source>TypoScript path of reason for prevention service page type</source>
-				<target state="tanslated">TypoScript-Pfad vom PageType des Verhinderungsgrundservice</target>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionService">
+				<source>Prevention reason finder</source>
+				<target state="tanslated">Verhinderungsgrund-Finder</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionService.description">
+				<source>Complete class path where a the method:
+					public static function reasonsForPreventionAction(array $storageUids, \DateTime $from, \DateTime $until, string $visibility = 'ALL'): array is provided:</source>
+				<target state="tanslated">Vollständiger Klassenpfad, wo ein die Methode:
+					public static function reasonsForPreventionAction(array $storageUids, \DateTime $from, \DateTime $until, string $visibility = 'ALL'): array bereitgestellt wird:</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.reasonsForPreventionServiceStorageUids">
+				<source>Storage location of the prevention reasons</source>
+				<target state="tanslated">Speicherort der Verhinderungsgründe</target>
 			</trans-unit>
 
 

@@ -18,7 +18,13 @@
 <f:translate
 		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.purpose" />:
 {availabilityRequest.purpose}
-<f:if condition="{availabilityRequest.highPriority}"><f:translate key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.withHighPriority" /></f:if>
+
+<f:if condition="{availabilityRequest.object.quantity} > 1">
+<f:translate
+		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.quantity" />:
+{availabilityRequest.quantity}
+
+</f:if><f:if condition="{availabilityRequest.highPriority}"><f:translate key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.withHighPriority" /></f:if>
 
 <f:translate
 	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.from" />:

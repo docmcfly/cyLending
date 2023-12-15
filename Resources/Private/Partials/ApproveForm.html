@@ -1,87 +1,107 @@
-<f:render partial="validationResults"
-    arguments="{prefix:'lending.overview.approval.form', validationResults: approvalValidationResults}" />
 <f:if condition="{availabilityRequests->f:count()} == 0">
     <f:then>
         <f:translate key="lending.overview.approval.noneEntries" />
     </f:then>
     <f:else>
         <f:for each="{availabilityRequests}" as="availabilityRequest">
-            <div class="row mt-4">
-                <div class="col-md-3 fw-bold fs-5">
-                    <f:translate key="lending.overview.availabilityRequest.form.object" />
-                </div>
-                <div class="col-md-9 fw-bold fs-5">
-                    <div class="rounded-2  border px-2">
-                        {availabilityRequest.object.title}</div>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-md-3">
-                    <f:translate key="lending.overview.availabilityRequest.form.purpose" />
-                </div>
-                <div class="col-md-9">
-                    <div class="rounded-2  border px-2">
-                        {availabilityRequest.purpose}</div>
-                </div>
-            </div>
-            <div class="row  mt-2">
-                <div class="col-md-3">
-                    <f:translate key="lending.overview.availabilityRequest.form.borrower" />
-                </div>
-                <div class="col-md-9 ">
-                    <div class="rounded-2  border px-2">
-                        {availabilityRequest.borrower.firstName}
-                        {availabilityRequest.borrower.lastName}</div>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-md-3">
-                    <f:translate key="lending.overview.availabilityRequest.form.from" />
-                </div>
-                <div class="col-md-9 ">
-                    <div class="rounded-2  border px-2">
-                        <f:format.date format="d.m.Y - H:i">{availabilityRequest.from}
-                        </f:format.date>
+            <f:if condition="{availabilityRequest.uid} > 0">
+                <f:then>
+                    <div class="row mt-4">
+                        <div class="col-md-3 fw-bold fs-5">
+                            <f:translate key="lending.overview.availabilityRequest.form.object" />
+                        </div>
+                        <div class="col-md-9 fw-bold fs-5">
+                            <div class="rounded-2  border px-2">
+                                {availabilityRequest.object.title}</div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-md-3">
-                    <f:translate key="lending.overview.availabilityRequest.form.until" />
-                </div>
-                <div class="col-md-9">
-                    <div class="rounded-2  border px-2">
-                        <f:format.date format="d.m.Y - H:i">{availabilityRequest.until}
-                        </f:format.date>
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <f:translate key="lending.overview.availabilityRequest.form.purpose" />
+                        </div>
+                        <div class="col-md-9">
+                            <div class="rounded-2  border px-2">
+                                {availabilityRequest.purpose}</div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="row border-bottom mt-3 pb-4">
-                <div class="col-md-3">&nbsp;</div>
-                <div class="col-md-4">
-                    <f:form action="approve" name="availabilityRequest" object="{availabilityRequest}"  arguments="{'contextElement': contextElement}"
-                        enctype="multipart/form-data">
-                        <f:form.submit class="btn btn-primary mb-2"
-                            value="{f:translate(key:'lending.overview.approval.action.approve')} " />
-                        <f:if condition="{availabilityRequest.displayIgnoreOverlapping} ">
-                            <div class="mb-2">
-                                <f:form.checkbox class="form-check-input" id="ignoreOverlapping"
-                                    property="ignoreOverlapping" value="1" />
-                                <label class="form-check-label" for="ignoreOverlapping">
-                                    <f:translate key="lending.overview.approval.form.option.ignoreOverlapping" />
-                                </label>
+                    <f:if condition="{availabilityRequest.object.quantity} > 1">
+                        <div class="row mt-2">
+                            <div class="col-md-3">
+                                <f:translate key="lending.overview.availabilityRequest.form.quantity" />
                             </div>
-                        </f:if>
+                            <div class="col-md-9">
+                                <div class="rounded-2  border px-2">
+                                    {availabilityRequest.quantity}</div>
+                            </div>
+                        </div>
+                    </f:if>
+                    <div class="row  mt-2">
+                        <div class="col-md-3">
+                            <f:translate key="lending.overview.availabilityRequest.form.borrower" />
+                        </div>
+                        <div class="col-md-9 ">
+                            <div class="rounded-2  border px-2">
+                                {availabilityRequest.borrower.firstName}
+                                {availabilityRequest.borrower.lastName}</div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <f:translate key="lending.overview.availabilityRequest.form.from" />
+                        </div>
+                        <div class="col-md-9 ">
+                            <div class="rounded-2  border px-2">
+                                <f:format.date format="d.m.Y - H:i">{availabilityRequest.from}
+                                </f:format.date>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <f:translate key="lending.overview.availabilityRequest.form.until" />
+                        </div>
+                        <div class="col-md-9">
+                            <div class="rounded-2  border px-2">
+                                <f:format.date format="d.m.Y - H:i">{availabilityRequest.until}
+                                </f:format.date>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row border-bottom mt-3 pb-4">
+                        <div class="col-md-3">&nbsp;</div>
+                        <div class="col-md-4">
+                            <f:form action="approve" name="availabilityRequest" object="{availabilityRequest}"
+                                arguments="{'contextElement': contextElement}" enctype="multipart/form-data">
+                                <f:render partial="validationResults"
+                                    arguments="{prefix:'lending.overview.approval.form', object:availabilityRequest, context: 'approveRequest'}" />
+                                <f:form.submit class="btn btn-primary mb-2"
+                                    value="{f:translate(key:'lending.overview.approval.action.approve')} " />
+                            </f:form>
+                        </div>
+                        <div class="col-md-4">
+                            <f:form action="reject" name="availabilityRequest" object="{availabilityRequest}"
+                                arguments="{'contextElement': contextElement}" enctype="multipart/form-data">
+                                <f:render partial="validationResults"
+                                    arguments="{prefix:'lending.overview.reject.form', object:availabilityRequest, context: 'rejectRequest'}" />
+                                <f:form.submit class="btn btn-dark mb-2"
+                                    value="{f:translate(key:'lending.overview.approval.action.reject')} " />
+                            </f:form>
+                        </div>
+                    </div>
+                </f:then>
+                <f:else>
+                    <f:form action="approve" name="availabilityRequest" object="{availabilityRequest}"
+                        arguments="{'contextElement': contextElement}" enctype="multipart/form-data">
+                        <f:render partial="validationResults"
+                            arguments="{prefix:'lending.overview.approval.form', object:availabilityRequest, context: 'approveRequest'}" />
                     </f:form>
-                </div>
-                <div class="col-md-4">
-                    <f:form action="reject" name="availabilityRequest" object="{availabilityRequest}"  arguments="{'contextElement': contextElement}"
-                        enctype="multipart/form-data">
-                        <f:form.submit class="btn btn-dark mb-2"
-                            value="{f:translate(key:'lending.overview.approval.action.reject')} " />
+                    <f:form action="reject" name="availabilityRequest" object="{availabilityRequest}"
+                        arguments="{'contextElement': contextElement}" enctype="multipart/form-data">
+                        <f:render partial="validationResults"
+                            arguments="{prefix:'lending.overview.reject.form', object:availabilityRequest, context: 'rejectRequest'}" />
                     </f:form>
-                </div>
-            </div>
+                </f:else>
+            </f:if>
         </f:for>
     </f:else>
 </f:if>

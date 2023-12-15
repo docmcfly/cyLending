@@ -3,6 +3,15 @@
 	<file source-language="en" datatype="plaintext" original="EXT:cy_lending/Resources/Private/Language/locallang_db.xlf" date="2020-01-09T21:28:55Z" product-name="cylending">
 		<header />
 		<body>
+			<trans-unit id="pieces">
+				<source>Pieces</source>
+				<target state="tanslated">Stücke</target>
+			</trans-unit>
+			<trans-unit id="piece">
+				<source>Piece</source>
+				<target state="tanslated">Stück</target>
+			</trans-unit>
+			
 			<trans-unit id="lending.overview.tab.lending">
 				<source>Lending</source>
 				<target state="tanslated">Ausleihe</target>
@@ -19,6 +28,7 @@
 				<source>My lendings</source>
 				<target state="tanslated">Meine Ausleihen</target>
 			</trans-unit>
+
 			<trans-unit id="lending.overview.availabilityRequest.form.object">
 				<source>Lending object</source>
 				<target state="tanslated">Ausleihobjekt</target>
@@ -30,6 +40,10 @@
 			<trans-unit id="lending.overview.availabilityRequest.form.purpose.placeholder">
 				<source>Press cursor down for poposals</source>
 				<target state="tanslated">Taste nach unten für Vorschläge</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.quantity">
+				<source>Quantity</source>
+				<target state="tanslated">Menge</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.highPriority">
 				<source>High priority</source>
@@ -54,18 +68,6 @@
 			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionFound">
 				<source>Reasons for prevention</source>
 				<target state="tanslated">Mögliche Verhinderungsgründe</target>
-			</trans-unit>
-			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore">
-				<source>Despite the reasons for prevention send</source>
-				<target state="tanslated">Trotz der Verhinderungsgründe senden</target>
-			</trans-unit>
-			<trans-unit id="lending.overview.availabilityRequest.form.label.ignoreExistLendings">
-				<source>&lt;strong&gt;Exist lendings:&lt;/strong&gt; I made arrangements with the other borrower. </source>
-				<target state="tanslated">&lt;strong&gt;Bestehende Ausleihen:&lt;/strong&gt; Ich habe mich mit der anderen Ausleiherin bzw. dem anderen Ausleiher abgesprochen.</target>
-			</trans-unit>
-			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore">
-				<source>Despite the reasons for prevention send</source>
-				<target state="tanslated">Trotz der Verhinderungsgründe senden</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.error.object.isEmpty">
 				<source>Lending object is not specified.</source>
@@ -99,6 +101,26 @@
 				<source>Lending start time is in the past.</source>
 				<target state="tanslated">Ausleihstartzeitpunkt ist in der Vergangenheit.</target>
 			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.until.isInThePast">
+				<source>Lending end time is in the past.</source>
+				<target state="tanslated">Ausleihendzeitpunkt ist in der Vergangenheit.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.quantity.tooLarge">
+				<source>The loan quantity is too large. Only %s %s are available.</source>
+				<target state="tanslated">Die Ausleihmenge ist zu groß. Es sind nur %s %s verfügbar.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.quantity.notAvailable">
+				<source>Unfortunately, the loan item is no longer available during this period. </source>
+				<target state="tanslated">Das Ausleihobjekt ist in dem Zeitraum leider nicht mehr verfügbar.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.warning.existsOverlapsAvailabilityRequests">
+				<source>&lt;strong&gt;Exist lendings:&lt;/strong&gt; I made arrangements with the other borrower. </source>
+				<target state="tanslated">&lt;strong&gt;Bestehende Ausleihen:&lt;/strong&gt; Ich habe mich mit der anderen Ausleiherin bzw. dem anderen Ausleiher abgesprochen.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.warning.from.reasonsForPrevention">
+				<source>List of possible reasons for prevention: %s</source>
+				<target state="tanslated">Liste möglicher Verhinderungsgründe: %s </target>
+			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.info.successful">
 				<source>Availability request send sucessful.</source>
 				<target state="tanslated">Ausleihanfrage erfolgreich abgeben.</target>
@@ -107,6 +129,11 @@
 				<source>Availability request was automatic approved.</source>
 				<target state="tanslated">Ausleihanfrage wurde automatisch genehmigt.</target>
 			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.info.quantity.availabilityRequests">
+				<source>Loan requests for %s units are already awaiting approval.</source>
+				<target state="tanslated">Ausleihanfragen für %s Stück warten bereits auf ihre Genehmigung.  </target>
+			</trans-unit>
+			
 			<trans-unit id="lending.overview.availabilityRequest.form.error.automaticApproved">
 				<source>Availability request was not automatic approved. Please contact the webmaster.</source>
 				<target state="tanslated">Ausleihanfrage wurde nicht automatisch genehmigt. Bitte wende Dich an den Webmaster.</target>
@@ -132,6 +159,18 @@
 			<trans-unit id="lending.overview.approval.form.error.userNotApprover.reject">
 				<source>You has not the rights to reject a availability request.</source>
 				<target state="tanslated">Sie haben nicht die Rechte eine Ausleihanfrage abzulehnen.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.warning.existsOverlapsAvailabilityRequests">
+				<source>The loan period overlaps with other loans.</source>
+				<target state="tanslated">Die Ausleihe überlappt sich zeitlich mit anderen Ausleihen.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.warning.from.reasonsForPrevention">
+				<source>List of possible reasons for prevention: %s</source>
+				<target state="tanslated">Liste möglicher Verhinderungsgründe: %s </target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.info.quantity.availabilityRequests">
+				<source>Loan requests for %s units are already awaiting approval.</source>
+				<target state="tanslated">Ausleihanfragen für %s Stück warten bereits auf ihre Genehmigung.  </target>
 			</trans-unit>
 			<trans-unit id="lending.overview.approval.form.info.successful.approved">
 				<source>You have approve the availability request successful.</source>
@@ -189,6 +228,14 @@
 				<source>The request has already been processed</source>
 				<target state="tanslated">Die Anfrage wurde bereits bearbeitet.</target>
 			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.quantity.tooLarge">
+				<source>The loan quantity is too large. Only %s %s are available.</source>
+				<target state="tanslated">Die Ausleihmenge ist zu groß. Es sind nur %s %s verfügbar.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.approval.form.error.quantity.notAvailable">
+				<source>Unfortunately, the loan item is no longer available during this period. </source>
+				<target state="tanslated">Das Ausleihobjekt ist in dem Zeitraum leider nicht mehr verfügbar.</target>
+			</trans-unit>
 			<trans-unit id="lending.overview.approval.form.error.requestDeleted">
 				<source>The request is already deleted</source>
 				<target state="tanslated">Die Anfrage wurde bereits gelöscht.</target>
@@ -206,6 +253,10 @@
 				<source>Purpose</source>
 				<target state="tanslated">Verwendungszweck</target>
 			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.quantity">
+				<source>Quantity</source>
+				<target state="tanslated">Menge</target>
+			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.from">
 				<source>From</source>
 				<target state="tanslated">Von</target>
@@ -217,6 +268,10 @@
 			<trans-unit id="lending.overview.myLending.action.cancel">
 				<source>Cancel lending</source>
 				<target state="tanslated">Ausleihe stornieren</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.info.successful">
+				<source>Availability request canceled sucessful.</source>
+				<target state="tanslated">Ausleihanfrage erfolgreich stroniert.</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.error.object.isEmpty">
 				<source>Lending object is not specified.</source>
@@ -283,6 +338,10 @@
 				<source>Purpose</source>
 				<target state="tanslated">Verwendungszweck</target>
 			</trans-unit>
+			<trans-unit id="message.approver.email.quantity">
+				<source>Quantity</source>
+				<target state="tanslated">Menge</target>
+			</trans-unit>
 			<trans-unit id="message.approver.email.from">
 				<source>From</source>
 				<target state="tanslated">Von</target>
@@ -320,6 +379,10 @@
 				<source>Purpose</source>
 				<target state="tanslated">Verwendungszweck</target>
 			</trans-unit>
+			<trans-unit id="message.borrower.email.quantity">
+				<source>Quantity</source>
+				<target state="tanslated">Menge</target>
+			</trans-unit>
 			<trans-unit id="message.borrower.email.from">
 				<source>From</source>
 				<target state="tanslated">Von</target>
@@ -352,6 +415,10 @@
 			<trans-unit id="message.observer.email.purpose">
 				<source>Purpose</source>
 				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.quantity">
+				<source>Quantity</source>
+				<target state="tanslated">Menge</target>
 			</trans-unit>
 			<trans-unit id="message.observer.email.withHighPriority">
 				<source>With high priority!</source>
@@ -394,6 +461,10 @@
 				<source>Your purpose</source>
 				<target state="tanslated">Dein Verwendungszweck</target>
 			</trans-unit>
+			<trans-unit id="message.informReviousBorrorer.email.quantity">
+				<source>Quantity</source>
+				<target state="tanslated">Menge</target>
+			</trans-unit>
 			<trans-unit id="message.informReviousBorrorer.email.from">
 				<source>From</source>
 				<target state="tanslated">Von</target>
@@ -426,6 +497,10 @@
 			<trans-unit id="message.cancel.email.purpose">
 				<source>Purpose</source>
 				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.quantity">
+				<source>Quantity</source>
+				<target state="tanslated">Menge</target>
 			</trans-unit>
 			<trans-unit id="message.cancel.email.from">
 				<source>From</source>

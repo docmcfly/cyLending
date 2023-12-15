@@ -1,43 +1,64 @@
 <f:render partial="validationResults"
-    arguments="{prefix:'lending.overview.availabilityRequest.form', validationResults: availabilityRequestValidationResults}" />
+    arguments="{prefix:'lending.overview.availabilityRequest.form',  object: toReserve}" />
 <div class="row mt-3 mb-2">
-    <label id="objectLabel" for="object" class="col-sm-3 col-form-label">
+    <div class="col-md-3 fw-bold fs-5">
         <f:translate key="lending.overview.availabilityRequest.form.object" />
-    </label>
-    <div class="col-sm-9">
-        {toReserve.object.title}
+    </div>
+    <div class="col-md-9 fw-bold fs-5">
+        <div class="rounded-2  border px-2">
+            {toReserve.object.title}
+        </div>
     </div>
 </div>
 <div class="row  mb-2">
-    <label id="purposeLabel" for="purpose" class="col-sm-3 col-form-label">
+    <div class="col-md-3">
         <f:translate key="lending.overview.availabilityRequest.form.purpose" />
-    </label>
-    <div class="col-sm-9">
-        {toReserve.purpose}
+    </div>
+    <div class="col-md-9">
+        <div class="rounded-2  border px-2">
+            {toReserve.purpose}
+        </div>
     </div>
 </div>
+<f:if condition="{toReserve.object.quantity} > 1">
+    <div class="row  mb-2">
+        <div class="col-md-3">
+            <f:translate key="lending.overview.availabilityRequest.form.quantity" />
+        </div>
+        <div class="col-md-9">
+            <div class="rounded-2  border px-2">
+                {toReserve.quantity}
+            </div>
+        </div>
+    </div>
+</f:if>
 <div class="row  mb-2">
-    <label id="fromLabel" for="from" class="col-sm-3 col-form-label">
+    <div class="col-md-3">
         <f:translate key="lending.overview.availabilityRequest.form.from" />
-    </label>
-    <div class="col-sm-9">
-        <f:format.date >{toReserve.from}</f:format.date>
+    </div>
+    <div class="col-md-9 ">
+        <div class="rounded-2  border px-2">
+            <f:format.date>{toReserve.from}</f:format.date>
+        </div>
     </div>
 </div>
 <div class="row  mb-2">
-    <label id="untilLabel" for="until" class="col-sm-3 col-form-label">
+    <div class="col-md-3">
         <f:translate key="lending.overview.availabilityRequest.form.until" />
-    </label>
-    <div class="col-sm-9">
-        <f:format.date>{toReserve.until}</f:format.date>
-       
+    </div>
+    <div class="col-md-9">
+        <div class="rounded-2  border px-2">
+            <f:format.date>{toReserve.until}</f:format.date>
+        </div>
     </div>
 </div>
 <div class="row  mb-2">
     <div class="col-sm-3">
         &nbsp;
     </div>
-    <div class="col-sm-9">
-        <a href="?" class="btn btn-primary"><f:translate key="lending.overview.availabilityRequest.form.button.back"></f:translate></a>
+    <div class="col-sm-9 ">
+        <a href="?" class="btn btn-primary">
+            <f:translate key="lending.overview.availabilityRequest.form.button.back"></f:translate>
+        </a>
     </div>
 </div>

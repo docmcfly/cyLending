@@ -19,8 +19,12 @@
 <f:translate
 		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.purpose" />:
 {availabilityRequest.purpose}
+				
+<f:if condition="{availabilityRequest.object.quantity} > 1"><f:translate
+		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.quantity" />:
+{availabilityRequest.quantity}
 
-<f:translate
+</f:if><f:translate
 	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.from" />:
 <f:format.date format="l, d.m.Y H:i">{availabilityRequest.from}</f:format.date>
 

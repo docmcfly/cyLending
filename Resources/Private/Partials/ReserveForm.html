@@ -1,6 +1,3 @@
-<f:render partial="validationResults"
-    arguments="{prefix:'lending.overview.availabilityRequest.form', validationResults: availabilityRequestValidationResults}" />
-
 <f:format.raw>
     <script defer="defer">
         {untilOffset}
@@ -9,19 +6,24 @@
 
 
 
-<f:form class="form reserve" noCache="true" action="reserve" method="POST" enctype="multipart/form-data" arguments="{'contextElement': contextElement}"
-    objectName="toReserve" object="{toReserve}">
+<f:form class="form reserve" noCache="true" action="reserve" method="POST" enctype="multipart/form-data"
+    arguments="{'contextElement': contextElement}" objectName="toReserve" object="{toReserve}">
+    <f:render partial="validationResults"
+        arguments="{prefix:'lending.overview.availabilityRequest.form', validationResults: availabilityRequestValidationResults, object: toReserve}" />
+
+
     <div class="row mt-3 mb-2">
         <label id="objectLabel" for="object" class="col-sm-3 col-form-label">
             <f:translate key="lending.overview.availabilityRequest.form.object" />
         </label>
         <div class="col-sm-9">
-            <f:form.select class="form-select" property="object">
+            <f:form.select class="form-select" property="object" id="object">
                 <f:groupedFor each="{lendingObjects}" as="lendingObjects" groupBy="groupName" groupKey="groupName">
                     <f:if condition="{groupName} == '' ">
                         <f:then>
                             <f:for each="{lendingObjects}" as="lendingObject">
-                                <f:form.select.option value="{lendingObject.uid}">
+                                <f:form.select.option value="{lendingObject.uid}"
+                                    data="{'quantity':lendingObject.avaiableQuantity}">
                                     {lendingObject.title}
                                 </f:form.select.option>
                             </f:for>
@@ -29,7 +31,8 @@
                         <f:else>
                             <f:form.select.optgroup label="{groupName}">
                                 <f:for each="{lendingObjects}" as="lendingObject">
-                                    <f:form.select.option value="{lendingObject.uid}">
+                                    <f:form.select.option value="{lendingObject.uid}"
+                                        data="{'quantity':lendingObject.avaiableQuantity}">
                                         {lendingObject.title}
                                     </f:form.select.option>
                                 </f:for>
@@ -71,6 +74,17 @@
             </div>
         </div>
     </f:if>
+    <f:if condition="{maxLendingQuantity} > 1">
+        <div class="row  mb-2">
+            <label id="quantityLabel" for="quantity" class="col-sm-3 col-form-label">
+                <f:translate key="lending.overview.availabilityRequest.form.quantity" />
+            </label>
+            <div class="col-sm-9">
+                <f:form.textfield id="quantity" class="form-control" property="quantity" type="number"
+                    additionalAttributes="{'min':1, 'max':1}" />
+            </div>
+        </div>
+    </f:if>
     <div class="row  mb-2">
         <label id="fromLabel" for="from" class="col-sm-3 col-form-label">
             <f:translate key="lending.overview.availabilityRequest.form.from" />
@@ -93,46 +107,8 @@
             &nbsp;
         </div>
         <div class="col-sm-9">
-            <button class="btn btn-primary submit">
-                <f:translate key="lending.overview.availabilityRequest.form.submit" />
-            </button>
+            <f:form.submit class="btn btn-primary submit"
+                value="{f:translate(key:'lending.overview.availabilityRequest.form.submit')} " />
         </div>
     </div>
-    <div class="existOverlappingLendings">
-     
-    </div>
-
-
-    <f:if condition="{reasonsForPreventionServiceEnabled}">
-        <f:then>
-            <div class="reasonsForPrevention">
-              
-            </div>
-            <f:format.raw>
-                <script defer="defer">
-                    let existOverlappingLendingsUrl = '{existOverlappingLendingsUrl}'
-                    let ignoreExistLendings = '{f:translate(key:"lending.overview.availabilityRequest.form.label.ignoreExistLendings")}'
-                    
-                    let reasonsForPreventionServiceUrl = '{reasonsForPreventionServiceUrl}'
-                    let reasonsForPreventionFound = '{f:translate(key:"lending.overview.availabilityRequest.form.label.reasonsForPreventionFound")}'
-                    let reasonsForPreventionIgnore = '{f:translate(key:"lending.overview.availabilityRequest.form.label.reasonsForPreventionIgnore")}'
-                </script>
-
-                <f:asset.script identifier="reserveForm.js" defer="defer"
-                    src="EXT:cy_lending/Resources/Public/JavaScript/reserveForm.js" />
-            </f:format.raw>
-        </f:then>
-        <f:else>
-            <script defer="defer">
-               $('form.reserve button.submit').on("click", function () {
-                    let submit = $(this)
-                    submit.prop('disabled', true)
-                    submit.data("text", submit.text())
-                    submit.text('⌛' + submit.text())
-                    $('form.reserve').submit()
-                })
-            </script>
-        </f:else>
-
-    </f:if>
 </f:form>

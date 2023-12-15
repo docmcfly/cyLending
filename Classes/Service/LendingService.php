@@ -7,6 +7,7 @@ use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  *
@@ -43,7 +44,7 @@ class LendingService implements SingletonInterface
 
         /** @var \DateTime $startDate */
         $startDate = LendingRepository::toDateTime($year, $month);
-        $startDate = LendingRepository::addDays($startDate, 1- intval($startDate->format("N")));
+        $startDate = LendingRepository::addDays($startDate, 1 - intval($startDate->format("N")));
 
         /** @var \DateTime $endDate */
         $endDate = LendingRepository::toDateTime($year, $month);
@@ -61,7 +62,12 @@ class LendingService implements SingletonInterface
             $event['start'] = $lending->getFrom();
             $event['end'] = $lending->getUntil();
             $event['title'] = ($lending->getHighPriority() ? '❗' : '') . $lendingObject->getTitle();
-            $event['description'] = $lending->getPurpose();
+            $description = $lending->getPurpose();
+            if ($lendingObject->getQuantity() > 1) {
+                $key = $lending->getQuantity() == 1 ? 'piece' : 'pieces';
+                $description .= ' (' . $lending->getQuantity() . ' ' . LocalizationUtility::translate($key, 'cy_lending') . ')';
+            }
+            $event['description'] = $description;
             $event['responsible'] = $lending->getBorrower()->getFirstName() . ' ' . $lending->getBorrower()->getLastName();
             $event['backgroundColor'] = $lendingObject->getColor();
             $event['striped'] = $lending->getState() == Lending::STATE_AVAILABILITY_REQUEST;
@@ -69,7 +75,50 @@ class LendingService implements SingletonInterface
             $events[] = $event;
         }
         return $events;
+    }
 
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|object[] $lendings
+     */
+    public function caluculateMaximum($lendings): int
+    {
+
+        $o = null;
+        $switchMoments = [];
+        /** @var Lending $lending */
+        foreach ($lendings as $lending) {
+            if ($o == null) {
+
+            }
+            $q = $lending->getQuantity();
+            $f = $lending->getFrom();
+            $u = $lending->getUntil();
+
+            if (isset($switchMoments[$f])) {
+                $switchMoments[$f] += $q;
+            } else {
+                $switchMoments[$f] = $q;
+            }
+            if (isset($switchMoments[$u])) {
+                $switchMoments[$u] -= $q;
+            } else {
+                $switchMoments[$u] = 0 - $q;
+            }
+        }
+        ksort($switchMoments);
+
+        /** @var int $maximum */
+        $maximum = 0;
+
+        $qtyState = 0;
+        foreach ($switchMoments as $qty) {
+            $qtyState += $qty;
+            $maximum = max($maximum, $qtyState);
+            // debug($qtyState, 'qtyState');
+            // debug($maximum, 'maximum');
+        }
+
+        return $maximum;
 
     }
 
