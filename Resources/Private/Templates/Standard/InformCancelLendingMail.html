@@ -13,28 +13,41 @@
 			</p>
 			<p>
 				<f:translate
-					key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.lendingCanceled" 
-					arguments="{0:availabilityRequest.borrower.firstName, 1:availabilityRequest.borrower.lastName}"/>
+					key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.lendingCanceled"
+					arguments="{0:availabilityRequest.borrower.firstName, 1:availabilityRequest.borrower.lastName}" />
 			</p>
 			<table>
 				<tr>
 					<td>
 						<f:translate
-							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.object" />&nbsp;&nbsp;
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.object" />
+						&nbsp;&nbsp;
 					</td>
 					<td>{availabilityRequest.object.title}</td>
 				</tr>
 				<tr>
 					<td>
 						<f:translate
-							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.purpose" />&nbsp;&nbsp;
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.purpose" />
+						&nbsp;&nbsp;
 					</td>
 					<td>{availabilityRequest.purpose}</td>
 				</tr>
+				<f:if condition="{availabilityRequest.object.quantity} > 1">
+					<tr>
+						<td>
+							<f:translate
+								key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.quantity" />
+							&nbsp;&nbsp;
+						</td>
+						<td>{availabilityRequest.quantity}</td>
+					</tr>
+				</f:if>
 				<tr>
 					<td>
 						<f:translate
-							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.from" />&nbsp;&nbsp;
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.from" />
+						&nbsp;&nbsp;
 					</td>
 					<td>{settings.language}
 						<f:format.date format="l, d.m.Y H:i">{availabilityRequest.from}</f:format.date>
@@ -43,7 +56,8 @@
 				<tr>
 					<td>
 						<f:translate
-							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.until" />&nbsp;&nbsp;
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.until" />
+						&nbsp;&nbsp;
 					</td>
 					<td>
 						<f:format.date format="l, d.m.Y H:i">{availabilityRequest.until}</f:format.date>
@@ -52,7 +66,8 @@
 				<tr>
 					<td>
 						<f:translate
-							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.borrower" />&nbsp;&nbsp;
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.borrower" />
+						&nbsp;&nbsp;
 					</td>
 					<td>{availabilityRequest.borrower.firstName} {availabilityRequest.borrower.lastName}</td>
 				</tr>

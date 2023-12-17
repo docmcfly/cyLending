@@ -19,21 +19,34 @@
 				<tr>
 					<td>
 						<f:translate
-							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.object" />&nbsp;&nbsp;
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.object" />
+						&nbsp;&nbsp;
 					</td>
 					<td>{availabilityRequest.object.title}</td>
 				</tr>
 				<tr>
 					<td>
 						<f:translate
-							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.purpose" />&nbsp;&nbsp;
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.purpose" />
+						&nbsp;&nbsp;
 					</td>
 					<td>{availabilityRequest.purpose}</td>
 				</tr>
+				<f:if condition="{availabilityRequest.object.quantity} > 1">
+					<tr>
+						<td>
+							<f:translate
+								key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.quantity" />
+							&nbsp;&nbsp;
+						</td>
+						<td>{availabilityRequest.quantity}</td>
+					</tr>
+				</f:if>
 				<tr>
 					<td>
 						<f:translate
-							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.from" />&nbsp;&nbsp;
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.from" />
+						&nbsp;&nbsp;
 					</td>
 					<td>{settings.language}
 						<f:format.date format="l, d.m.Y H:i">{availabilityRequest.from}</f:format.date>
@@ -42,7 +55,8 @@
 				<tr>
 					<td>
 						<f:translate
-							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.until" />&nbsp;&nbsp;
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.until" />
+						&nbsp;&nbsp;
 					</td>
 					<td>
 						<f:format.date format="l, d.m.Y H:i">{availabilityRequest.until}</f:format.date>
@@ -51,7 +65,8 @@
 				<tr>
 					<td>
 						<f:translate
-							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.borrower" />&nbsp;&nbsp;
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.borrower" />
+						&nbsp;&nbsp;
 					</td>
 					<td>{availabilityRequest.borrower.firstName} {availabilityRequest.borrower.lastName}</td>
 				</tr>

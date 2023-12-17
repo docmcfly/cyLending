@@ -17,27 +17,27 @@
 			<f:variable name="lending" value="lending" />
 			<f:variable name="approval" value="approval" />
 			<div class="nav nav-tabs" id="nav-tab" role="tablist">
-				<button class="nav-link {f:if(condition:'{tab} == \'calendar\' ', then: 'active')}" id="nav-calendar-tab"
+				<button class="nav-link {f:if(condition:'{tab} === \'calendar\' ', then: 'active')}" id="nav-calendar-tab"
 					data-bs-toggle="tab" data-bs-target="#nav-calendar" type="button" role="tab"
-					aria-controls="nav-calendar" aria-selected="true">
+					aria-controls="nav-calendar" aria-selected="{f:if(condition:'{tab} === \'calendar\' ', then: 'true', else:'false')}">
 					<f:translate key="lending.overview.tab.calendar" />
 				</button>
 				<button class="nav-link {f:if(condition:'{tab} === \'lending\' ', then: 'active')}" id="nav-lending-tab"
 					data-bs-toggle="tab" data-bs-target="#nav-lending" type="button" role="tab"
-					aria-controls="nav-lending" aria-selected="false">
+					aria-controls="nav-lending" aria-selected="{f:if(condition:'{tab} === \'lending\' ', then: 'true', else:'false')}">
 					<f:translate key="lending.overview.tab.lending" />
 				</button>
 				<f:if condition="{myLendings->f:count()} > 0">
-					<button class="nav-link {f:if(condition:'{tab} === \'myLending\' ', then: 'active')}"
-						id="nav-myLending-tab" data-bs-toggle="tab" data-bs-target="#nav-myLending" type="button"
-						role="tab" aria-controls="nav-myLending" aria-selected="false">
+					<button class="nav-link {f:if(condition:'{tab} === \'myLendings\' ', then: 'active')}"
+						id="nav-myLendings-tab" data-bs-toggle="tab" data-bs-target="#nav-myLendings" type="button"
+						role="tab" aria-controls="nav-myLendings" aria-selected="{f:if(condition:'{tab} === \'myLendings\' ', then: 'true', else:'false')}">
 						<f:translate key="lending.overview.tab.myLendings" />
 					</button>
 				</f:if>
 				<f:if condition="{isApprover}">
 					<button class="nav-link {f:if(condition:'{tab} === \'approval\' ', then: 'active')}"
 						id="nav-approval-tab" data-bs-toggle="tab" data-bs-target="#nav-approval" type="button"
-						role="tab" aria-controls="nav-approval" aria-selected="false">
+						role="tab" aria-controls="nav-approval" aria-selected="{f:if(condition:'{tab} === \'approval\' ', then: 'true', else:'false')}">
 						<f:translate key="lending.overview.tab.approval" />
 					</button>
 				</f:if>
@@ -50,18 +50,18 @@
 			</div>
 			<div class="tab-pane fade {f:if(condition:'{tab} === \'lending\' ', then: 'show active')} pt-3"
 				id="nav-lending" role="lending" aria-labelledby="nav-lending-tab">
-				<f:if condition="{availabilityRequestValidationResults.infos->f:count()} > 0">
+				<f:if condition="{toReserve.state} == 0">
 					<f:then>
-						<f:render partial="reserveFormSummary" arguments="{_all}" />
+						<f:render partial="reserveForm" arguments="{_all}" />
 					</f:then>
 					<f:else>
-						<f:render partial="reserveForm" arguments="{_all}" />
+						<f:render partial="reserveFormSummary" arguments="{_all}" />
 					</f:else>
 				</f:if>
 			</div>
 			<f:if condition="{myLendings->f:count()} > 0">
 				<div class="tab-pane fade {f:if(condition:'{tab} === \'myLendings\'', then: 'show active')} pt-3"
-					id="nav-myLending" role="myLending" aria-labelledby="nav-myLending-tab">
+					id="nav-myLendings" role="myLendings" aria-labelledby="nav-myLendings-tab">
 					<f:render partial="myLendings" arguments="{_all}" />
 				</div>
 			</f:if>
@@ -72,6 +72,8 @@
 				</div>
 			</f:if>
 		</div>
+		<f:asset.script identifier="reserveForm.js" priority="true" defer="defer"
+			src="EXT:cy_lending/Resources/Public/JavaScript/reserveForm.js" />
 	</f:section>
 </body>
 

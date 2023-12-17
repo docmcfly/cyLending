@@ -44,6 +44,16 @@
 					</td>
 					<td>{availabilityRequest.purpose}</td>
 				</tr>
+				<f:if condition="{availabilityRequest.object.quantity} > 1">
+					<tr>
+						<td>
+							<f:translate
+								key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.quantity" />
+							&nbsp;&nbsp;
+						</td>
+						<td>{availabilityRequest.quantity}</td>
+					</tr>
+				</f:if>
 				<f:if condition="{availabilityRequest.highPriority}">
 					<tr>
 						<td>

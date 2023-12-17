@@ -17,14 +17,17 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class LendingObject extends AbstractEntity
 {
 
-	  /** @var string */
-  	protected $groupName = '';
 
-    /** @var string */
-    protected $title = '';
+	public const OBJECT_AVAILABILITY = -1;
 
-    /** @var string */
-    protected $color = '';
+	/** @var string */
+	protected $groupName = '';
+
+	/** @var string */
+	protected $title = '';
+
+	/** @var string */
+	protected $color = '';
 
 	/** @var FrontendUserGroup */
 	protected $approverGroup = null;
@@ -32,20 +35,29 @@ class LendingObject extends AbstractEntity
 	/** @var FrontendUserGroup */
 	protected $observerGroup = null;
 
+	/** @var int */
+	protected $quantity = 1;
+
+	/** @var int */
+	protected $availableQuantity = LendingObject::OBJECT_AVAILABILITY;
+
+
 	/**
 	 * 
 	 * @return string
 	 */
-	public function getTitle() {
+	public function getTitle()
+	{
 		return $this->title;
 	}
-	
+
 	/**
 	 * 
 	 * @param string $title 
 	 * @return self
 	 */
-	public function setTitle($title): self {
+	public function setTitle($title): self
+	{
 		$this->title = $title;
 		return $this;
 	}
@@ -54,16 +66,18 @@ class LendingObject extends AbstractEntity
 	 * 
 	 * @return string
 	 */
-	public function getColor() {
+	public function getColor()
+	{
 		return $this->color;
 	}
-	
+
 	/**
 	 * 
 	 * @param string $color 
 	 * @return self
 	 */
-	public function setColor($color): self {
+	public function setColor($color): self
+	{
 		$this->color = $color;
 		return $this;
 	}
@@ -72,7 +86,8 @@ class LendingObject extends AbstractEntity
 	 * 
 	 * @return FrontendUserGroup
 	 */
-	public function getApproverGroup() {
+	public function getApproverGroup()
+	{
 		return $this->approverGroup;
 	}
 
@@ -81,7 +96,8 @@ class LendingObject extends AbstractEntity
 	 * @param FrontendUserGroup $approverGroup 
 	 * @return self
 	 */
-	public function setApproverGroup($approverGroup): self {
+	public function setApproverGroup($approverGroup): self
+	{
 		$this->approverGroup = $approverGroup;
 		return $this;
 	}
@@ -90,27 +106,30 @@ class LendingObject extends AbstractEntity
 	 * 
 	 * @return FrontendUserGroup
 	 */
-	public function getObserverGroup() {
+	public function getObserverGroup()
+	{
 		return $this->observerGroup;
 	}
-	
+
 	/**
 	 * 
 	 * @param FrontendUserGroup $observerGroup 
 	 * @return self
 	 */
-	public function setObserverGroup($observerGroup): self {
+	public function setObserverGroup($observerGroup): self
+	{
 		$this->observerGroup = $observerGroup;
 		return $this;
 	}
 
-	
+
 
 	/**
 	 * 
 	 * @return string
 	 */
-	public function getGroupName() {
+	public function getGroupName()
+	{
 		return $this->groupName;
 	}
 
@@ -119,8 +138,52 @@ class LendingObject extends AbstractEntity
 	 * @param string $groupName 
 	 * @return self
 	 */
-	public function setGroupName($groupName): self {
+	public function setGroupName($groupName): self
+	{
 		$this->groupName = $groupName;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return int
+	 */
+	public function getQuantity()
+	{
+		return $this->quantity;
+	}
+
+	/**
+	 * 
+	 * @param int $quantity 
+	 * @return self
+	 */
+	public function setQuantity($quantity): self
+	{
+		$this->quantity = $quantity;
+		return $this;
+	}
+
+
+	/**
+	 * 
+	 * @return int
+	 */
+	public function getAvaiableQuantity():int
+	{
+		return $this->availableQuantity == LendingObject::OBJECT_AVAILABILITY
+			? $this->getQuantity()
+			: $this->availableQuantity;
+	}
+
+
+	/* 
+	 * @param int $availableQuantity 
+	 * @return self
+	 */
+	public function setAvailableQuantity($availableQuantity): self
+	{
+		$this->availableQuantity = $availableQuantity;
 		return $this;
 	}
 }

@@ -36,6 +36,16 @@
 					</td>
 					<td>{availabilityRequest.purpose}</td>
 				</tr>
+				<f:if condition="{availabilityRequest.object.quantity} > 1">
+					<tr>
+						<td>
+							<f:translate
+								key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.informReviousBorrorer.email.quantity" />
+							&nbsp;&nbsp;
+						</td>
+						<td>{availabilityRequest.quantity}</td>
+					</tr>
+				</f:if>
 				<tr>
 					<td>
 						<f:translate
