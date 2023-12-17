@@ -43,7 +43,7 @@ function formatTime(time) {
 var updateMaxQty = function (select) {
     let objectQty = 1;
 
-    select.children("option").each(function () {
+    select.find("option").each(function () {
         if ($(this).is(':selected')) {
             objectQty = Math.max(parseInt($(this).attr('data-quantity')), objectQty)
         }

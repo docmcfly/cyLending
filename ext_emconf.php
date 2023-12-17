@@ -7,7 +7,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'beta',
     'clearCacheOnLoad' => 1,
-    'version' => '2.0.0',
+    'version' => '2.0.2',
     'constraints' => [
         'depends' => [
             'typo3' => '11.5.0-11.99.99',
@@ -23,7 +23,8 @@ $EM_CONF[$_EXTKEY] = [
 
 /**
  ** CHANGELOG:
- *  2.0.0 :: UPD : Quantity handling is now possible.
+ *  2.0.2 :: FIX : Small fix automatic approve function and max quantity setting of the group elements.
+ *  2.0.1 :: FIX : The automatic approve function works now.
  *  1.4.0 :: UPD : Add sub lendings.
  *  1.3.1 :: CHG : Add small border bottom to an event in the calendar. 
  *  1.3.0 :: UPD : Add ignore time overlapping function
