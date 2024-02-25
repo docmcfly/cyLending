@@ -54,9 +54,32 @@ var updateMaxQty = function (select) {
 
 }
 
+// qunatity handling
+var updateHighPriority = function (select) {
+    let highPriorityAllowed = false;
+
+    select.find("option").each(function () {
+        if ($(this).is(':selected')) {
+            $(this).attr('data-highprioritypossible') === '1' ? highPriorityAllowed = true : highPriorityAllowed = false
+        }
+    })
+    let hp = $('#highPriority')
+    hp.prop('disabled', !highPriorityAllowed)
+    if(!highPriorityAllowed){
+        hp.prop('checked', false)
+    }
+
+}
+
+
+
 $('#object').on('change', function () {
-    updateMaxQty($(this))}
+    updateMaxQty($(this))
+    updateHighPriority($(this))
+
+}
 )
 
 updateMaxQty($('#object'))
+updateHighPriority($('#object'))
 

@@ -11,6 +11,11 @@
 				<source>Piece</source>
 				<target state="tanslated">Stück</target>
 			</trans-unit>
+
+			<trans-unit id="validationResults.warnings.help">
+				<source>&lt;strong&gt;Important hint:&lt;/strong&gt; You can only continue the process if you confirm that you have taken note of this warning by ticking the box in front of the warning.</source>
+				<target state="tanslated">&lt;strong&gt;Wichtiger Hinweis:&lt;/strong&gt; Sie können den Prozess nur dann fortfahren, wenn sie durch Setzen eines Hakens vor der Warungen bestätigen, dass sie diese Warnung zur Kenntnis genommen haben.</target>
+			</trans-unit>
 			
 			<trans-unit id="lending.overview.tab.lending">
 				<source>Lending</source>
@@ -72,6 +77,10 @@
 			<trans-unit id="lending.overview.availabilityRequest.form.error.object.isEmpty">
 				<source>Lending object is not specified.</source>
 				<target state="tanslated">Ausleihobjekt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.error.highPriorityNotPossible">
+				<source>No authorization to borrow high priority items.</source>
+				<target state="tanslated">Keine Berechtigung Dinge mit hoher Priorität auszuleihen</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.error.purpose.isEmpty">
 				<source>The purpose is not specified.</source>

@@ -88,6 +88,10 @@
 				<source>The observer group</source>
 				<target state="tanslated">Gruppe der Beobachter</target>
 			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.highPriorityGroup">
+				<source>Can lend with high priority (group)</source>
+				<target state="tanslated">Kann mit hoher Priorität ausleihen (Gruppe)</target>
+			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.quantity">
 				<source>Total amount</source>
 				<target state="tanslated">Gesamtmenge</target>

@@ -20,10 +20,10 @@ use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use Cylancer\CyLending\Domain\Model\FrontendUser;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Cylancer\CyLending\Domain\Model\FrontendUserGroup;
-use TYPO3\CMS\Fluid\ViewHelpers\Form\CheckboxViewHelper;
 
 /**
  *
@@ -32,7 +32,7 @@ use TYPO3\CMS\Fluid\ViewHelpers\Form\CheckboxViewHelper;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * ( c ) 2023 Clemens Gogolin <service@cylancer.net>
+ * (c) 2024 Clemens Gogolin <service@cylancer.net>
  *
  * @package Cylancer\CyLending\Controller
  */
@@ -64,6 +64,8 @@ class LendingController extends ActionController
     const LENDING_TAB = 'lending';
     const CALENDAR_TAB = 'calendar';
     const MY_LENDINGS_TAB = 'myLendings';
+
+    const HIGH_PRIORITY_LENDING_AUTOMATIC_APPROVE = true;
 
     /* @var LendingObjectRepository */
     private LendingObjectRepository $lendingObjectRepository;
@@ -119,19 +121,18 @@ class LendingController extends ActionController
     }
 
     /**
-     * @return array
+     * @return QueryResult
      */
-    private function getAllCanApproveLendingObject()
+    private function getAllCanApproveLendingObject(QueryResult $lendingObjects): array
     {
         $canApproveLendingObjects = [];
-        $lendingObjects = $this->lendingObjectRepository->findAll();
         /** @var \Cylancer\CyLending\Domain\Model\LendingObject $lendingObject */
         /** @var \Cylancer\CyLending\Domain\Model\FrontendUserGroup $frontendUserGroup */
         foreach ($lendingObjects as $lendingObject) {
             /** @var \Cylancer\CyLending\Domain\Model\FrontendUserGroup $approverGroup */
             $approverGroup = $lendingObject->getApproverGroup();
             if ($approverGroup != null) {
-                $approverGroupUid = $lendingObject->getApproverGroup()->getUid();
+                $approverGroupUid = $approverGroup->getUid();
                 foreach ($this->frontendUserService->getCurrentUser()->getUsergroup() as $frontendUserGroup) {
                     if ($this->frontendUserService->contains($frontendUserGroup, $approverGroupUid)) {
                         $canApproveLendingObjects[$lendingObject->getUid()] = $lendingObject;
@@ -142,12 +143,27 @@ class LendingController extends ActionController
         return $canApproveLendingObjects;
     }
 
+    /**
+     * @return QueryResult
+     */
+    private function updateAllHighPriorityLendingPossibles(QueryResult $lendingObjects): bool
+    {
+        $return = false;
+        /** @var \Cylancer\CyLending\Domain\Model\LendingObject $lendingObject */
+        /** @var \Cylancer\CyLending\Domain\Model\FrontendUserGroup $frontendUserGroup */
+        foreach ($lendingObjects as $lendingObject) {
+            $lendingObject->updateIsHighPriorityLendingPossible($this->frontendUserService);
+            $return = $return || $lendingObject->getHighPriorityLendingPossible();
+        }
+        return $return;
+    }
+
     private function getSetting($key, ?int $uid = null)
     {
         if ($uid != null && !isset($this->settings[$key])) {
             array_merge($this->settings, $this->miscService->getFlexformSettings($uid, $key));
         }
-        return isset($this->settings[$key]) ?  $this->settings[$key] : null;
+        return isset($this->settings[$key]) ? $this->settings[$key] : null;
     }
 
     private function getAllLendingStorageUids(?int $uid = null): array
@@ -179,7 +195,8 @@ class LendingController extends ActionController
 
         $lendingObjects = $this->lendingObjectRepository->findAll();
 
-        $canApproveLendingObjects = $this->getAllCanApproveLendingObject();
+        $canApproveLendingObjects = $this->getAllCanApproveLendingObject($lendingObjects);
+
 
         /** @var Lending $toReserve */
         $toReserve = $this->request->hasArgument(LendingController::TO_RESERVE)
@@ -210,6 +227,7 @@ class LendingController extends ActionController
         $this->view->assign('availabilityRequests', $allAvailabilityRequests);
         // all availability request to approve / reject
         $this->view->assign('isApprover', !empty($canApproveLendingObjects));
+        $this->view->assign('canHighPriorityLending', $this->updateAllHighPriorityLendingPossibles($lendingObjects));
         // is the approver tab visible?
 
         // tab page MY_LENDINGS:
@@ -259,6 +277,7 @@ class LendingController extends ActionController
             $tab = LendingController::CALENDAR_TAB;
         }
         $this->view->assign(LendingController::TAB_KEY, $tab);
+
         return $this->htmlResponse();
     }
 
@@ -442,7 +461,11 @@ class LendingController extends ActionController
 
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validate($toReserve, $ceUid);
-        if ($validationResults->isOkay() && ($toReserve->getHighPriority() || $toReserve->getObject()->getApproverGroup() == null)) {
+        if (
+            $validationResults->isOkay() && (
+                (LendingController::HIGH_PRIORITY_LENDING_AUTOMATIC_APPROVE && $toReserve->getHighPriority())
+                || $toReserve->getObject()->getApproverGroup() == null)
+        ) {
             // simulate an availability request...
             $state = $toReserve->getState();
             $toReserve->setState(Lending::STATE_AVAILABILITY_REQUEST); // only for the validation
@@ -454,12 +477,15 @@ class LendingController extends ActionController
         $forward = new ForwardResponse('show');
         $forwardArguments = [];
 
+
+
+
         if ($validationResults->isOkay()) {
             $toReserve->setState(Lending::STATE_AVAILABILITY_REQUEST);
-                $this->lendingRepository->add($toReserve);
-                $this->persistenceManager->persistAll();
+            $this->lendingRepository->add($toReserve);
+            $this->persistenceManager->persistAll();
 
-            if ($toReserve->getHighPriority() || $toReserve->getObject()->getApproverGroup() == null) {
+            if ((LendingController::HIGH_PRIORITY_LENDING_AUTOMATIC_APPROVE && $toReserve->getHighPriority()) || $toReserve->getObject()->getApproverGroup() == null) {
                 $toReserve = $this->lendingRepository->findByUid($toReserve->getUid());
                 /** @var ForwardResponse $forward */
                 $this->approveAction($toReserve);
@@ -474,7 +500,7 @@ class LendingController extends ActionController
                 $validationResults->addInfo('successful');
                 $this->sendApproverEMails($toReserve);
             }
-        } 
+        }
 
         $forwardArguments[LendingController::TAB_KEY] = LendingController::LENDING_TAB;
         $forwardArguments[LendingController::CONTEXT_ELEMENT] = $ceUid;
@@ -539,7 +565,7 @@ class LendingController extends ActionController
             ]);
             $this->sendAvailabilityRequestResultMail($availabilityRequest);
             $this->informObserverGroup($availabilityRequest);
-        } 
+        }
 
         $forwardArguments[LendingController::TAB_KEY] = LendingController::APROVAL_TAB;
         $forwardArguments[LendingController::CONTEXT_ELEMENT] = $ceUid;
@@ -758,6 +784,11 @@ class LendingController extends ActionController
             $validationResults->addError('object.isEmpty');
         }
 
+        $updateIsHighPriorityLendingPossible = $lending->getObject()->updateIsHighPriorityLendingPossible($this->frontendUserService);
+        if ($lending->getHighPriority() && !$updateIsHighPriorityLendingPossible) {
+            $validationResults->addError('highPriorityNotPossible');
+        }
+
         $from = false;
         if ($lending->getFrom() == null) {
             $validationResults->addError('from.isEmpty');
@@ -812,10 +843,9 @@ class LendingController extends ActionController
 
             // individual objects can also be borrowed several times at the same time
             if ($lending->getObject()->getQuantity() == 1) {
-                if ($this->lendingRepository->existsOverlapsAvailabilityRequests($lending)) {
+                if (!$updateIsHighPriorityLendingPossible && !$lending->getHighPriority() && $this->lendingRepository->existsOverlapsAvailabilityRequests($lending)) {
                     $validationResults->addWarning('existsOverlapsAvailabilityRequests');
                 }
-
                 // if the item is present more than once, the maximum number of pieces may not be exceeded
             } else {
 

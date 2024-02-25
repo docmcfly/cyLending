@@ -5,9 +5,9 @@ $EM_CONF[$_EXTKEY] = [
     'category' => 'plugin',
     'author' => 'Clemens Gogolin',
     'author_email' => 'service@cylancer.net',
-    'state' => 'beta',
+    'state' => 'stable',
     'clearCacheOnLoad' => 1,
-    'version' => '2.0.2',
+    'version' => '2.1.0',
     'constraints' => [
         'depends' => [
             'typo3' => '11.5.0-11.99.99',
@@ -23,6 +23,7 @@ $EM_CONF[$_EXTKEY] = [
 
 /**
  ** CHANGELOG:
+ *  2.1.0 :: UPD : Separate the configuration for high priority lendings authorization per object.
  *  2.0.2 :: FIX : Small fix automatic approve function and max quantity setting of the group elements.
  *  2.0.1 :: FIX : The automatic approve function works now.
  *  1.4.0 :: UPD : Add sub lendings.

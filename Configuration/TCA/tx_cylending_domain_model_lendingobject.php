@@ -13,7 +13,7 @@ return
         ],
         'types' => [
             '1' => [
-                'showitem' => 'group_name, title, approver_group, observer_group, subletting_possible, quantity, color'
+                'showitem' => 'group_name, title, approver_group, observer_group, high_priority_group, quantity, color'
             ]
         ],
         'columns' => [
@@ -51,20 +51,40 @@ return
                 'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lendingobject.approverGroup',
                 'config' => [
                     'type' => 'select',
-                    'renderType' => 'selectSingleBox',
+                    'renderType' => 'selectSingle',
                     'foreign_table' => 'fe_groups',
                     'maxitems' => 1,
                     'minitems' => 0,
+                    'items' => [
+                        ['', 0]
+                    ],
+                    //'allowNonIdValues' => true,
                 ]
             ],
             'observer_group' => [
                 'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lendingobject.observerGroup',
                 'config' => [
                     'type' => 'select',
-                    'renderType' => 'selectSingleBox',
+                    'renderType' => 'selectSingle',
                     'foreign_table' => 'fe_groups',
                     'maxitems' => 1,
                     'minitems' => 0,
+                    'items' => [
+                        ['', 0]
+                    ],
+                ]
+            ],
+            'high_priority_group' => [
+                'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lendingobject.highPriorityGroup',
+                'config' => [
+                    'type' => 'select',
+                    'renderType' => 'selectSingle',
+                    'foreign_table' => 'fe_groups',
+                    'maxitems' => 1,
+                    'minitems' => 0,
+                    'items' => [
+                        ['', 0]
+                    ],
                 ]
             ],
             'quantity' => [
