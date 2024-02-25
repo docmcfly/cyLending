@@ -65,7 +65,7 @@ class LendingController extends ActionController
     const CALENDAR_TAB = 'calendar';
     const MY_LENDINGS_TAB = 'myLendings';
 
-    const HIGH_PRIORITY_LENDING_AUTOMATIC_APPROVE = false;
+    const HIGH_PRIORITY_LENDING_AUTOMATIC_APPROVE = true;
 
     /* @var LendingObjectRepository */
     private LendingObjectRepository $lendingObjectRepository;
