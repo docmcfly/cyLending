@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Cylancer\CyLending\Domain\Model;
 
+use Cylancer\CyLending\Service\FrontendUserService;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
@@ -34,6 +35,12 @@ class LendingObject extends AbstractEntity
 
 	/** @var FrontendUserGroup */
 	protected $observerGroup = null;
+
+	/** @var FrontendUserGroup */
+	protected $highPriorityGroup = null;
+
+	/** @var bool */
+	protected $highPriorityLendingPossible = false;
 
 	/** @var int */
 	protected $quantity = 1;
@@ -169,7 +176,7 @@ class LendingObject extends AbstractEntity
 	 * 
 	 * @return int
 	 */
-	public function getAvaiableQuantity():int
+	public function getAvaiableQuantity(): int
 	{
 		return $this->availableQuantity == LendingObject::OBJECT_AVAILABILITY
 			? $this->getQuantity()
@@ -185,5 +192,55 @@ class LendingObject extends AbstractEntity
 	{
 		$this->availableQuantity = $availableQuantity;
 		return $this;
+	}
+
+	/**
+	 * 
+	 * @return FrontendUserGroup
+	 */
+	public function getHighPriorityGroup()
+	{
+		return $this->highPriorityGroup;
+	}
+
+	/**
+	 * 
+	 * @param FrontendUserGroup $highPriorityGroup 
+	 * @return self
+	 */
+	public function setHighPriorityGroup($highPriorityGroup): self
+	{
+		$this->highPriorityGroup = $highPriorityGroup;
+		return $this;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function updateIsHighPriorityLendingPossible(FrontendUserService $frontendUserService): bool
+	{
+		$this->highPriorityLendingPossible = false;
+		/** @var \Cylancer\CyLending\Domain\Model\FrontendUserGroup $approverGroup */
+		$highPriorityGroup = $this->getHighPriorityGroup();
+		if ($highPriorityGroup != null) {
+			$highPriorityGroupUid = $highPriorityGroup->getUid();
+			foreach ($frontendUserService->getCurrentUser()->getUsergroup() as $frontendUserGroup) {
+				if ($frontendUserService->contains($frontendUserGroup, $highPriorityGroupUid)) {
+					$this->highPriorityLendingPossible = true;
+					return $this->highPriorityLendingPossible;
+				}
+			}
+		}
+		return $this->highPriorityLendingPossible;
+	}
+
+	/**
+	 * 
+	 * @return bool
+	 */
+	public function getHighPriorityLendingPossible()
+	{
+		return $this->highPriorityLendingPossible;
 	}
 }

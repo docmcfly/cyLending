@@ -29,7 +29,8 @@
 </f:for>
 <f:if condition="{validationResults.warnings}">
 	
-	<f:for each="{validationResults.warnings}" key="warningKey" as="warning" >
+	<div class="alert alert-warning" ><f:format.raw><f:translate key="validationResults.warnings.help" /></f:format.raw></div>
+	<f:for each="{validationResults.warnings}" key="warningKey" as="warning"  iteration="iter">
 		<div class="alert alert-warning" data-warningkey="{prefix}.{warningKey}">
 			<f:form.checkbox 
 			property="validationResults.confirmedWarnings" 

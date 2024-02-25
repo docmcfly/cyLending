@@ -23,7 +23,7 @@
                         <f:then>
                             <f:for each="{lendingObjects}" as="lendingObject">
                                 <f:form.select.option value="{lendingObject.uid}"
-                                    data="{'quantity':lendingObject.avaiableQuantity}">
+                                     data="{'quantity':lendingObject.avaiableQuantity, 'highPriorityPossible': lendingObject.highPriorityLendingPossible}">
                                     {lendingObject.title}
                                 </f:form.select.option>
                             </f:for>
@@ -32,7 +32,7 @@
                             <f:form.select.optgroup label="{groupName}">
                                 <f:for each="{lendingObjects}" as="lendingObject">
                                     <f:form.select.option value="{lendingObject.uid}"
-                                        data="{'quantity':lendingObject.avaiableQuantity}">
+                                        data="{'quantity':lendingObject.avaiableQuantity, 'highPriorityPossible': lendingObject.highPriorityLendingPossible}">
                                         {lendingObject.title}
                                     </f:form.select.option>
                                 </f:for>
@@ -61,7 +61,10 @@
             </f:if>
         </div>
     </div>
-    <f:if condition="{isApprover}">
+    <f:if condition="{canHighPriorityLending}">
+        <script>
+            var highPriorityLendingObjects = {highPriorityLendingObjects};
+        </script>
         <div class="row  mb-2">
             <div class="col-sm-3 col-form-label">
                 &nbsp;

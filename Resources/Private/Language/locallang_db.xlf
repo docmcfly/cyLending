@@ -67,6 +67,9 @@
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.observerGroup">
 				<source>The observer group</source>
 			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.highPriorityGroup">
+				<source>Can lend with high priority (group)</source>
+			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.quantity">
 				<source>Total amount</source>
 			</trans-unit>
