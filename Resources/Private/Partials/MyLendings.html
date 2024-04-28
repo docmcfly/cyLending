@@ -30,6 +30,16 @@
                             {myLending.purpose}</div>
                     </div>
                 </div>
+                <f:if condition="{myLending.highPriority}">
+                    <div class="row mt-2">
+                        <div class="col-md-3 text-primary" >
+                            <f:translate key="lending.overview.myLending.form.highPriority" />
+                        </div>
+                        <div class="col-md-9  text-primary">
+                            🗹                           
+                        </div>
+                    </div>
+                </f:if>
                 <f:if condition="{myLending.object.quantity} > 1">
                     <div class="row mt-2">
                         <div class="col-md-3">

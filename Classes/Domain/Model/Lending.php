@@ -3,6 +3,9 @@ declare(strict_types=1);
 namespace Cylancer\CyLending\Domain\Model;
 
 use Cylancer\CyLending\Domain\Model\FrontendUser;
+use Cylancer\CyLending\Domain\Repository\LendingRepository;
+use Cylancer\CyLending\Service\FrontendUserService;
+use Cylancer\CyLending\Service\LendingService;
 
 /**
  * This file is part of the "Lending" extension for TYPO3 CMS.
@@ -10,7 +13,7 @@ use Cylancer\CyLending\Domain\Model\FrontendUser;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2022 Clemens Gogolin <service@cylancer.net>
+ * (c) 2024 C. Gogolin <service@cylancer.net>
  *
  * @package Cylancer\CyLending\Domain\Model
  */
@@ -54,6 +57,12 @@ class Lending extends AbstractEntity
 
 	/** @var bool */
 	protected $highPriority = false;
+
+	/** 
+	 * @var array 
+	 * */
+	protected $allowedObjects = [];
+
 
 	/** @var int */
 	protected $quantity = 1;
@@ -103,6 +112,15 @@ class Lending extends AbstractEntity
 	}
 
 	/**
+	 * 
+	 * @return \DateTimeImmutable|bool
+	 */
+	public function getUntilDate(): \DateTimeImmutable|bool {
+		return  \DateTimeImmutable::createFromFormat(LendingRepository::SQL_DATE_FORMAT, $this->until);
+	}
+
+
+	/**
 	 * @param string $until 
 	 * @return self
 	 */
@@ -119,6 +137,14 @@ class Lending extends AbstractEntity
 	public function getFrom(): string
 	{
 		return $this->from;
+	}
+
+	/**
+	 * 
+	 * @return \DateTimeImmutable|bool
+	 */
+	public function getFromDate(): \DateTimeImmutable|bool {
+		return  \DateTimeImmutable::createFromFormat(LendingRepository::SQL_DATE_FORMAT, $this->from);
 	}
 
 	/**
@@ -253,5 +279,62 @@ class Lending extends AbstractEntity
 		return $this;
 	}
 
+
+	/**
+	 * 
+	 * @return array
+	 */
+	public function getAllowedObjects() {
+		return $this->allowedObjects;
+	}
+
+	/**
+	 * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array $lendingObjects
+	 */
+	public function setAllowedObjects($lendingObjects): void
+	{
+		$this->allowedObjects = [];
+		foreach($lendingObjects as $lendingObject) {
+			$this->addAllowedObject($lendingObject);
+		}
+	}
+
+
+	public function addAllowedObject(LendingObject $lendingObject ): AllowedLendingObject
+	{
+		$allowedObject = new AllowedLendingObject($this, $lendingObject);
+		$this->allowedObjects[] = $allowedObject;	
+		return $allowedObject;		
+	}
+
+	public function updateAllowedObjects(FrontendUserService $frontendUserService, LendingService $lendingService): void
+	{	
+		/** @var AllowedLendingObject $allowedObject */
+		foreach($this->allowedObjects as $allowedObject)		{
+			$allowedObject->updateHighPriority($frontendUserService);
+			$allowedObject->updateAvailabilities($lendingService);
+		}
+	}
+
+	public function getCanHighPriorityLend(): bool
+	{
+		/** @var AllowedLendingObject $allowedObject */
+		foreach($this->allowedObjects as $allowedObject)		{
+			if($allowedObject->getHighPriorityLendingPossible()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+    public function getMaxQuantity(): int
+    {
+		/** @var AllowedLendingObject $allowedObject */
+        $max = 0;
+        foreach ($this->allowedObjects as $allowedObject) {
+            $max = max($max, $allowedObject->getLendingObject()->getQuantity());
+        }
+        return $max;
+    }
 
 }

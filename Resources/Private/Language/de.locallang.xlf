@@ -165,7 +165,7 @@
 				<source>The object is already borrowed in this period.</source>
 				<target state="tanslated">Das Objekt ist bereits in diesem Zeitraum ausgeliehen.</target>
 			</trans-unit>
-			<trans-unit id="lending.overview.approval.form.error.userNotApprover.reject">
+			<trans-unit id="lending.overview.reject.form.error.userNotApprover.reject">
 				<source>You has not the rights to reject a availability request.</source>
 				<target state="tanslated">Sie haben nicht die Rechte eine Ausleihanfrage abzulehnen.</target>
 			</trans-unit>
@@ -185,7 +185,7 @@
 				<source>You have approve the availability request successful.</source>
 				<target state="tanslated">Sie haben die Ausleihanfrage erfolgreich genehmigt.</target>
 			</trans-unit>
-			<trans-unit id="lending.overview.approval.form.info.successful.rejected">
+			<trans-unit id="lending.overview.reject.form.info.successful.rejected">
 				<source>You have reject the availability request successful.</source>
 				<target state="tanslated">Sie haben die Ausleihanfrage erfolgreich abgelehnt.</target>
 			</trans-unit>
@@ -262,6 +262,10 @@
 				<source>Purpose</source>
 				<target state="tanslated">Verwendungszweck</target>
 			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.highPriority">
+				<source>High priority</source>
+				<target state="tanslated">Hohe Priorität</target>
+			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.quantity">
 				<source>Quantity</source>
 				<target state="tanslated">Menge</target>
@@ -327,6 +331,10 @@
 				<target state="tanslated">Die Zeitüberplappung ignorieren</target>
 			</trans-unit>
 
+			<trans-unit id="message.approver.email.senderName">
+				<source>Lending service</source>
+				<target state="tanslated">Ausleihservice</target>
+			</trans-unit>
 			<trans-unit id="message.approver.email.subject">
 				<source>A new the availability request</source>
 				<target state="tanslated">Eine neue Ausleihanfrage</target>
@@ -347,6 +355,10 @@
 				<source>Purpose</source>
 				<target state="tanslated">Verwendungszweck</target>
 			</trans-unit>
+			<trans-unit id="message.approver.email.highPriority">
+				<source>With high priority</source>
+				<target state="tanslated">Mit hoher Priorität</target>
+			</trans-unit>
 			<trans-unit id="message.approver.email.quantity">
 				<source>Quantity</source>
 				<target state="tanslated">Menge</target>
@@ -364,6 +376,10 @@
 				<target state="tanslated">Ausleiher:in</target>
 			</trans-unit>
 
+			<trans-unit id="message.borrower.email.senderName">
+				<source>Lending service</source>
+				<target state="tanslated">Ausleihservice</target>
+			</trans-unit>
 			<trans-unit id="message.borrower.email.subject">
 				<source>Your availability request</source>
 				<target state="tanslated">Deine Ausleihanfrage</target>
@@ -388,6 +404,10 @@
 				<source>Purpose</source>
 				<target state="tanslated">Verwendungszweck</target>
 			</trans-unit>
+			<trans-unit id="message.borrower.email.highPriority">
+				<source>With high priority</source>
+				<target state="tanslated">Mit hoher Priorität</target>
+			</trans-unit>
 			<trans-unit id="message.borrower.email.quantity">
 				<source>Quantity</source>
 				<target state="tanslated">Menge</target>
@@ -400,7 +420,12 @@
 				<source>Until</source>
 				<target state="tanslated">Bis</target>
 			</trans-unit>
+			
 
+			<trans-unit id="message.observer.email.senderName">
+				<source>Lending service</source>
+				<target state="tanslated">Ausleihservice</target>
+			</trans-unit>
 			<trans-unit id="message.observer.email.subject">
 				<source>State of an availability request</source>
 				<target state="tanslated">Status einer Ausleihanfrage</target>
@@ -424,6 +449,10 @@
 			<trans-unit id="message.observer.email.purpose">
 				<source>Purpose</source>
 				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="message.observer.email.highPriority">
+				<source>With high priority</source>
+				<target state="tanslated">Mit hoher Priorität</target>
 			</trans-unit>
 			<trans-unit id="message.observer.email.quantity">
 				<source>Quantity</source>
@@ -450,43 +479,55 @@
 				<target state="tanslated">Genehmiger:in</target>
 			</trans-unit>
 
-			<trans-unit id="message.informReviousBorrorer.email.subject">
+			<trans-unit id="message.informPreviousBorrower.email.senderName">
+				<source>Lending service</source>
+				<target state="tanslated">Ausleihservice</target>
+			</trans-unit>
+			<trans-unit id="message.informPreviousBorrower.email.subject">
 				<source>Your borrowing authorization withdrawn for urgent reasons</source>
 				<target state="tanslated">Deine Ausleihgenehmigung aus dringenden Gründen zurückgezogen</target>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.salutation">
+			<trans-unit id="message.informPreviousBorrower.email.salutation">
 				<source>Hello %s %s.</source>
 				<target state="tanslated">Hallo %s %s.</target>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.requestCanceled">
+			<trans-unit id="message.informPreviousBorrower.email.requestCanceled">
 				<source>Your approved loan was unfortunately withdrawn for urgent reasons and reset to a request.</source>
 				<target state="tanslated">Deine genehmigte Ausleihe wurde leider aus dringenden Gründen zurückgezogen und wieder auf eine Anfrage zurückgesetzt.</target>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.object">
+			<trans-unit id="message.informPreviousBorrower.email.object">
 				<source>Your lending object</source>
 				<target state="tanslated">Dein Ausleihobjekt</target>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.purpose">
+			<trans-unit id="message.informPreviousBorrower.email.purpose">
 				<source>Your purpose</source>
 				<target state="tanslated">Dein Verwendungszweck</target>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.quantity">
+			<trans-unit id="message.informPreviousBorrower.email.highPriority">
+				<source>With high priority</source>
+				<target state="tanslated">Mit hoher Priorität</target>
+			</trans-unit>
+			<trans-unit id="message.informPreviousBorrower.email.quantity">
 				<source>Quantity</source>
 				<target state="tanslated">Menge</target>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.from">
+			<trans-unit id="message.informPreviousBorrower.email.from">
 				<source>From</source>
 				<target state="tanslated">Von</target>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.until">
+			<trans-unit id="message.informPreviousBorrower.email.until">
 				<source>Until</source>
 				<target state="tanslated">Bis</target>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.inquiries">
+			<trans-unit id="message.informPreviousBorrower.email.inquiries">
 				<source>If you have any questions, please contact %s %s.</source>
 				<target state="tanslated">Bei Rückfragen wende Dich bitte an %s %s.</target>
 			</trans-unit>
 
+			<trans-unit id="message.cancel.email.senderName">
+				<source>Lending service</source>
+				<target state="tanslated">Ausleihservice</target>
+			</trans-unit>
 			<trans-unit id="message.cancel.email.subject">
 				<source>A approved borrowing was withdrawn</source>
 				<target state="tanslated">Eine genehmigte Ausleihe wurde zurückgezogen</target>
@@ -506,6 +547,10 @@
 			<trans-unit id="message.cancel.email.purpose">
 				<source>Purpose</source>
 				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.highPriority">
+				<source>With high priority</source>
+				<target state="tanslated">Mit hoher Priorität</target>
 			</trans-unit>
 			<trans-unit id="message.cancel.email.quantity">
 				<source>Quantity</source>

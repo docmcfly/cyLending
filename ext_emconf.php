@@ -7,10 +7,10 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'stable',
     'clearCacheOnLoad' => 1,
-    'version' => '2.1.0',
+    'version' => '3.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '11.5.0-11.99.99',
+            'typo3' => '12.4.0-12.4.99',
             'bootstrap_package' => '13.0.1-13.0.99',
         ],
         'conflicts' => [
@@ -23,6 +23,8 @@ $EM_CONF[$_EXTKEY] = [
 
 /**
  ** CHANGELOG:
+ *  3.0.0 :: UPD : Update to TYPO3 12 and Bootstrap 5.
+ *  2.1.1 :: FIX : Fix the separation between the group with high priority rights and the approver group.
  *  2.1.0 :: UPD : Separate the configuration for high priority lendings authorization per object.
  *  2.0.2 :: FIX : Small fix automatic approve function and max quantity setting of the group elements.
  *  2.0.1 :: FIX : The automatic approve function works now.

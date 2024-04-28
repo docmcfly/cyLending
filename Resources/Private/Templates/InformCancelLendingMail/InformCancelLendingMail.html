@@ -33,7 +33,16 @@
 					</td>
 					<td>{availabilityRequest.purpose}</td>
 				</tr>
-				<f:if condition="{availabilityRequest.object.quantity} > 1">
+				<f:if condition="{availabilityRequest.highPriority}">
+					<tr>
+						<td  style="color:#e05e36;">
+                                <f:translate key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.highPriority" />
+						</td>
+						<td style="color:#e05e36;">
+							🗹                           
+						</td>
+					</tr>
+                </f:if><f:if condition="{availabilityRequest.object.quantity} > 1">
 					<tr>
 						<td>
 							<f:translate
@@ -49,8 +58,8 @@
 							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancel.email.from" />
 						&nbsp;&nbsp;
 					</td>
-					<td>{settings.language}
-						<f:format.date format="l, d.m.Y H:i">{availabilityRequest.from}</f:format.date>
+					<td>
+						<f:format.date locale="{language}" pattern="EEEE, dd. MMMM yyyy  HH:mm" >{availabilityRequest.fromDate}</f:format.date>
 					</td>
 				</tr>
 				<tr>
@@ -60,7 +69,7 @@
 						&nbsp;&nbsp;
 					</td>
 					<td>
-						<f:format.date format="l, d.m.Y H:i">{availabilityRequest.until}</f:format.date>
+						<f:format.date locale="{language}" pattern="EEEE, dd. MMMM yyyy  HH:mm" >{availabilityRequest.untilDate}</f:format.date>
 					</td>
 				</tr>
 				<tr>

@@ -20,27 +20,30 @@
 		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.purpose" />:
 {availabilityRequest.purpose}
 
-<f:if condition="{availabilityRequest.object.quantity} > 1"><f:translate
+<f:if condition="{availabilityRequest.highPriority}"><f:translate key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.highPriority" />:
+🗹
+
+</f:if><f:if condition="{availabilityRequest.object.quantity} > 1"><f:translate
 		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.quantity" />:
 {availabilityRequest.quantity}
 
 </f:if><f:translate
 	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.from" />:
-<f:format.date format="l, d.m.Y H:i">{availabilityRequest.from}</f:format.date>
+<f:format.date locale="{language}" pattern="EEEE, dd. MMMM yyyy  HH:mm" >{availabilityRequest.fromDate}</f:format.date>
 
 <f:translate
 	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.until" />:
-<f:format.date format="l, d.m.Y H:i">{availabilityRequest.until}</f:format.date>
+<f:format.date locale="{language}" pattern="EEEE, dd. MMMM yyyy  HH:mm" >{availabilityRequest.untilDate}</f:format.date>
 
 <f:translate
 		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.borrower" />:
 {availabilityRequest.borrower.firstName} {availabilityRequest.borrower.lastName}
 
 <f:translate key="lending.overview.approval.action.approve" />:
-<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}" action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true" 	arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid,'contextElement': contextElement}"></f:link.action>
+<f:format.raw><f:uri.action pageUid="{pageUid}" action="approve" pluginName="lending" controller="Lending" absolute="true" noCache="true" 	arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid,'contextElement': contextElement}"></f:uri.action></f:format.raw>
 
 <f:translate key="lending.overview.approval.action.reject" />:
-<f:link.action style="color:white; padding:0.5em; font-weight:bold;" pageUid="{pageUid}" action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true" arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid,'contextElement': contextElement}"></f:link.action>
+<f:format.raw><f:uri.action pageUid="{pageUid}" action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true" arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid,'contextElement': contextElement}"></f:uri.action></f:format.raw>
 </f:section>
 </body></html>
 

@@ -16,7 +16,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2023 C. Gogolin <service@cylancer.net>
+ * (c) 2024 C. Gogolin <service@cylancer.net>
  *
  * @package Cylancer\CyLending\Domain\Service
  *         
@@ -77,10 +77,15 @@ class LendingService implements SingletonInterface
         return $events;
     }
 
+    public function calculateMaximumFrom(Lending $lending): int
+    {
+         return $this->calculateMaximum($this->lendingRepository->getOverlapsAvailabilityRequests($lending));
+    }
+
     /**
      * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|object[] $lendings
      */
-    public function caluculateMaximum($lendings): int
+    public function calculateMaximum(  $lendings): int
     {
 
         $o = null;

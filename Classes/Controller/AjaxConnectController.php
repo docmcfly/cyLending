@@ -6,6 +6,7 @@ use Cylancer\CyLending\Domain\Repository\LendingObjectRepository;
 use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use Cylancer\CyLending\Service\LendingService;
 use Cylancer\CyLending\Service\MiscService;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
@@ -17,14 +18,12 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2023 Clemens Gogolin <service@cylancer.net>
+ * (c) 2024 C. Gogolin <service@cylancer.net>
  *
  * @package Cylancer\CyLending\Controller
  */
 class AjaxConnectController extends ActionController
 {
-
-    const LIST_TYPE = 'cylending_lending';
 
     /* @var LendingService */
     private LendingService $lendingService;
@@ -55,21 +54,22 @@ class AjaxConnectController extends ActionController
     /**
      * @param array $lspid
      */
-    public function getEventsAction(array $lspid)
+    public function getEventsAction(array $lspid):ResponseInterface
     {
+
         $parsedBody = $this->request->getParsedBody();
         if (is_array($parsedBody)) {
             $year = intval($parsedBody['year']);
             $month = intval($parsedBody['month']);
-            return json_encode($this->lendingService->getVisualAvailabilityRequestsAsEventsOf($year, $month, $lspid));
+            return $this->jsonResponse(  json_encode($this->lendingService->getVisualAvailabilityRequestsAsEventsOf($year, $month, $lspid)));
         }
-        return json_encode([]);
+        return $this->jsonResponse(json_encode([]));
     }
 
     /**
      * @param int  $uid
      */
-    public function existsEventOverlappingAction(int $uid)
+    public function existsEventOverlappingAction(int $uid):ResponseInterface
     {
         $parsedBody = $this->request->getParsedBody();
         if (is_array($parsedBody)) {
@@ -91,18 +91,18 @@ class AjaxConnectController extends ActionController
             $this->lendingRepository->setDefaultQuerySettings($querySettings);
 
             // debug($tmp);
-            return json_encode([
+            return $this->jsonResponse(json_encode([
                 'result' => $this->lendingRepository->existsOverlapsAvailabilityRequests($tmp),
                 'debug' => var_export($tmp, true),
-            ]);
+            ]));
         }
-        return json_encode([]);
+        return $this->jsonResponse(json_encode([]));
     }
 
     /**
      * @param int  $uid
      */
-    public function getMaxQuantityAction(int $uid)
+    public function getMaxQuantityAction(int $uid):ResponseInterface
     {
         $parsedBody = $this->request->getParsedBody();
         if (is_array($parsedBody)) {
@@ -127,12 +127,11 @@ class AjaxConnectController extends ActionController
             $this->lendingRepository->setDefaultQuerySettings($querySettings);
 
             // debug($tmp);
-            return json_encode([
+            return $this->jsonResponse(json_encode([
                 'result' => $obj->getQuantity()- $this->lendingService->caluculateMaximum($this->lendingRepository->getOverlapsAvailabilityRequests($tmp))
-            ]);
-
-
+            ]));
         }
+        return $this->jsonResponse(json_encode([]));
 
 
     }

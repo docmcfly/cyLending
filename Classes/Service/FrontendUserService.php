@@ -8,7 +8,7 @@ namespace Cylancer\CyLending\Service;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2022 C. Gogolin <service@cylancer.net>
+ * (c) 2024 C. Gogolin <service@cylancer.net>
  *
  * @package Cylancer\CyLending\Service
  */
@@ -83,22 +83,41 @@ class FrontendUserService implements SingletonInterface
         return $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
     }
 
+
+ /**
+     *
+     * @param FrontendUserGroup $userGroup
+     * @param FrontendUser $frontendUser
+     * @return boolean
+     */
+    public function containsUser($userGroup, FrontendUser $frontendUser): bool
+    {
+
+        foreach($frontendUser->getUsergroup() as $ug) {
+            if ($this->containsGroup($userGroup, $ug->getUid())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      *
      * @param FrontendUserGroup $userGroup
-     * @param integer $fegid
+     * @param integer $frontendUserGroupoUid
      * @param array $loopProtect
      * @return boolean
      */
-    public function contains($userGroup, $feugid, &$loopProtect = array()): bool
+    public function containsGroup($userGroup, $frontendUserGroupoUid, &$loopProtect = array()): bool
     {
-        if ($userGroup->getUid() == $feugid) {
+        if ($userGroup->getUid() == $frontendUserGroupoUid) {
             return true;
         } else {
             if (!in_array($userGroup->getUid(), $loopProtect)) {
                 $loopProtect[] = $userGroup->getUid();
                 foreach ($userGroup->getSubgroup() as $sg) {
-                    if ($this->contains($sg, $feugid, $loopProtect)) {
+                    if ($this->containsGroup($sg, $frontendUserGroupoUid, $loopProtect)) {
                         return true;
                     }
                 }
@@ -160,8 +179,8 @@ class FrontendUserService implements SingletonInterface
             ->from('fe_groups')
             ->where($qb->expr()
                 ->inSet('subgroup', $ug))
-            ->execute();
-        while ($row = $s->fetch()) {
+            ->executeQuery();
+        while ($row = $s->fetchAssociative()) {
             $uid = intVal($row['uid']);
             if (!in_array($uid, $return)) {
                 $return = array_unique(array_merge($return, $this->_getTopGroups($uid, $return)));
