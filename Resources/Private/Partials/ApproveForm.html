@@ -24,6 +24,16 @@
                                 {availabilityRequest.purpose}</div>
                         </div>
                     </div>
+                    <f:if condition="{availabilityRequest.highPriority}">
+                        <div class="row mt-2">
+                            <div class="col-md-3 text-primary" >
+                                <f:translate key="lending.overview.availabilityRequest.form.highPriority" />
+                            </div>
+                            <div class="col-md-9  text-primary">
+                                🗹                           
+                            </div>
+                        </div>
+                    </f:if>
                     <f:if condition="{availabilityRequest.object.quantity} > 1">
                         <div class="row mt-2">
                             <div class="col-md-3">
@@ -70,12 +80,12 @@
                     <div class="row border-bottom mt-3 pb-4">
                         <div class="col-md-3">&nbsp;</div>
                         <div class="col-md-4">
-                            <f:form action="approve" name="availabilityRequest" object="{availabilityRequest}"
-                                arguments="{'contextElement': contextElement}" enctype="multipart/form-data">
-                                <f:render partial="validationResults"
-                                    arguments="{prefix:'lending.overview.approval.form', object:availabilityRequest, context: 'approveRequest'}" />
-                                <f:form.submit class="btn btn-primary mb-2"
-                                    value="{f:translate(key:'lending.overview.approval.action.approve')} " />
+                        <f:form action="approve" name="availabilityRequest" object="{availabilityRequest}"
+                            arguments="{'contextElement': contextElement}" enctype="multipart/form-data">
+                            <f:render partial="validationResults"
+                                arguments="{prefix:'lending.overview.approval.form', object:availabilityRequest, context: 'approveRequest'}" />
+                            <f:form.submit class="btn btn-primary mb-2"
+                                value="{f:translate(key:'lending.overview.approval.action.approve')} " />
                             </f:form>
                         </div>
                         <div class="col-md-4">

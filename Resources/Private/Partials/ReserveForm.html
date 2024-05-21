@@ -18,22 +18,22 @@
         </label>
         <div class="col-sm-9">
             <f:form.select class="form-select" property="object" id="object">
-                <f:groupedFor each="{lendingObjects}" as="lendingObjects" groupBy="groupName" groupKey="groupName">
+            <f:groupedFor each="{toReserve.allowedObjects}" as="allowedObjects" groupBy="lendingObject.groupName" groupKey="groupName">
                     <f:if condition="{groupName} == '' ">
                         <f:then>
-                            <f:for each="{lendingObjects}" as="lendingObject">
-                                <f:form.select.option value="{lendingObject.uid}"
-                                     data="{'quantity':lendingObject.avaiableQuantity, 'highPriorityPossible': lendingObject.highPriorityLendingPossible}">
-                                    {lendingObject.title}
-                                </f:form.select.option>
-                            </f:for>
+                                <f:for each="{allowedObjects}" as="allowedObject">
+                                    <f:form.select.option value="{allowedObject.lendingObject.uid}"
+                                        data="{'quantity':allowedObject.avaiableQuantity, 'highPriorityPossible': allowedObject.highPriorityLendingPossible}">
+                                        {allowedObject.lendingObject.title}
+                                    </f:form.select.option>
+                                </f:for>
                         </f:then>
                         <f:else>
                             <f:form.select.optgroup label="{groupName}">
-                                <f:for each="{lendingObjects}" as="lendingObject">
-                                    <f:form.select.option value="{lendingObject.uid}"
-                                        data="{'quantity':lendingObject.avaiableQuantity, 'highPriorityPossible': lendingObject.highPriorityLendingPossible}">
-                                        {lendingObject.title}
+                                <f:for each="{allowedObjects}" as="allowedObject">
+                                    <f:form.select.option value="{allowedObject.lendingObject.uid}"
+                                        data="{'quantity':allowedObject.avaiableQuantity, 'highPriorityPossible': allowedObject.highPriorityLendingPossible}">
+                                        {allowedObject.lendingObject.title}
                                     </f:form.select.option>
                                 </f:for>
                             </f:form.select.optgroup>
@@ -61,7 +61,7 @@
             </f:if>
         </div>
     </div>
-    <f:if condition="{canHighPriorityLending}">
+    <f:if condition="{toReserve.canHighPriorityLend}">
         <script>
             var highPriorityLendingObjects = {highPriorityLendingObjects};
         </script>
@@ -71,13 +71,13 @@
             </div>
             <div class="col-sm-9">
                 <f:form.checkbox class="form-check-input" property="highPriority" id="highPriority" value="1" />
-                <label id="purposeLabel" for="highPriority" class="form-check-label">
+                <label id="highPriorityLabel" for="highPriority" class="form-check-label">
                     <f:translate key="lending.overview.availabilityRequest.form.highPriority" />
                 </label>
             </div>
         </div>
     </f:if>
-    <f:if condition="{maxLendingQuantity} > 1">
+    <f:if condition="{toReserve.maxQuantity} > 1">
         <div class="row  mb-2">
             <label id="quantityLabel" for="quantity" class="col-sm-3 col-form-label">
                 <f:translate key="lending.overview.availabilityRequest.form.quantity" />

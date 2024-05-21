@@ -122,7 +122,7 @@
 			<trans-unit id="lending.overview.approval.form.error.existsOverlapsAvailabilityRequests">
 				<source>The object is already borrowed in this period.</source>
 			</trans-unit>
-			<trans-unit id="lending.overview.approval.form.error.userNotApprover.reject">
+			<trans-unit id="lending.overview.reject.form.error.userNotApprover.reject">
 				<source>You has not the rights to reject a availability request.</source>
 			</trans-unit>
 			<trans-unit id="lending.overview.approval.form.warning.existsOverlapsAvailabilityRequests">
@@ -135,7 +135,7 @@
 			<trans-unit id="lending.overview.approval.form.info.successful.approved">
 				<source>You have approve the availability request successful.</source>
 			</trans-unit>
-			<trans-unit id="lending.overview.approval.form.info.successful.rejected">
+			<trans-unit id="lending.overview.reject.form.info.successful.rejected">
 				<source>You have reject the availability request successful.</source>
 			</trans-unit>
 			<trans-unit id="lending.overview.approval.action.approve">
@@ -190,6 +190,9 @@
 			<trans-unit id="lending.overview.myLending.form.purpose">
 				<source>Purpose</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.myLending.form.highPriority">
+				<source>High priority</source>
+			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.quantity">
 				<source>Quantity</source>
 			</trans-unit>
@@ -239,6 +242,9 @@
 				<source>Ignore the time overlapping</source>
 			</trans-unit>
 
+			<trans-unit id="message.approver.email.senderName">
+				<source>Lending service</source>
+			</trans-unit>
 			<trans-unit id="message.approver.email.subject">
 				<source>A new the availability request</source>
 			</trans-unit>
@@ -254,6 +260,9 @@
 			<trans-unit id="message.approver.email.purpose">
 				<source>Purpose</source>
 			</trans-unit>
+			<trans-unit id="message.approver.email.highPriority">
+				<source>With high priority</source>
+			</trans-unit>
 			<trans-unit id="message.approver.email.from">
 				<source>From</source>
 			</trans-unit>
@@ -264,6 +273,9 @@
 				<source>Borrower</source>
 			</trans-unit>
 
+			<trans-unit id="message.borrower.email.senderName">
+				<source>Lending service</source>
+			</trans-unit>
 			<trans-unit id="message.borrower.email.subject">
 				<source>Your availability request</source>
 			</trans-unit>
@@ -282,6 +294,9 @@
 			<trans-unit id="message.borrower.email.purpose">
 				<source>Purpose</source>
 			</trans-unit>
+			<trans-unit id="message.borrower.email.purpose">
+				<source>Purpose</source>
+			</trans-unit>
 			<trans-unit id="message.borrower.email.from">
 				<source>From</source>
 			</trans-unit>
@@ -289,6 +304,10 @@
 				<source>Until</source>
 			</trans-unit>
 
+
+			<trans-unit id="message.observer.email.senderName">
+				<source>Lending service</source>
+			</trans-unit>
 			<trans-unit id="message.observer.email.subject">
 				<source>State of an availability request</source>
 			</trans-unit>
@@ -306,6 +325,9 @@
 			</trans-unit>
 			<trans-unit id="message.observer.email.purpose">
 				<source>Purpose</source>
+			</trans-unit>
+			<trans-unit id="message.observer.email.highPriority">
+				<source>With high priority</source>
 			</trans-unit>
 			<trans-unit id="message.observer.email.quantity">
 				<source>Quantity</source>
@@ -326,31 +348,40 @@
 				<source>Approver</source>
 			</trans-unit>
 
-			<trans-unit id="message.informReviousBorrorer.email.subject">
+			<trans-unit id="message.informPreviousBorrower.email.senderName">
+				<source>Lending service</source>
+			</trans-unit>
+			<trans-unit id="message.informPreviousBorrower.email.subject">
 				<source>Your borrowing authorization withdrawn for urgent reasons</source>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.salutation">
+			<trans-unit id="message.informPreviousBorrower.email.salutation">
 				<source>Hello %s %s.</source>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.requestCanceled">
+			<trans-unit id="message.informPreviousBorrower.email.requestCanceled">
 				<source>Your approved loan was unfortunately withdrawn for urgent reasons and reset to a request.</source>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.object">
+			<trans-unit id="message.informPreviousBorrower.email.object">
 				<source>Your lending object</source>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.purpose">
+			<trans-unit id="message.informPreviousBorrower.email.purpose">
 				<source>Your purpose</source>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.from">
+			<trans-unit id="message.informPreviousBorrower.email.highPriority">
+				<source>With high priority</source>
+			</trans-unit>
+			<trans-unit id="message.informPreviousBorrower.email.from">
 				<source>From</source>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.until">
+			<trans-unit id="message.informPreviousBorrower.email.until">
 				<source>Until</source>
 			</trans-unit>
-			<trans-unit id="message.informReviousBorrorer.email.inquiries">
+			<trans-unit id="message.informPreviousBorrower.email.inquiries">
 				<source>If you have any questions, please contact %s %s.</source>
 			</trans-unit>
 
+			<trans-unit id="message.cancel.email.senderName">
+				<source>Lending service</source>
+			</trans-unit>
 			<trans-unit id="message.cancel.email.subject">
 				<source>A approved borrowing was withdrawn</source>
 			</trans-unit>
@@ -368,6 +399,9 @@
 			</trans-unit>
 			<trans-unit id="message.cancel.email.from">
 				<source>From</source>
+			</trans-unit>
+			<trans-unit id="message.cancel.email.highPriority">
+				<source>With high priority</source>
 			</trans-unit>
 			<trans-unit id="message.cancel.email.until">
 				<source>Until</source>

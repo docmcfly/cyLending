@@ -284,9 +284,11 @@ class Calendar {
         $(this.selector + ' .btn.toToday').on('click', {calendar: this}, function (event) {
             let calendar = event.data.calendar
             calendar.currentDay = new Date()
-            calendar.currentDay = calendar.currentDay.setDate(1)
+            calendar.currentDay.setDate(1)
             calendar.renderMonth()
-            $(".today").get(0).scrollIntoView({behavior: 'smooth'});
+            let today = $(".today").get(0)
+            today.scrollIntoView({behavior: 'smooth'})
+            calendar.updateDetails($(today.parentElement))
         })
 
         this.renderMonth()

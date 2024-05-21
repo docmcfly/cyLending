@@ -38,9 +38,9 @@
                     .fail(function (error) {
                         console.log(error.responseText)
                     })
-                    .done(function (result) {
+                    .done(function (response) {
                         //  console.log(result)
-                        calendar.importEvents(JSON.parse(result))// alert(result)
+                        calendar.importEvents(response)// alert(result)
                         calendar.renderEvents()
                     })
             },
@@ -56,9 +56,9 @@
                     .fail(function (error) {
                         console.log(error.responseText)
                     })
-                    .done(function (result) {
+                    .done(function (response) {
                         //  console.log(result)
-                        calendar.importEvents(JSON.parse(result))// alert(result)
+                        calendar.importEvents(response)// alert(result)
                         calendar.renderEvents()
                     })
             },

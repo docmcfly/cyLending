@@ -3,7 +3,6 @@ namespace Cylancer\CyLending\Domain\Repository;
 
 use Cylancer\CyLending\Domain\Model\FrontendUser;
 use Cylancer\CyLending\Domain\Model\Lending;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -15,7 +14,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2023 Clemens Gogolin <service@cylancer.net>
+ * (c) 2024 C. Gogolin <service@cylancer.net>
  *
  * @package Cylancer\CyLending\Domain\Repository
  *         
@@ -35,23 +34,22 @@ class LendingRepository extends Repository
         /** @var \TYPO3\CMS\Extbase\Persistence\QueryInterface $q*/
         $q = $this->createQuery();
         $q->matching(
-            $q->logicalOr([
-                $q->logicalAnd([
+            $q->logicalOr(
+                $q->logicalAnd(
                     $q->equals('state', Lending::STATE_AVAILABILITY_REQUEST),
-
                     $q->logicalNot(
                         $q->lessThanOrEqual('from', $today)
                     )
-                ]),
+                ),
 
-                $q->logicalAnd([
+                $q->logicalAnd(
                     $q->equals('state', Lending::STATE_APPROVED),
 
                     $q->logicalNot(
                         $q->lessThanOrEqual('until', $until)
                     )
-                ])
-            ]),
+                )
+            ),
         );
         $q->setOrderings([
             'from' => QueryInterface::ORDER_ASCENDING,
@@ -65,22 +63,22 @@ class LendingRepository extends Repository
      * @param array $canApproveLendingObjects
      * @return array
      */
-    public function findAllAvailabilityRequests(array $canApproveLendingObjects):array
+    public function findAllAvailabilityRequests(array $canApproveLendingObjects): array
     {
-        if( count(array_keys($canApproveLendingObjects)) == 0) {
+        if (count(array_keys($canApproveLendingObjects)) == 0) {
             return [];
         }
-        
+
         /** @var QueryInterface $q*/
         $q = $this->createQuery();
         $q->matching(
-            $q->logicalAnd([
+            $q->logicalAnd(
                 $q->equals('state', Lending::STATE_AVAILABILITY_REQUEST),
                 $q->logicalNot(
                     $q->lessThanOrEqual('until', date(LendingRepository::SQL_DATE_FORMAT, time()))
                 ),
                 $q->in('object', array_keys($canApproveLendingObjects))
-            ])
+            )
         );
         $q->setOrderings(['from' => QueryInterface::ORDER_ASCENDING]);
 
@@ -94,21 +92,21 @@ class LendingRepository extends Repository
         if ($frontendUser == null) {
             return [];
         }
-       
+
         /** @var QueryInterface $q*/
         $q = $this->createQuery();
         $q->matching(
-            $q->logicalAnd([
+            $q->logicalAnd(
                 $q->equals('state', Lending::STATE_APPROVED),
                 $q->logicalNot(
                     $q->lessThanOrEqual('from', date(LendingRepository::SQL_DATE_FORMAT, time()))
                 ),
                 $q->equals('borrower', $frontendUser->getUid())
-            ])
+            )
         );
         $q->setOrderings(['from' => QueryInterface::ORDER_ASCENDING]);
-    // $queryParser = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class);
-    //      debug($queryParser->convertQueryToDoctrineQueryBuilder($q)->getSQL());
+        // $queryParser = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class);
+        //      debug($queryParser->convertQueryToDoctrineQueryBuilder($q)->getSQL());
         return $q->execute()->toArray();
     }
 
@@ -118,27 +116,25 @@ class LendingRepository extends Repository
     {
         $q = $this->createQuery();
         $q->matching(
-            $q->logicalAnd([
+            $q->logicalAnd(
                 $q->logicalNot(
-                    $q->logicalOr([
+                    $q->logicalOr(
                         $q->lessThan('until', $from->format(LendingRepository::SQL_DATE_FORMAT)),
                         $q->greaterThanOrEqual('from', $until->format(LendingRepository::SQL_DATE_FORMAT))
-                    ])
+                    )
                 ),
                 $q->logicalOr(
-                    [
-                        $q->equals("state", Lending::STATE_AVAILABILITY_REQUEST),
-                        $q->equals("state", Lending::STATE_APPROVED)
-                    ]
+                    $q->equals("state", Lending::STATE_AVAILABILITY_REQUEST),
+                    $q->equals("state", Lending::STATE_APPROVED)
                 )
-            ])
+            )
         );
         $q->setOrderings([
             'high_priority' => QueryInterface::ORDER_DESCENDING,
             'from' => QueryInterface::ORDER_ASCENDING,
             'purpose' => QueryInterface::ORDER_ASCENDING,
         ]);
-        return  $q->execute();
+        return $q->execute();
 
     }
 
@@ -171,10 +167,8 @@ class LendingRepository extends Repository
             $q->equals('state', $state),
             $q->logicalNot(
                 $q->logicalOr(
-                    [
-                        $q->greaterThanOrEqual('from', $lending->getUntil()),
-                        $q->lessThanOrEqual('until', $lending->getFrom())
-                    ]
+                    $q->greaterThanOrEqual('from', $lending->getUntil()),
+                    $q->lessThanOrEqual('until', $lending->getFrom())
                 )
             )
         ];
@@ -189,7 +183,7 @@ class LendingRepository extends Repository
             $conditions[] = $q->equals('object', $lending->getObject()->getUid());
         }
 
-        $q->matching($q->logicalAnd($conditions));
+        $q->matching($q->logicalAnd(...$conditions));
 
         return $q->execute();
         // $queryParser = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class);
