@@ -7,11 +7,11 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'stable',
     'clearCacheOnLoad' => 1,
-    'version' => '3.0.0',
+    'version' => '3.0.1',
     'constraints' => [
         'depends' => [
             'typo3' => '12.4.0-12.4.99',
-            'bootstrap_package' => '13.0.1-13.0.99',
+            'bootstrap_package' => '14.0.1-14.0.99',
         ],
         'conflicts' => [
         ],
@@ -23,6 +23,7 @@ $EM_CONF[$_EXTKEY] = [
 
 /**
  ** CHANGELOG:
+ *  3.0.1 :: FIX : Calculation of all lending observer receiver is fixed.
  *  3.0.0 :: UPD : Update to TYPO3 12 and Bootstrap 5.
  *  2.1.1 :: FIX : Fix the separation between the group with high priority rights and the approver group.
  *  2.1.0 :: UPD : Separate the configuration for high priority lendings authorization per object.
