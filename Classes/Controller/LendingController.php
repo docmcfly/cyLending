@@ -714,8 +714,9 @@ class LendingController extends ActionController
     {
         $observers = $availabilityRequest->getObject()->getObserverGroup();
         if ($observers != null) {
-            $groups = $this->frontendUserService->getAllGroups($observers);
+            $groups = $this->frontendUserService->getTopGroups($observers);
             $frontendUserStorageUids = GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']);
+
             /** @var FrontendUser $receiver */
             foreach ($this->frontendUserRepository->getUsersOfGroups($groups, $frontendUserStorageUids) as $receiver) {
                 if (!empty($receiver->getEmail())) {
