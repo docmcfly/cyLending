@@ -87,6 +87,31 @@ class LendingRepository extends Repository
 
 
 
+    public function findMyAvailabilityRequests(?FrontendUser $frontendUser): array
+    {
+        if ($frontendUser == null) {
+            return [];
+        }
+
+        /** @var QueryInterface $q*/
+        $q = $this->createQuery();
+        $q->matching(
+            $q->logicalAnd(
+                $q->equals('state', Lending::STATE_AVAILABILITY_REQUEST),
+                $q->logicalNot(
+                    $q->lessThanOrEqual('from', date(LendingRepository::SQL_DATE_FORMAT, time()))
+                ),
+                $q->equals('borrower', $frontendUser->getUid())
+            )
+        );
+        $q->setOrderings(['from' => QueryInterface::ORDER_ASCENDING]);
+        // $queryParser = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class);
+        //      debug($queryParser->convertQueryToDoctrineQueryBuilder($q)->getSQL());
+        return $q->execute()->toArray();
+    }
+
+
+
     public function findMyLendings(?FrontendUser $frontendUser): array
     {
         if ($frontendUser == null) {

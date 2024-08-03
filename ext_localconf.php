@@ -15,12 +15,12 @@ call_user_func(function () {
         'CyLending',
         'Lending',
         [
-            LendingController::class => 'show, reserve, approve, reject, cancel',
+            LendingController::class => 'show, reserve, approve, reject, cancel, cancelAvailabilityRequest',
             AjaxConnectController::class => 'getEvents, existsEventOverlapping'
         ],
         // non-cacheable actions
         [
-            LendingController::class => 'show, reserve, approve, reject, cancel',
+            LendingController::class => 'show, reserve, approve, reject, cancel, cancelAvailabilityRequest',
             AjaxConnectController::class => 'getEvents, existsEventOverlapping'
         ]
     );
@@ -65,6 +65,10 @@ $GLOBALS['TYPO3_CONF_VARS']['MAIL']['partialRootPaths']['cyLending-AvailabilityR
 $GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths']['cyLending-InformCancelLendingMail']    = 'EXT:cy_lending/Resources/Private/Templates/InformCancelLendingMail/';
 $GLOBALS['TYPO3_CONF_VARS']['MAIL']['layoutRootPaths']['cyLending-InformCancelLendingMail']    = 'EXT:cy_lending/Resources/Private/Layouts/InformCancelLendingMail/';
 $GLOBALS['TYPO3_CONF_VARS']['MAIL']['partialRootPaths']['cyLending-InformCancelLendingMail']    = 'EXT:cy_lending/Resources/Private/Partials/InformCancelLendingMail/';
+
+$GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths']['cyLending-InformCancelAvailabilityRequestMail']    = 'EXT:cy_lending/Resources/Private/Templates/InformCancelAvailabilityRequestMail/';
+$GLOBALS['TYPO3_CONF_VARS']['MAIL']['layoutRootPaths']['cyLending-InformCancelAvailabilityRequestMail']    = 'EXT:cy_lending/Resources/Private/Layouts/InformCancelAvailabilityRequestMail/';
+$GLOBALS['TYPO3_CONF_VARS']['MAIL']['partialRootPaths']['cyLending-InformCancelAvailabilityRequestMail']    = 'EXT:cy_lending/Resources/Private/Partials/InformCancelAvailabilityRequestMail/';
 
 $GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths']['cyLending-InformPreviousBorrowerMail']    = 'EXT:cy_lending/Resources/Private/Templates/InformPreviousBorrowerMail/';
 $GLOBALS['TYPO3_CONF_VARS']['MAIL']['layoutRootPaths']['cyLending-InformPreviousBorrowerMail']    = 'EXT:cy_lending/Resources/Private/Layouts/InformPreviousBorrowerMail/';

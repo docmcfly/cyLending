@@ -29,6 +29,10 @@
 				<source>Calendar</source>
 				<target state="tanslated">Kalender</target>
 			</trans-unit>
+			<trans-unit id="lending.overview.tab.myAvailabilityRequests">
+				<source>My availability requests</source>
+				<target state="tanslated">Meine Ausleihanfragen</target>
+			</trans-unit>
 			<trans-unit id="lending.overview.tab.myLendings">
 				<source>My lendings</source>
 				<target state="tanslated">Meine Ausleihen</target>
@@ -254,6 +258,85 @@
 				<target state="tanslated">Die Zeitüberplappung ignorieren</target>
 			</trans-unit>
 
+
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.object">
+				<source>Lending object</source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.purpose">
+				<source>Purpose</source>
+				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.highPriority">
+				<source>High priority</source>
+				<target state="tanslated">Hohe Priorität</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.quantity">
+				<source>Quantity</source>
+				<target state="tanslated">Menge</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.from">
+				<source>From</source>
+				<target state="tanslated">Von</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.until">
+				<source>Until</source>
+				<target state="tanslated">Bis</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.action.cancel">
+				<source>Cancel availability request</source>
+				<target state="tanslated">Ausleihanfrage stornieren</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.info.successful">
+				<source>Availability request canceled sucessful.</source>
+				<target state="tanslated">Ausleihanfrage erfolgreich stroniert.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.object.isEmpty">
+				<source>Lending object is not specified.</source>
+				<target state="tanslated">Ausleihobjekt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.purpose.isEmpty">
+				<source>The purpose is not specified.</source>
+				<target state="tanslated">Der Zweck (Ausleihgrund) wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.from.isEmpty">
+				<source>Lending start time is not specified.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.until.isEmpty">
+				<source>Lending end time is not specified.</source>
+				<target state="tanslated">Ausleihendzeitpunkt wurde nicht angeben.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.from.invalid">
+				<source>Lending start time is invalid.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt ist ungültig.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.until.invalid">
+				<source>Lending end time is invalid.</source>
+				<target state="tanslated">Ausleihendzeitpunkt ist ungültig.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.until.isBeforeFrom">
+				<source>Lending end time is before the start time.</source>
+				<target state="tanslated">Ausleihendzeitpunkt ist vor dem Ausleihstartzeitpunkt.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.from.isInThePast">
+				<source>Lending start time is in the past.</source>
+				<target state="tanslated">Ausleihstartzeitpunkt ist in der Vergangenheit.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.requestAlreadyBeenProcessed">
+				<source>The availability request has already been processed</source>
+				<target state="tanslated">Die Anfrage wurde bereits bearbeitet.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.requestDeleted">
+				<source>The request is already deleted</source>
+				<target state="tanslated">Die Ausleihanfrage wurde bereits gelöscht.</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.option.ignoreOverlapping">
+				<source>Ignore the time overlapping</source>
+				<target state="tanslated">Die Zeitüberplappung ignorieren</target>
+			</trans-unit>
+
+
 			<trans-unit id="lending.overview.myLending.form.object">
 				<source>Lending object</source>
 				<target state="tanslated">Ausleihobjekt</target>
@@ -283,8 +366,8 @@
 				<target state="tanslated">Ausleihe stornieren</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.info.successful">
-				<source>Availability request canceled sucessful.</source>
-				<target state="tanslated">Ausleihanfrage erfolgreich stroniert.</target>
+				<source>The lending canceled sucessful.</source>
+				<target state="tanslated">Die Ausleihe erfolgreich stroniert.</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.error.object.isEmpty">
 				<source>Lending object is not specified.</source>
@@ -319,12 +402,12 @@
 				<target state="tanslated">Ausleihstartzeitpunkt ist in der Vergangenheit.</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.error.requestAlreadyBeenProcessed">
-				<source>The request has already been processed</source>
-				<target state="tanslated">Die Anfrage wurde bereits bearbeitet.</target>
+				<source>The lending has already been processed</source>
+				<target state="tanslated">Die Ausleihe wurde bereits bearbeitet.</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.error.requestDeleted">
-				<source>The request is already deleted</source>
-				<target state="tanslated">Die Anfrage wurde bereits gelöscht.</target>
+				<source>The lending is already deleted</source>
+				<target state="tanslated">Die Ausleihe wurde bereits gelöscht.</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.option.ignoreOverlapping">
 				<source>Ignore the time overlapping</source>
@@ -522,6 +605,51 @@
 			<trans-unit id="message.informPreviousBorrower.email.inquiries">
 				<source>If you have any questions, please contact %s %s.</source>
 				<target state="tanslated">Bei Rückfragen wende Dich bitte an %s %s.</target>
+			</trans-unit>
+
+			<trans-unit id="message.cancelAvailabilityRequest.email.senderName">
+				<source>Lending service</source>
+				<target state="tanslated">Ausleihservice</target>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.subject">
+				<source>An availability request was withdrawn</source>
+				<target state="tanslated">Eine Ausleihanfrage wurde zurückgezogen</target>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.salutation">
+				<source>Hello %s %s.</source>
+				<target state="tanslated">Hallo %s %s.</target>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.lendingCanceled">
+				<source>The availability request of % %s was withdrawn:</source>
+				<target state="tanslated">Die Ausleihanfrage von %s %s wurde zurückgezogen:</target>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.object">
+				<source>Lending object</source>
+				<target state="tanslated">Ausleihobjekt</target>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.purpose">
+				<source>Purpose</source>
+				<target state="tanslated">Verwendungszweck</target>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.highPriority">
+				<source>With high priority</source>
+				<target state="tanslated">Mit hoher Priorität</target>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.quantity">
+				<source>Quantity</source>
+				<target state="tanslated">Menge</target>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.from">
+				<source>From</source>
+				<target state="tanslated">Von</target>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.until">
+				<source>Until</source>
+				<target state="tanslated">Bis</target>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.borrower">
+				<source>Borrower</source>
+				<target state="tanslated">Ausleiher:in</target>
 			</trans-unit>
 
 			<trans-unit id="message.cancel.email.senderName">

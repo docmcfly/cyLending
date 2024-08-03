@@ -23,6 +23,9 @@
 			<trans-unit id="lending.overview.tab.calendar">
 				<source>Calendar</source>
 			</trans-unit>
+			<trans-unit id="lending.overview.tab.myAvailabilityRequests">
+				<source>My availability requests</source>
+			</trans-unit>
 			<trans-unit id="lending.overview.tab.myLendings">
 				<source>My lendings</source>
 			</trans-unit>
@@ -181,6 +184,64 @@
 				<source>The request is already deleted</source>
 			</trans-unit>
 			<trans-unit id="lending.overview.approval.form.option.ignoreOverlapping">
+				<source>Ignore the time overlapping</source>
+			</trans-unit>
+
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.object">
+				<source>Lending object</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.purpose">
+				<source>Purpose</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.highPriority">
+				<source>High priority</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.quantity">
+				<source>Quantity</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.from">
+				<source>From</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.until">
+				<source>Until</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.action.cancel">
+				<source>Cancel availability request</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.info.successful">
+				<source>Availability request canceled sucessful.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.object.isEmpty">
+				<source>Lending object is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.purpose.isEmpty">
+				<source>The purpose is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.from.isEmpty">
+				<source>Lending start time is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.until.isEmpty">
+				<source>Lending end time is not specified.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.from.invalid">
+				<source>Lending start time is invalid.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.until.invalid">
+				<source>Lending end time is invalid.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.until.isBeforeFrom">
+				<source>Lending end time is before the start time.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.from.isInThePast">
+				<source>Lending start time is in the past.</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.requestAlreadyBeenProcessed">
+				<source>The availability request has already been processed</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.error.requestDeleted">
+				<source>The request is already deleted</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.myAvailabilityRequest.form.option.ignoreOverlapping">
 				<source>Ignore the time overlapping</source>
 			</trans-unit>
 
@@ -377,6 +438,40 @@
 			</trans-unit>
 			<trans-unit id="message.informPreviousBorrower.email.inquiries">
 				<source>If you have any questions, please contact %s %s.</source>
+			</trans-unit>
+
+			<trans-unit id="message.cancelAvailabilityRequest.email.senderName">
+				<source>Lending service</source>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.subject">
+				<source>An availability request was withdrawn</source>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.salutation">
+				<source>Hello %s %s.</source>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.lendingCanceled">
+				<source>The availability request of % %s was withdrawn:</source>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.object">
+				<source>Lending object</source>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.purpose">
+				<source>Purpose</source>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.highPriority">
+				<source>With high priority</source>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.quantity">
+				<source>Quantity</source>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.from">
+				<source>From</source>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.until">
+				<source>Until</source>
+			</trans-unit>
+			<trans-unit id="message.cancelAvailabilityRequest.email.borrower">
+				<source>Borrower</source>
 			</trans-unit>
 
 			<trans-unit id="message.cancel.email.senderName">

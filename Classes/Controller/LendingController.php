@@ -54,12 +54,14 @@ class LendingController extends ActionController
     const INFORM_PREVIOUS_BORROWER_MAIL_TEMPLATE = 'InformPreviousBorrowerMail';
     const OBSERVER_MAIL_TEMPLATE = 'ObserverMessageMail';
     const INFORM_CANCEL_LENDING_MAIL_TEMPLATE = 'InformCancelLendingMail';
+    const INFORM_CANCEL_AVAILABILITY_REQUEST_MAIL_TEMPLATE = 'InformCancelAvailabilityRequestMail';
 
     const TO_RESERVE = 'toReserve';
 
     const APPROVE_REQUEST = 'approveRequest';
     const REJECT_REQUEST = 'rejectRequest';
     const CANCEL_LENDING = 'cancelLending';
+    const CANCEL_AVAILABILITY_REQUEST = 'cancelAvailabilityRequest';
     const CONTEXT_ELEMENT = 'contentElement';
 
     const TAB_KEY = 'tab';
@@ -68,6 +70,7 @@ class LendingController extends ActionController
     const LENDING_TAB = 'lending';
     const CALENDAR_TAB = 'calendar';
     const MY_LENDINGS_TAB = 'myLendings';
+     const MY_AVAILABILITY_REQUESTS_TAB = 'myAvailabilityRequests';
 
     /* @var LendingObjectRepository */
     private LendingObjectRepository $lendingObjectRepository;
@@ -216,13 +219,22 @@ class LendingController extends ActionController
 
         // is the approver tab visible?
 
+        // tab page MY_AVAILABILITY_REQUESTS:
+        $myAvailabilityRequests = $this->lendingRepository->findMyAvailabilityRequests($this->frontendUserService->getCurrentUser());
+        if ($this->request->hasArgument(LendingController::CANCEL_AVAILABILITY_REQUEST)) {
+            $this->mergeLendingValidationResults($myAvailabilityRequests, LendingController::CANCEL_AVAILABILITY_REQUEST);
+        }
+
         // tab page MY_LENDINGS:
         $myLendings = $this->lendingRepository->findMyLendings($this->frontendUserService->getCurrentUser());
         if ($this->request->hasArgument(LendingController::CANCEL_LENDING)) {
             $this->mergeLendingValidationResults($myLendings, LendingController::CANCEL_LENDING);
         }
 
-        // all availability request to approve / reject
+        // all availability requests of the current user
+        $this->view->assign('myAvailabilityRequests', $myAvailabilityRequests);
+
+        // all lending of the current user
         $this->view->assign('myLendings', $myLendings);
 
         // tab page AVAILABILITY_REQUEST:
@@ -283,12 +295,6 @@ class LendingController extends ActionController
         }
     }
 
-
-   
-
-
-
-
     private function createLending(): Lending
     {
         $return = new Lending();
@@ -305,6 +311,96 @@ class LendingController extends ActionController
     {
         return date(LendingRepository::SQL_DATE_FORMAT, strtotime($dateTime));
     }
+
+
+    /**
+     *
+     * @param Lending $myAvailabilityRequest
+     * @return ResponseInterface
+     * @\TYPO3\CMS\Extbase\Annotation\Validate( param = "myAvailabilityRequest", validator = "Cylancer\CyLending\Domain\Validator\LendingValidator" )
+     */
+
+     public function cancelAvailabilityRequestAction(Lending $myAvailabilityRequest = null) {
+        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
+
+        /** @var ValidationResults $validationResults */
+        $validationResults = $this->validateCancelAvailabilityRequest($myAvailabilityRequest, $ceUid);
+        /** @var ForwardResponse $forward */
+        $forward = new ForwardResponse('show');
+        if ($validationResults->isOkay()) {
+            $validationResults->clear();
+            $validationResults->addInfo('successful');
+            $myAvailabilityRequest->setState(Lending::STATE_CANCELED);
+            $this->lendingRepository->update($myAvailabilityRequest);
+            $this->persistenceManager->persistAll();
+
+            $this->informAboutCancelAvailabilityRequest($myAvailabilityRequest);
+        }
+
+        $forwardArguments = [
+            LendingController::TAB_KEY => LendingController::MY_AVAILABILITY_REQUESTS_TAB,
+            LendingController::CONTEXT_ELEMENT => $ceUid,
+            LendingController::CANCEL_AVAILABILITY_REQUEST => $this->toArray($myAvailabilityRequest),
+
+        ];
+
+        $forward = $forward->withArguments($forwardArguments);
+        return $forward;
+     }
+
+
+     private function validateCancelAvailabilityRequest(Lending $myAvailabilityRequest, int $ceUid): ValidationResults
+     {
+ 
+         /** @var ValidationResults $validationResults */
+         $validationResults = $myAvailabilityRequest->getValidationResults();
+         if ($myAvailabilityRequest->getBorrower()->getUid() != $this->frontendUserService->getCurrentUserUid()) {
+             $validationResults->addError('notYourLending');
+         }
+ 
+         return $validationResults;
+     }
+
+
+    private function informAboutCancelAvailabilityRequest(Lending $myAvailabilityRequest): void
+    {
+
+        /** @var FrontendUserGroup $g */
+        $observers = $myAvailabilityRequest->getObject()->getObserverGroup();
+        $approvers = $myAvailabilityRequest->getObject()->getApproverGroup();
+
+        $groups =
+            array_merge(
+                $this->frontendUserService->getAllGroups($observers),
+                $this->frontendUserService->getAllGroups($approvers)
+            );
+        if (!empty($groups)) {
+            $frontendUserStorageUids = GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']);
+            /** @var FrontendUser $receiver */
+            foreach ($this->frontendUserRepository->getUsersOfGroups($groups, $frontendUserStorageUids) as $receiver) {
+                if (!empty($receiver->getEmail())) {
+                    $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
+                    $fluidEmail
+                        ->setRequest($this->request)
+                        ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
+                        ->from(new Address(MailUtility::getSystemFromAddress(), 
+                            LocalizationUtility::translate('message.cancelAvailabilityRequest.email.senderName', LendingController::EXTENSION_NAME)))
+                        ->subject(LocalizationUtility::translate('message.cancelAvailabilityRequest.email.subject',LendingController::EXTENSION_NAME ))
+                        ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
+                        ->setTemplate(LendingController::INFORM_CANCEL_AVAILABILITY_REQUEST_MAIL_TEMPLATE)
+                        ->assign('availabilityRequest', $myAvailabilityRequest)
+                        ->assign('language', $this->getLanguage())
+                        ->assign('user', $receiver)
+                    ;
+                    GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
+                }
+            }
+        }
+    }
+
+
+
+
 
     /**
      *
@@ -378,6 +474,8 @@ class LendingController extends ActionController
             }
         }
     }
+
+
 
     private function validateCancel(Lending $myLending, int $ceUid): ValidationResults
     {
