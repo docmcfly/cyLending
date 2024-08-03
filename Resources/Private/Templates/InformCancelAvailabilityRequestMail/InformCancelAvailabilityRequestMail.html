@@ -1,0 +1,92 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:c="http://typo3.org/ns/Cylancer/Participants/ViewHelpers" data-namespace-typo3-fluid="true">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	</head>
+	<body>
+		<f:layout name="Default" />
+		<f:section name="content">
+			<p>
+				<f:translate
+					key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancelAvailabilityRequest.email.salutation"
+					arguments="{0:user.firstName, 1:user.lastName}" />
+			</p>
+			<p>
+				<f:translate
+					key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancelAvailabilityRequest.email.lendingCanceled"
+					arguments="{0:availabilityRequest.borrower.firstName, 1:availabilityRequest.borrower.lastName}" />
+			</p>
+			<table>
+				<tr>
+					<td>
+						<f:translate
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancelAvailabilityRequest.email.object" />
+						&nbsp;&nbsp;
+					</td>
+					<td>{availabilityRequest.object.title}</td>
+				</tr>
+				<tr>
+					<td>
+						<f:translate
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancelAvailabilityRequest.email.purpose" />
+						&nbsp;&nbsp;
+					</td>
+					<td>{availabilityRequest.purpose}</td>
+				</tr>
+				<f:if condition="{availabilityRequest.highPriority}">
+					<tr>
+						<td  style="color:#e05e36;">
+                                <f:translate key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancelAvailabilityRequest.email.highPriority" />
+						</td>
+						<td style="color:#e05e36;">
+							🗹                           
+						</td>
+					</tr>
+                </f:if><f:if condition="{availabilityRequest.object.quantity} > 1">
+					<tr>
+						<td>
+							<f:translate
+								key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancelAvailabilityRequest.email.quantity" />
+							&nbsp;&nbsp;
+						</td>
+						<td>{availabilityRequest.quantity}</td>
+					</tr>
+				</f:if>
+				<tr>
+					<td>
+						<f:translate
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancelAvailabilityRequest.email.from" />
+						&nbsp;&nbsp;
+					</td>
+					<td>
+						<f:format.date locale="{language}" pattern="EEEE, dd. MMMM yyyy  HH:mm" >{availabilityRequest.fromDate}</f:format.date>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<f:translate
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancelAvailabilityRequest.email.until" />
+						&nbsp;&nbsp;
+					</td>
+					<td>
+						<f:format.date locale="{language}" pattern="EEEE, dd. MMMM yyyy  HH:mm" >{availabilityRequest.untilDate}</f:format.date>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<f:translate
+							key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.cancelAvailabilityRequest.email.borrower" />
+						&nbsp;&nbsp;
+					</td>
+					<td>{availabilityRequest.borrower.firstName} {availabilityRequest.borrower.lastName}</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+
+
+		</f:section>
+	</body>
+</html>

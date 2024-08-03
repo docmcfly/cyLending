@@ -27,6 +27,13 @@
 					aria-controls="nav-lending" aria-selected="{f:if(condition:'{tab} === \'lending\' ', then: 'true', else:'false')}">
 					<f:translate key="lending.overview.tab.lending" />
 				</button>
+				<f:if condition="{myAvailabilityRequests->f:count()} > 0">
+					<button class="nav-link {f:if(condition:'{tab} === \'myAvailabilityRequests\' ', then: 'active')}"
+						id="nav-myAvailabilityRequests-tab" data-bs-toggle="tab" data-bs-target="#nav-myAvailabilityRequests" type="button"
+						role="tab" aria-controls="nav-myAvailabilityRequests" aria-selected="{f:if(condition:'{tab} === \'myAvailabilityRequests\' ', then: 'true', else:'false')}">
+						<f:translate key="lending.overview.tab.myAvailabilityRequests" />
+					</button>
+				</f:if>
 				<f:if condition="{myLendings->f:count()} > 0">
 					<button class="nav-link {f:if(condition:'{tab} === \'myLendings\' ', then: 'active')}"
 						id="nav-myLendings-tab" data-bs-toggle="tab" data-bs-target="#nav-myLendings" type="button"
@@ -59,6 +66,12 @@
 					</f:else>
 				</f:if>
 			</div>
+			<f:if condition="{myAvailabilityRequests->f:count()} > 0">
+				<div class="tab-pane fade {f:if(condition:'{tab} === \'myAvailabilityRequests\'', then: 'show active')} pt-3"
+					id="nav-myAvailabilityRequests" role="myAvailabilityRequests" aria-labelledby="nav-myAvailabilityRequests-tab">
+					<f:render partial="myAvailabilityRequests" arguments="{_all}" />
+				</div>
+			</f:if>
 			<f:if condition="{myLendings->f:count()} > 0">
 				<div class="tab-pane fade {f:if(condition:'{tab} === \'myLendings\'', then: 'show active')} pt-3"
 					id="nav-myLendings" role="myLendings" aria-labelledby="nav-myLendings-tab">
