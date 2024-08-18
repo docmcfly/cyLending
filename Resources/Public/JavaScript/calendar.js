@@ -20,7 +20,7 @@ class Calendar {
         weekendColor: 'var(--bs-primary)',
 
         // is the 
-        appointmentSymbole: ' 🕗',
+        appointmentSymbol: ' 🕗',
 
         // how many month you can switch in the past. (it exists no limit if the value less as one)
         maxPastMonth: 1,
@@ -99,7 +99,7 @@ class Calendar {
     	color: var(--primary-light);\
     }\
     .withAppointment::after{\
-        content:"'+ this.properties.appointmentSymbole + '"; \
+        content:"'+ this.properties.appointmentSymbol + '"; \
     }\
     .content {\
         color: var(--bs-black);\

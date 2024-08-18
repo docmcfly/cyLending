@@ -24,29 +24,41 @@
 			<trans-unit id="flexforms_general.settings.usualLendingTermMinutes">
 				<source>Usual lending term (minutes)</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.frontendUserStroageUids">
+			<trans-unit id="flexforms_general.settings.appointmentSymbol">
+				<source>Appointment symbole</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.appointmentSymbol.description">
+				<source>Is displayed on the calendar day if there is an appointment on this day.</source>
+			</trans-unit>
+			<trans-unit id="flexforms_storageLocations.title">
+				<source>Storage locations</source>
+			</trans-unit>
+			<trans-unit id="flexforms_storagelocations.settings.frontendUserStorageUids">
 				<source>Storage of frontend user</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.lendingStorageUids">
+			<trans-unit id="flexforms_storagelocations.settings.lendingStorageUids">
 				<source>Storage of lendings</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.otherLendingStorageUids">
+			<trans-unit id="flexforms_storagelocations.settings.otherLendingStorageUids">
 				<source>Storage of other lendings</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.lendingObjectStorageUids">
+			<trans-unit id="flexforms_storagelocations.settings.lendingObjectStorageUids">
 				<source>Storage of lending objects</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.reasonsForPreventionServiceTitle">
+			<trans-unit id="flexforms_reasonsForPrevention.title">
+				<source>Prevention reasons</source>
+			</trans-unit>
+			<trans-unit id="flexforms_reasonsForPrevention.settings.reasonsForPreventionServiceTitle">
 				<source>Title of prevention reason finder</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.reasonsForPreventionService">
+			<trans-unit id="flexforms_reasonsForPrevention.settings.reasonsForPreventionService">
 				<source>Prevention reason finder</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.reasonsForPreventionService.description">
+			<trans-unit id="flexforms_reasonsForPrevention.settings.reasonsForPreventionService.description">
 				<source>Complete class path where a the method:
 					public static function reasonsForPreventionAction(array $storageUids, \DateTime $from, \DateTime $until, string $visibility = 'ALL'): array is provided:</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.reasonsForPreventionServiceStorageUids">
+			<trans-unit id="flexforms_reasonsForPrevention.settings.reasonsForPreventionServiceStorageUids">
 				<source>Storage location of the prevention reasons</source>
 			</trans-unit>
 		</body>

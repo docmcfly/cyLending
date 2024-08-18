@@ -16,7 +16,7 @@
 							<config>
 								<type>text</type>
 								<cols>40</cols>
-                                <rows>5</rows>
+								<rows>5</rows>
 							</config>
 						</TCEforms>
 					</settings.purposes>
@@ -37,8 +37,7 @@
 					</settings.usualLendingTermHours>
 					<settings.usualLendingTermMinutes>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.usualLendingTermMinutes
-							</label>
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.usualLendingTermMinutes</label>
 							<config>
 								<type>input</type>
 								<eval>int</eval>
@@ -50,9 +49,31 @@
 							</config>
 						</TCEforms>
 					</settings.usualLendingTermMinutes>
+					<settings.appointmentSymbol>
+						<TCEforms>
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.appointmentSymbol</label>
+							<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.appointmentSymbol.description</description>
+							<config>
+								<type>input</type>
+								<max>2</max>
+								<default>🕗</default>
+							</config>
+						</TCEforms>
+					</settings.appointmentSymbol>
+				</el>
+			</ROOT>
+		</sDEF>
+		<sSTORAGE_LOCATIONS>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_storageLocations.title
+					</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
 					<settings.frontendUserStroageUids>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.frontendUserStroageUids
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_storagelocations.settings.frontendUserStorageUids
 							</label>
 							<config>
 								<type>select</type>
@@ -72,7 +93,7 @@
 					</settings.frontendUserStroageUids>
 					<settings.lendingStorageUids>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.lendingStorageUids
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_storagelocations.settings.lendingStorageUids
 							</label>
 							<config>
 								<type>select</type>
@@ -93,7 +114,7 @@
 					</settings.lendingStorageUids>
 					<settings.otherLendingStorageUids>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.otherLendingStorageUids
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_storagelocations.settings.otherLendingStorageUids
 							</label>
 							<config>
 								<type>select</type>
@@ -113,7 +134,7 @@
 					</settings.otherLendingStorageUids>
 					<settings.lendingObjectStorageUids>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.lendingObjectStorageUids
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_storagelocations.settings.lendingObjectStorageUids
 							</label>
 							<config>
 								<type>select</type>
@@ -131,9 +152,20 @@
 							</config>
 						</TCEforms>
 					</settings.lendingObjectStorageUids>
+				</el>
+			</ROOT>
+		</sSTORAGE_LOCATIONS>
+		<sREASON_FOR_PREVENT>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_reasonsForPrevention.title
+					</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
 					<settings.reasonsForPreventionServiceTitle>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionServiceTitle
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_reasonsForPrevention.settings.reasonsForPreventionServiceTitle
 							</label>
 							<config>
 								<type>input</type>
@@ -145,9 +177,9 @@
 					</settings.reasonsForPreventionServiceTitle>
 					<settings.reasonsForPreventionService>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionService
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_reasonsForPrevention.settings.reasonsForPreventionService
 							</label>
-							<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionService.description
+							<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_reasonsForPrevention.settings.reasonsForPreventionService.description
 							</description>
 							<config>
 								<type>input</type>
@@ -159,7 +191,7 @@
 					</settings.reasonsForPreventionService>
 					<settings.reasonsForPreventionServiceStorageUids>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.reasonsForPreventionServiceStorageUids
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_reasonsForPrevention.settings.reasonsForPreventionServiceStorageUids
 							</label>
 							<config>
 								<type>select</type>
@@ -177,8 +209,9 @@
 							</config>
 						</TCEforms>
 					</settings.reasonsForPreventionServiceStorageUids>
+
 				</el>
 			</ROOT>
-		</sDEF>
+		</sREASON_FOR_PREVENT>
 	</sheets>
 </T3DataStructure>
