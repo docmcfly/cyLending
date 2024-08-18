@@ -7,7 +7,7 @@
             let language = '{language}'
             let currentMonthEvents = {currentMonthEvents}
             let ajaxConnect = '{f:uri.action(pageType:"{settings.ajax.pageType}", controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{lspid:allLendingStorageUids}")}'
-            let _appointmentSymbole = '{appointmentSymbole}'
+            let _appointmentSymbol = '{appointmentSymbol}'
         </script>
     </f:format.raw>
 
@@ -26,7 +26,7 @@
         }
 
         new Calendar(selector, language, {
-            appointmentSymbole: ' ' + _appointmentSymbole,
+            appointmentSymbol: ' ' + _appointmentSymbol,
             previousMonthButtonHook: function (calendar) {
 
                 let previousMonth = calculateOtherMonth(-1);

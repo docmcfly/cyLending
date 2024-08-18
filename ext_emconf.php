@@ -7,7 +7,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'stable',
     'clearCacheOnLoad' => 1,
-    'version' => '3.2.0',
+    'version' => '3.2.1',
     'constraints' => [
         'depends' => [
             'typo3' => '12.4.0-12.4.99',
@@ -23,7 +23,8 @@ $EM_CONF[$_EXTKEY] = [
 
 /**
  ** CHANGELOG:
- *  3.2.0 :: ADD : You can set an individual appointment symbole.
+ *  3.2.1 :: Fix : Replace "appointment symbole" with "appointment symbol".
+ *  3.2.0 :: ADD : You can set an individual appointment symbol.
  *  3.1.0 :: ADD : You can cancel your availability request.
  *  3.0.1 :: FIX : Calculation of all lending observer receiver is fixed.
  *  3.0.0 :: UPD : Update to TYPO3 12 and Bootstrap 5.

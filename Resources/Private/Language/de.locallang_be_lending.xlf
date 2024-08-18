@@ -31,11 +31,11 @@
 				<source>Usual lending term (minutes)</source>
 				<target state="tanslated">Übliche Ausleihdauer (Minuten)</target>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.appointmentSymbole">
+			<trans-unit id="flexforms_general.settings.appointmentSymbol">
 				<source>Appointment symbole</source>
 				<target state="tanslated">Terminsymbol</target>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.appointmentSymbole.description">
+			<trans-unit id="flexforms_general.settings.appointmentSymbol.description">
 				<source>Is displayed on the calendar day if there is an appointment on this day.</source>
 				<target state="tanslated">Wird am Kalendertag angezeigt, wenn ein Termin an diesem Tag vorliegt</target>
 			</trans-unit>

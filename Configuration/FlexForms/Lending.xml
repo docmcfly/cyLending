@@ -49,17 +49,17 @@
 							</config>
 						</TCEforms>
 					</settings.usualLendingTermMinutes>
-					<settings.appointmentSymbole>
+					<settings.appointmentSymbol>
 						<TCEforms>
-							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.appointmentSymbole</label>
-							<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.appointmentSymbole.description</description>
+							<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.appointmentSymbol</label>
+							<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.appointmentSymbol.description</description>
 							<config>
 								<type>input</type>
 								<max>2</max>
 								<default>🕗</default>
 							</config>
 						</TCEforms>
-					</settings.appointmentSymbole>
+					</settings.appointmentSymbol>
 				</el>
 			</ROOT>
 		</sDEF>

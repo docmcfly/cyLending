@@ -24,10 +24,10 @@
 			<trans-unit id="flexforms_general.settings.usualLendingTermMinutes">
 				<source>Usual lending term (minutes)</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.appointmentSymbole">
+			<trans-unit id="flexforms_general.settings.appointmentSymbol">
 				<source>Appointment symbole</source>
 			</trans-unit>
-			<trans-unit id="flexforms_general.settings.appointmentSymbole.description">
+			<trans-unit id="flexforms_general.settings.appointmentSymbol.description">
 				<source>Is displayed on the calendar day if there is an appointment on this day.</source>
 			</trans-unit>
 			<trans-unit id="flexforms_storageLocations.title">
