@@ -211,6 +211,7 @@ class LendingController extends ActionController
 
         // COMMON
         $this->view->assign(LendingController::CONTEXT_ELEMENT, $ceUid);
+        $this->view->assign('appointmentSymbole', $this->getSetting('appointmentSymbole', $ceUid ));
 
         // tab page APPROVE:
         $this->view->assign('availabilityRequests', $allAvailabilityRequests);
