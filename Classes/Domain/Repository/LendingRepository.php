@@ -99,7 +99,7 @@ class LendingRepository extends Repository
             $q->logicalAnd(
                 $q->equals('state', Lending::STATE_AVAILABILITY_REQUEST),
                 $q->logicalNot(
-                    $q->lessThanOrEqual('from', date(LendingRepository::SQL_DATE_FORMAT, time()))
+                    $q->lessThanOrEqual('until', date(LendingRepository::SQL_DATE_FORMAT, time()))
                 ),
                 $q->equals('borrower', $frontendUser->getUid())
             )
@@ -124,7 +124,7 @@ class LendingRepository extends Repository
             $q->logicalAnd(
                 $q->equals('state', Lending::STATE_APPROVED),
                 $q->logicalNot(
-                    $q->lessThanOrEqual('from', date(LendingRepository::SQL_DATE_FORMAT, time()))
+                    $q->lessThanOrEqual('until', date(LendingRepository::SQL_DATE_FORMAT, time()))
                 ),
                 $q->equals('borrower', $frontendUser->getUid())
             )
