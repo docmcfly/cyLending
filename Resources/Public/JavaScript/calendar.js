@@ -494,8 +494,8 @@ class Calendar {
                 }
                 //  add += 'color:' + this.idealTextColor(backgroundColor, event.striped) + ';'
                 add += '">' + "\n"
-                add += '<div class="fw-bold px-1 bg-white me-5" >' + event.title + '</div>'
-                add += '<div class="small overflowHidden  px-1 bg-white me-5">'
+                add += '<div style="hyphens: auto;" class="fw-bold px-1 bg-white me-5" >' + event.title + '</div>'
+                add += '<div style="hyphens: auto;" class="small overflowHidden  px-1 bg-white me-5">'
                 if (event.responsible) {
                     add += event.responsible + '<br>'
                 }
