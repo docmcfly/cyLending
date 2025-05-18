@@ -11,42 +11,22 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2024 C. Gogolin <service@cylancer.net>
+ * (c) 2025 C. Gogolin <service@cylancer.net>
  *
- * @package Cylancer\CyLending\Domain\Model
  */
 class FrontendUser extends AbstractEntity
 {
 
-    /**
-     *
-     * @var ObjectStorage<FrontendUserGroup>
-     */
+    /** @var ObjectStorage<FrontendUserGroup> */
     protected $usergroup;
 
-    /**
-     *
-     * @var string
-     */
-    protected $username = '';
+    protected string $username = '';
 
-    /**
-     *
-     * @var string
-     */
-    protected $firstName = '';
+    protected ?string $firstName = '';
 
-    /**
-     *
-     * @var string
-     */
-    protected $lastName = '';
+    protected ?string $lastName = '';
 
-    /**
-     *
-     * @var string
-     */
-    protected $email = '';
+    protected ?string $email = '';
     /**
      * Constructs a new Front-End User
      */
@@ -55,142 +35,73 @@ class FrontendUser extends AbstractEntity
         $this->usergroup = new ObjectStorage();
     }
 
-    /**
-     * Called again with initialize object, as fetching an entity from the DB does not use the constructor
-     */
     public function initializeObject()
     {
         $this->usergroup = $this->usergroup ?? new ObjectStorage();
     }
 
-
-
-    /**
-     * Sets the username value
-     *
-     * @param string $username
-     */
     public function setUsername(string $username): void
     {
         $this->username = $username;
     }
 
-    /**
-     * Returns the username value
-     *
-     * @return string
-     */
     public function getUsername(): string
     {
         return $this->username;
     }
 
 
-    /**
-     * 
-     * @return string
-     */
-    public function getFirstName()
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    /**
-     * 
-     * @param string $firstName 
-     * @return self
-     */
     public function setFirstName($firstName): self
     {
         $this->firstName = $firstName;
         return $this;
     }
 
-    /**
-     * 
-     * @return string
-     */
-    public function getLastName()
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    /**
-     * 
-     * @param string $lastName 
-     * @return self
-     */
     public function setLastName($lastName): self
     {
         $this->lastName = $lastName;
         return $this;
     }
 
-    /**
-     * Sets the email value
-     *
-     * @param string $email
-     */
     public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * Returns the email value
-     *
-     * @return string
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
 
-    /**
-     * Sets the usergroups.
-     * Keep in mind that the property is called "usergroup"
-     * although it can hold several usergroups.
-     *
-     * @param ObjectStorage<FrontendUserGroup> $usergroup
-     * 
-     */
-    public function setUsergroup(ObjectStorage $usergroup)
+    public function setUsergroup(ObjectStorage $usergroup): void
     {
         $this->usergroup = $usergroup;
     }
 
-    /**
-     * Adds a usergroup to the frontend user
-     *
-     * @param FrontendUserGroup $usergroup
-     */
-    public function addUsergroup(FrontendUserGroup $usergroup)
+    public function addUsergroup(FrontendUserGroup $usergroup): void
     {
         $this->usergroup->attach($usergroup);
     }
 
-    /**
-     * Removes a usergroup from the frontend user
-     *
-     * @param FrontendUserGroup $usergroup
-     */
-    public function removeUsergroup(FrontendUserGroup $usergroup)
+    public function removeUsergroup(FrontendUserGroup $usergroup): void
     {
         $this->usergroup->detach($usergroup);
     }
 
-    /**
-     * Returns the usergroups.
-     * Keep in mind that the property is called "usergroup"
-     * although it can hold several usergroups.
-     *
-     * @return ObjectStorage<FrontendUserGroup> An object storage containing the usergroup
-     */
-    public function getUsergroup()
+    public function getUsergroup(): ObjectStorage
     {
         return $this->usergroup;
     }
-
 
 }

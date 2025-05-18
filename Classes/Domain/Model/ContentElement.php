@@ -10,9 +10,8 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2024 C. Gogolin <service@cylancer.net>
+ * (c) 2025 C. Gogolin <service@cylancer.net>
  *
- * @package Cylancer\CyLending\Domain\Model
  */
 class ContentElement extends AbstractEntity
 {
@@ -20,39 +19,31 @@ class ContentElement extends AbstractEntity
     /**
      * @var string
      */
-    protected $listType;
+    protected ?string $listType;
 
     /**
      * @var string
      */
-    protected $piFlexform;
+    protected ?string $piFlexform;
 
 
     /**
      * 
      * @return string
      */
-    public function getListType()
+    public function getListType(): ?string
     {
         return $this->listType;
     }
 
-    /**
-     * 
-     * @param string $listType 
-     * @return self
-     */
-    public function setListType($listType): self
+    public function setListType(?string $listType): self
     {
         $this->listType = $listType;
         return $this;
     }
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getPiFlexform() {
-		return $this->piFlexform;
-	}
+    public function getPiFlexform(): ?string
+    {
+        return $this->piFlexform;
+    }
 }

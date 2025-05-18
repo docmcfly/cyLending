@@ -7,31 +7,26 @@ use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  *
- * This file is part of the "cy_lending" Extension for TYPO3 CMS.
+ * This file is part of the "lending" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2024 C. Gogolin <service@cylancer.net>
+ * (c) 2025 C. Gogolin <service@cylancer.net>
  *
- * @package Cylancer\CyLending\Domain\Service
- *         
  */
+
 class LendingService implements SingletonInterface
 {
 
-    /* @var LendingRepository */
-    private LendingRepository $lendingRepository;
-
-
     public function __construct(
-        LendingRepository $lendingRepository
+        private readonly LendingRepository $lendingRepository
     ) {
-        $this->lendingRepository = $lendingRepository;
     }
 
     public function getVisualAvailabilityRequestsAsEventsOf(int $year, int $month, array $storagePids = NULL): array
@@ -79,13 +74,10 @@ class LendingService implements SingletonInterface
 
     public function calculateMaximumFrom(Lending $lending): int
     {
-         return $this->calculateMaximum($this->lendingRepository->getOverlapsAvailabilityRequests($lending));
+        return $this->calculateMaximum($this->lendingRepository->getOverlapsAvailabilityRequests($lending));
     }
 
-    /**
-     * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|object[] $lendings
-     */
-    public function calculateMaximum(  $lendings): int
+    public function calculateMaximum(QueryResultInterface|array $lendings): int
     {
 
         $o = null;

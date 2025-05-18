@@ -6,17 +6,19 @@ use Cylancer\CyLending\Domain\Model\FrontendUser;
 use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use Cylancer\CyLending\Service\FrontendUserService;
 use Cylancer\CyLending\Service\LendingService;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
- * This file is part of the "Lending" extension for TYPO3 CMS.
+ *
+ * This file is part of the "lending" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2024 C. Gogolin <service@cylancer.net>
+ * (c) 2025 C. Gogolin <service@cylancer.net>
  *
- * @package Cylancer\CyLending\Domain\Model
  */
+
 class Lending extends AbstractEntity
 {
 	public const STATE_UNKNOWN = 0;
@@ -26,291 +28,171 @@ class Lending extends AbstractEntity
 
 	public const STATE_CANCELED = 4;
 
+	protected ?FrontendUser $borrower = null;
 
-	/** @var FrontendUser */
-	protected $borrower = '';
+	protected ?FrontendUser $approver = null;
 
-	/** @var FrontendUser */
-	protected $approver = '';
+	protected ?LendingObject $object = null;
 
-	/** @var LendingObject */
-	protected $object = null;
+	protected string $from = '0';
 
-	/** 
-	 * @var string 
-	 * */
-	protected $from = '0';
+	protected string $until = '0';
 
-	/** 
-	 * @var string
-	 * */
-	protected $until = '0';
+	protected string $purpose = '';
 
+	protected int $state = Lending::STATE_UNKNOWN;
 
-	/** 
-	 * @var string 
-	 * */
-	protected $purpose = '';
+	protected bool $highPriority = false;
 
-	/** @var int */
-	protected $state = Lending::STATE_UNKNOWN;
+	protected array $allowedObjects = [];
 
-	/** @var bool */
-	protected $highPriority = false;
-
-	/** 
-	 * @var array 
-	 * */
-	protected $allowedObjects = [];
-
-
-	/** @var int */
-	protected $quantity = 1;
+	protected int $quantity = 1;
 
 	public function __construct()
 	{
 		parent::__construct();
 	}
 
-	/**
-	 * 
-	 * @param int $uid 
-	 * @return self
-	 */
-	public function setUid($uid): self
+	public function setUid(int $uid): self
 	{
 		$this->uid = $uid;
 		return $this;
 	}
 
-	/**
-	 * 
-	 * @return LendingObject|null
-	 */
 	public function getObject(): ?LendingObject
 	{
 		return $this->object;
 	}
 
-	/**
-	 * 
-	 * @param LendingObject $object 
-	 * @return self
-	 */
 	public function setObject(?LendingObject $object): self
 	{
 		$this->object = $object;
 		return $this;
 	}
 
-	/**
-	 * @return string 
-	 */
-	public function getUntil()
+	public function getUntil(): string
 	{
 		return $this->until;
 	}
 
-	/**
-	 * 
-	 * @return \DateTimeImmutable|bool
-	 */
-	public function getUntilDate(): \DateTimeImmutable|bool {
-		return  \DateTimeImmutable::createFromFormat(LendingRepository::SQL_DATE_FORMAT, $this->until);
+	public function getUntilDate(): \DateTimeImmutable|bool
+	{
+		return \DateTimeImmutable::createFromFormat(LendingRepository::SQL_DATE_FORMAT, $this->until);
 	}
 
-
-	/**
-	 * @param string $until 
-	 * @return self
-	 */
-	public function setUntil(string $until): self
+	 public function setUntil(string $until): self
 	{
 		$this->until = $until;
 		return $this;
 	}
 
-	/**
-	 * 
-	 * @return string
-	 */
 	public function getFrom(): string
 	{
 		return $this->from;
 	}
 
-	/**
-	 * 
-	 * @return \DateTimeImmutable|bool
-	 */
-	public function getFromDate(): \DateTimeImmutable|bool {
-		return  \DateTimeImmutable::createFromFormat(LendingRepository::SQL_DATE_FORMAT, $this->from);
+	public function getFromDate(): \DateTimeImmutable|bool
+	{
+		return \DateTimeImmutable::createFromFormat(LendingRepository::SQL_DATE_FORMAT, $this->from);
 	}
 
-	/**
-	 * 
-	 * @param string $from 
-	 * @return self
-	 */
 	public function setFrom(string $from): self
 	{
 		$this->from = $from;
 		return $this;
 	}
 
-
-	/**
-	 * 
-	 * @return FrontendUser
-	 */
-	public function getBorrower()
+	 public function getBorrower(): ?FrontendUser
 	{
 		return $this->borrower;
 	}
 
-	/**
-	 * 
-	 * @param FrontendUser $borrower 
-	 * @return self
-	 */
-	public function setBorrower($borrower): self
+	public function setBorrower(?FrontendUser $borrower): self
 	{
 		$this->borrower = $borrower;
 		return $this;
 	}
 
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getPurpose()
+	public function getPurpose(): ?string
 	{
 		return $this->purpose;
 	}
 
-	/**
-	 * 
-	 * @param string $purpose 
-	 * @return self
-	 */
-	public function setPurpose($purpose): self
+	public function setPurpose(string $purpose): self
 	{
 		$this->purpose = $purpose;
 		return $this;
 	}
 
-	/**
-	 * 
-	 * @return int
-	 */
-	public function getState()
+	public function getState(): int
 	{
 		return $this->state;
 	}
 
-	/**
-	 * 
-	 * @param int $state 
-	 * @return self
-	 */
-	public function setState($state): self
+	public function setState(int $state): self
 	{
 		$this->state = $state;
 		return $this;
 	}
 
-	/**
-	 * 
-	 * @return FrontendUser
-	 */
-	public function getApprover()
+	public function getApprover(): ?FrontendUser
 	{
 		return $this->approver;
 	}
 
-	/**
-	 * 
-	 * @param FrontendUser $approver 
-	 * @return self
-	 */
-	public function setApprover($approver): self
+	public function setApprover(?FrontendUser $approver): self
 	{
 		$this->approver = $approver;
 		return $this;
 	}
 
-	/**
-	 * 
-	 * @return bool
-	 */
-	public function getHighPriority()
+	public function getHighPriority(): bool
 	{
 		return $this->highPriority;
 	}
 
-	/**
-	 * 
-	 * @param bool $highPriority 
-	 * @return self
-	 */
-	public function setHighPriority($highPriority): self
+	public function setHighPriority(bool $highPriority): self
 	{
 		$this->highPriority = $highPriority;
 		return $this;
 	}
 
-	/**
-	 * 
-	 * @return int
-	 */
-	public function getQuantity()
+	public function getQuantity(): int
 	{
 		return $this->quantity;
 	}
 
-	/**
-	 * 
-	 * @param int $quantity 
-	 * @return self
-	 */
-	public function setQuantity($quantity): self
+	public function setQuantity(int $quantity): self
 	{
 		$this->quantity = $quantity;
 		return $this;
 	}
 
-
-	/**
-	 * 
-	 * @return array
-	 */
-	public function getAllowedObjects() {
+	public function getAllowedObjects(): array
+	{
 		return $this->allowedObjects;
 	}
 
-	/**
-	 * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface|array $lendingObjects
-	 */
-	public function setAllowedObjects($lendingObjects): void
+	public function setAllowedObjects(QueryResultInterface|array $lendingObjects): void
 	{
 		$this->allowedObjects = [];
-		foreach($lendingObjects as $lendingObject) {
+		foreach ($lendingObjects as $lendingObject) {
 			$this->addAllowedObject($lendingObject);
 		}
 	}
 
 
-	public function addAllowedObject(LendingObject $lendingObject ): AllowedLendingObject
+	public function addAllowedObject(LendingObject $lendingObject): AllowedLendingObject
 	{
 		$allowedObject = new AllowedLendingObject($this, $lendingObject);
-		$this->allowedObjects[] = $allowedObject;	
-		return $allowedObject;		
+		$this->allowedObjects[] = $allowedObject;
+		return $allowedObject;
 	}
 
 	public function updateAllowedObjects(FrontendUserService $frontendUserService, LendingService $lendingService): void
-	{	
+	{
 		/** @var AllowedLendingObject $allowedObject */
-		foreach($this->allowedObjects as $allowedObject)		{
+		foreach ($this->allowedObjects as $allowedObject) {
 			$allowedObject->updateHighPriority($frontendUserService);
 			$allowedObject->updateAvailabilities($lendingService);
 		}
@@ -319,22 +201,22 @@ class Lending extends AbstractEntity
 	public function getCanHighPriorityLend(): bool
 	{
 		/** @var AllowedLendingObject $allowedObject */
-		foreach($this->allowedObjects as $allowedObject)		{
-			if($allowedObject->getHighPriorityLendingPossible()) {
+		foreach ($this->allowedObjects as $allowedObject) {
+			if ($allowedObject->getHighPriorityLendingPossible()) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-    public function getMaxQuantity(): int
-    {
+	public function getMaxQuantity(): int
+	{
 		/** @var AllowedLendingObject $allowedObject */
-        $max = 0;
-        foreach ($this->allowedObjects as $allowedObject) {
-            $max = max($max, $allowedObject->getLendingObject()->getQuantity());
-        }
-        return $max;
-    }
+		$max = 0;
+		foreach ($this->allowedObjects as $allowedObject) {
+			$max = max($max, $allowedObject->getLendingObject()->getQuantity());
+		}
+		return $max;
+	}
 
 }

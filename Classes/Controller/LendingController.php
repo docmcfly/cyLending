@@ -15,6 +15,7 @@ use Cylancer\CyLending\Service\LendingService;
 use Cylancer\CyLending\Service\MiscService;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Mime\Address;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Mail\FluidEmail;
 use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -33,96 +34,54 @@ use Cylancer\CyLending\Domain\Model\FrontendUserGroup;
 
 /**
  *
- * This file is part of the 'lending' Extension for TYPO3 CMS.
+ * This file is part of the "lending" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2024 C. Gogolin <service@cylancer.net>
+ * (c) 2025 C. Gogolin <service@cylancer.net>
  *
- * @package Cylancer\CyLending\Controller
  */
 
 class LendingController extends ActionController
 {
 
-    const EXTENSION_NAME = 'cy_lending';
+    private const EXTENSION_NAME = 'cy_lending';
+    private const APPROVER_MAIL_TEMPLATE = 'ApproverMessageMail';
+    private const AVAILABILITY_REQUEST_RESULT_MAIL_TEMPLATE = 'AvailabilityRequestResultMail';
+    private const INFORM_PREVIOUS_BORROWER_MAIL_TEMPLATE = 'InformPreviousBorrowerMail';
+    private const OBSERVER_MAIL_TEMPLATE = 'ObserverMessageMail';
+    private const INFORM_CANCEL_LENDING_MAIL_TEMPLATE = 'InformCancelLendingMail';
+    private const INFORM_CANCEL_AVAILABILITY_REQUEST_MAIL_TEMPLATE = 'InformCancelAvailabilityRequestMail';
+    private const TO_RESERVE = 'toReserve';
+    private const APPROVE_REQUEST = 'approveRequest';
+    private const REJECT_REQUEST = 'rejectRequest';
+    private const CANCEL_LENDING = 'cancelLending';
+    private const CANCEL_AVAILABILITY_REQUEST = 'cancelAvailabilityRequest';
+    private const CONTENT_ELEMENT = 'contentElement';
 
-    const APPROVER_MAIL_TEMPLATE = 'ApproverMessageMail';
-
-    const AVAILABILITY_REQUEST_RESULT_MAIL_TEMPLATE = 'AvailabilityRequestResultMail';
-    const INFORM_PREVIOUS_BORROWER_MAIL_TEMPLATE = 'InformPreviousBorrowerMail';
-    const OBSERVER_MAIL_TEMPLATE = 'ObserverMessageMail';
-    const INFORM_CANCEL_LENDING_MAIL_TEMPLATE = 'InformCancelLendingMail';
-    const INFORM_CANCEL_AVAILABILITY_REQUEST_MAIL_TEMPLATE = 'InformCancelAvailabilityRequestMail';
-
-    const TO_RESERVE = 'toReserve';
-
-    const APPROVE_REQUEST = 'approveRequest';
-    const REJECT_REQUEST = 'rejectRequest';
-    const CANCEL_LENDING = 'cancelLending';
-    const CANCEL_AVAILABILITY_REQUEST = 'cancelAvailabilityRequest';
-    const CONTEXT_ELEMENT = 'contentElement';
-
-    const TAB_KEY = 'tab';
-
-    const APROVAL_TAB = 'approval';
-    const LENDING_TAB = 'lending';
-    const CALENDAR_TAB = 'calendar';
-    const MY_LENDINGS_TAB = 'myLendings';
-     const MY_AVAILABILITY_REQUESTS_TAB = 'myAvailabilityRequests';
-
-    /* @var LendingObjectRepository */
-    private LendingObjectRepository $lendingObjectRepository;
-
-    /* @var LendingRepository */
-    private LendingRepository $lendingRepository;
-
-    /* @var FrontendUserService */
-    private FrontendUserService $frontendUserService;
-
-    /* @var FrontendUserGroupRepository */
-    private FrontendUserGroupRepository $frontendUserGroupRepository;
-
-    /* @var FrontendUserRepository */
-    private FrontendUserRepository $frontendUserRepository;
-
-    /* @var ContentElementRepository contentElementRepository */
-    private ContentElementRepository $contentElementRepository;
-
-    /* @var MiscService */
-    private MiscService $miscService;
-
-    private LendingService $lendingService;
-
-    /** @var PersistenceManager **/
-    private $persistenceManager;
+    private const TAB_KEY = 'tab';
+    private const LENDING_TAB = 'lending';
+    private const CALENDAR_TAB = 'calendar';
+    private const APPROVAL_TAB = 'approval';
+    private const MY_LENDINGS_TAB = 'myLendings';
+    private const MY_AVAILABILITY_REQUESTS_TAB = 'myAvailabilityRequests';
 
     public function __construct(
-        LendingRepository $lendingRepository,
-        LendingObjectRepository $lendingObjectRepository,
-        FrontendUserGroupRepository $frontendUserGroupRepository,
-        FrontendUserRepository $frontendUserRepository,
-        ContentElementRepository $contentElementRepository,
-        MiscService $miscService,
-        FrontendUserService $frontendUserService,
-        PersistenceManager $persistenceManager,
-        LendingService $lendingService
+        private readonly Context $context,
+        private readonly LendingRepository $lendingRepository,
+        private readonly LendingObjectRepository $lendingObjectRepository,
+        private readonly FrontendUserGroupRepository $frontendUserGroupRepository,
+        private readonly FrontendUserRepository $frontendUserRepository,
+        private readonly ContentElementRepository $contentElementRepository,
+        private readonly MiscService $miscService,
+        private readonly FrontendUserService $frontendUserService,
+        private readonly PersistenceManager $persistenceManager,
+        private readonly LendingService $lendingService,
+        private readonly SiteFinder $siteFinder
     ) {
-        $this->lendingRepository = $lendingRepository;
-        $this->lendingObjectRepository = $lendingObjectRepository;
-        $this->frontendUserGroupRepository = $frontendUserGroupRepository;
-        $this->frontendUserRepository = $frontendUserRepository;
-        $this->contentElementRepository = $contentElementRepository;
-        $this->miscService = $miscService;
-        $this->frontendUserService = $frontendUserService;
-        $this->persistenceManager = $persistenceManager;
-        $this->lendingService = $lendingService;
     }
 
-    /**
-     * @return QueryResult
-     */
     private function getAllCanApproveLendingObject(QueryResult $lendingObjects): array
     {
         $canApproveLendingObjects = [];
@@ -144,10 +103,10 @@ class LendingController extends ActionController
     }
 
 
-    private function getSetting($key, ?int $uid = null)
+    private function getSetting($key, ?int $uid = null): mixed
     {
-        if ($uid != null && !isset($this->settings[$key])) {
-            array_merge($this->settings, $this->miscService->getFlexformSettings($uid, $key));
+         if ($uid != null && !isset($this->settings[$key])) {
+            array_merge($this->settings, $this->miscService->getFlexformSettings($uid));
         }
         return isset($this->settings[$key]) ? $this->settings[$key] : null;
     }
@@ -161,13 +120,16 @@ class LendingController extends ActionController
 
     }
 
-    /**
-     * @return ResponseInterface
-     */
+    private function getContentElementUid(): int
+    {
+        return $this->request->hasArgument(LendingController::CONTENT_ELEMENT)
+            ? $this->request->getArgument(LendingController::CONTENT_ELEMENT)
+            : $this->request->getAttribute('currentContentObject')->data['uid'];
+    }
+
     public function showAction(): ResponseInterface
     {
-        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
-
+        $ceUid = $this->getContentElementUid();
         // prepare
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds(GeneralUtility::intExplode(',', $this->getSetting('lendingObjectStorageUids', $ceUid), TRUE));
@@ -202,21 +164,17 @@ class LendingController extends ActionController
         }
 
         $today = getdate();
-
-        $tab = $this->request->hasArgument(LendingController::TAB_KEY)
-            ? $this->request->getArgument(LendingController::TAB_KEY)
-            : LendingController::CALENDAR_TAB;
-
         // active tab
 
         // COMMON
-        $this->view->assign(LendingController::CONTEXT_ELEMENT, $ceUid);
-        $this->view->assign('appointmentSymbol', $this->getSetting('appointmentSymbol', $ceUid ));
+        $this->view->assign(LendingController::CONTENT_ELEMENT, $ceUid);
+        $this->view->assign('appointmentSymbol', $this->getSetting('appointmentSymbol', $ceUid));
 
         // tab page APPROVE:
         $this->view->assign('availabilityRequests', $allAvailabilityRequests);
         // all availability request to approve / reject
-        $this->view->assign('isApprover', !empty($canApproveLendingObjects));
+        $isApprover = !empty($canApproveLendingObjects);
+        $this->view->assign('isApprover', $isApprover);
 
         // is the approver tab visible?
 
@@ -254,7 +212,8 @@ class LendingController extends ActionController
 
         // tab page CALENDAR:
         $this->view->assign('allLendingStorageUids', $allLendingStorageUids);
-        $this->view->assign('language', $GLOBALS['TSFE']->language->getTypo3Language());
+
+        $this->view->assign('language', $this->getLanguage());
         // language for the calendar.js API
         $this->view->assign(
             'currentMonthEvents',
@@ -268,7 +227,30 @@ class LendingController extends ActionController
             )
         );
 
+        $queryTab = null;
+
         // COMMON
+        if (isset($this->request->getQueryParams()['tab'])) {
+            $allowedTabs = [LendingController::CALENDAR_TAB, LendingController::LENDING_TAB];
+            if (count($myLendings) > 0) {
+                $allowedTabs[] = LendingController::MY_LENDINGS_TAB;
+            }
+            if ($isApprover) {
+                $allowedTabs[] = LendingController::APPROVAL_TAB;
+            }
+            if (count($myAvailabilityRequests) > 0) {
+                $allowedTabs[] = LendingController::MY_AVAILABILITY_REQUESTS_TAB;
+            }
+            $queryTab = $this->request->getQueryParams()['tab'];
+            if (!in_array($queryTab, $allowedTabs)) {
+                $queryTab = null;
+            }
+        }
+
+        $tab = $this->request->hasArgument(LendingController::TAB_KEY)
+            ? $this->request->getArgument(LendingController::TAB_KEY)
+            : (($queryTab != null) ? $queryTab : LendingController::CALENDAR_TAB);
+
         if (($myLendings == null || count($myLendings) == 0) && $tab === LendingController::MY_LENDINGS_TAB) {
             $tab = LendingController::CALENDAR_TAB;
         }
@@ -308,21 +290,14 @@ class LendingController extends ActionController
         return $return;
     }
 
-    private function toDBDateTime(string $dateTime)
+    private function toDBDateTime(string $dateTime): string
     {
         return date(LendingRepository::SQL_DATE_FORMAT, strtotime($dateTime));
     }
 
-
-    /**
-     *
-     * @param Lending $myAvailabilityRequest
-     * @return ResponseInterface
-     * @\TYPO3\CMS\Extbase\Annotation\Validate( param = "myAvailabilityRequest", validator = "Cylancer\CyLending\Domain\Validator\LendingValidator" )
-     */
-
-     public function cancelAvailabilityRequestAction(Lending $myAvailabilityRequest = null) {
-        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
+    public function cancelAvailabilityRequestAction(Lending $myAvailabilityRequest = null): ResponseInterface
+    {
+        $ceUid = $this->getContentElementUid();
 
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validateCancelAvailabilityRequest($myAvailabilityRequest, $ceUid);
@@ -340,27 +315,27 @@ class LendingController extends ActionController
 
         $forwardArguments = [
             LendingController::TAB_KEY => LendingController::MY_AVAILABILITY_REQUESTS_TAB,
-            LendingController::CONTEXT_ELEMENT => $ceUid,
+            LendingController::CONTENT_ELEMENT => $ceUid,
             LendingController::CANCEL_AVAILABILITY_REQUEST => $this->toArray($myAvailabilityRequest),
 
         ];
 
         $forward = $forward->withArguments($forwardArguments);
         return $forward;
-     }
+    }
 
 
-     private function validateCancelAvailabilityRequest(Lending $myAvailabilityRequest, int $ceUid): ValidationResults
-     {
- 
-         /** @var ValidationResults $validationResults */
-         $validationResults = $myAvailabilityRequest->getValidationResults();
-         if ($myAvailabilityRequest->getBorrower()->getUid() != $this->frontendUserService->getCurrentUserUid()) {
-             $validationResults->addError('notYourLending');
-         }
- 
-         return $validationResults;
-     }
+    private function validateCancelAvailabilityRequest(Lending $myAvailabilityRequest, int $ceUid): ValidationResults
+    {
+
+        /** @var ValidationResults $validationResults */
+        $validationResults = $myAvailabilityRequest->getValidationResults();
+        if ($myAvailabilityRequest->getBorrower()->getUid() != $this->frontendUserService->getCurrentUserUid()) {
+            $validationResults->addError('notYourLending');
+        }
+
+        return $validationResults;
+    }
 
 
     private function informAboutCancelAvailabilityRequest(Lending $myAvailabilityRequest): void
@@ -384,9 +359,11 @@ class LendingController extends ActionController
                     $fluidEmail
                         ->setRequest($this->request)
                         ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                        ->from(new Address(MailUtility::getSystemFromAddress(), 
-                            LocalizationUtility::translate('message.cancelAvailabilityRequest.email.senderName', LendingController::EXTENSION_NAME)))
-                        ->subject(LocalizationUtility::translate('message.cancelAvailabilityRequest.email.subject',LendingController::EXTENSION_NAME ))
+                        ->from(new Address(
+                            MailUtility::getSystemFromAddress(),
+                            LocalizationUtility::translate('message.cancelAvailabilityRequest.email.senderName', LendingController::EXTENSION_NAME)
+                        ))
+                        ->subject(LocalizationUtility::translate('message.cancelAvailabilityRequest.email.subject', LendingController::EXTENSION_NAME))
                         ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
                         ->setTemplate(LendingController::INFORM_CANCEL_AVAILABILITY_REQUEST_MAIL_TEMPLATE)
                         ->assign('availabilityRequest', $myAvailabilityRequest)
@@ -399,20 +376,9 @@ class LendingController extends ActionController
         }
     }
 
-
-
-
-
-    /**
-     *
-     * @param Lending $myLending
-     * @return ResponseInterface
-     * @\TYPO3\CMS\Extbase\Annotation\Validate( param = "myLending", validator = "Cylancer\CyLending\Domain\Validator\LendingValidator" )
-     */
-
-    public function cancelAction(Lending $myLending = null)
+    public function cancelAction(Lending $myLending = null): ResponseInterface
     {
-        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
+        $ceUid = $this->getContentElementUid();
 
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validateCancel($myLending, $ceUid);
@@ -431,7 +397,7 @@ class LendingController extends ActionController
 
         $forwardArguments = [
             LendingController::TAB_KEY => LendingController::MY_LENDINGS_TAB,
-            LendingController::CONTEXT_ELEMENT => $ceUid,
+            LendingController::CONTENT_ELEMENT => $ceUid,
             LendingController::CANCEL_LENDING => $this->toArray($myLending),
 
         ];
@@ -461,9 +427,11 @@ class LendingController extends ActionController
                     $fluidEmail
                         ->setRequest($this->request)
                         ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                        ->from(new Address(MailUtility::getSystemFromAddress(), 
-                            LocalizationUtility::translate('message.cancel.email.senderName', LendingController::EXTENSION_NAME)))
-                        ->subject(LocalizationUtility::translate('message.cancel.email.subject',LendingController::EXTENSION_NAME ))
+                        ->from(new Address(
+                            MailUtility::getSystemFromAddress(),
+                            LocalizationUtility::translate('message.cancel.email.senderName', LendingController::EXTENSION_NAME)
+                        ))
+                        ->subject(LocalizationUtility::translate('message.cancel.email.subject', LendingController::EXTENSION_NAME))
                         ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
                         ->setTemplate(LendingController::INFORM_CANCEL_LENDING_MAIL_TEMPLATE)
                         ->assign('availabilityRequest', $myLending)
@@ -475,8 +443,6 @@ class LendingController extends ActionController
             }
         }
     }
-
-
 
     private function validateCancel(Lending $myLending, int $ceUid): ValidationResults
     {
@@ -490,17 +456,10 @@ class LendingController extends ActionController
         return $validationResults;
     }
 
-    /**
-     *
-     * @param Lending $toReserve
-     * @return ResponseInterface
-     * @\TYPO3\CMS\Extbase\Annotation\Validate( param = "toReserve", validator = "Cylancer\CyLending\Domain\Validator\LendingValidator" )
-     */
-
-    public function reserveAction(Lending $toReserve = null)
+    public function reserveAction(Lending $toReserve = null): ResponseInterface
     {
 
-        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
+        $ceUid = $this->getContentElementUid();
 
         // prepare
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
@@ -517,8 +476,8 @@ class LendingController extends ActionController
         $toReserve->setFrom($this->toDBDateTime($toReserve->getFrom()));
         $toReserve->setUntil($this->toDBDateTime($toReserve->getUntil()));
         $toReserve->setPid(intval($this->settings['lendingStorageUids']));
-       
-       
+
+
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validate($toReserve, $ceUid);
         if ($validationResults->isOkay() && $toReserve->getObject()->getApproverGroup() == null) {
@@ -560,7 +519,7 @@ class LendingController extends ActionController
         }
 
         $forwardArguments[LendingController::TAB_KEY] = LendingController::LENDING_TAB;
-        $forwardArguments[LendingController::CONTEXT_ELEMENT] = $ceUid;
+        $forwardArguments[LendingController::CONTENT_ELEMENT] = $ceUid;
         $forwardArguments[LendingController::TO_RESERVE] = $this->toArray($toReserve);
         $forward = $forward->withArguments($forwardArguments);
         return $forward;
@@ -573,16 +532,18 @@ class LendingController extends ActionController
 
     private function getLanguage(): string
     {
-        return GeneralUtility::makeInstance(SiteFinder::class)
+        return $this->siteFinder
             ->getSiteByPageId($this->getPageId())
-            ->getDefaultLanguage()
+            ->getLanguageById(
+                $this->context->getPropertyFromAspect('language', 'id')
+            )
             ->getLocale()
             ->getName();
     }
 
-    private function sendApproverEMails(Lending $lending)
+    private function sendApproverEMails(Lending $lending): void
     {
-      
+
         $approverGroup = $this->frontendUserService->getTopGroups($lending->getObject()->getApproverGroup());
         $frontendUserStorageUids = GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']);
 
@@ -593,8 +554,10 @@ class LendingController extends ActionController
                 $fluidEmail
                     ->setRequest($this->request)
                     ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                    ->from(new Address(MailUtility::getSystemFromAddress(), 
-                        LocalizationUtility::translate('message.approver.email.senderName', LendingController::EXTENSION_NAME)))
+                    ->from(new Address(
+                        MailUtility::getSystemFromAddress(),
+                        LocalizationUtility::translate('message.approver.email.senderName', LendingController::EXTENSION_NAME)
+                    ))
                     ->subject(LocalizationUtility::translate('message.approver.email.subject', LendingController::EXTENSION_NAME))
                     ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
                     ->setTemplate(LendingController::APPROVER_MAIL_TEMPLATE)
@@ -609,17 +572,10 @@ class LendingController extends ActionController
         }
     }
 
-    /**
-     *
-     * @param Lending $availabilityRequest
-     * @return ResponseInterface
-     *  @\TYPO3\CMS\Extbase\Annotation\Validate( param = "availabilityRequest", validator = "Cylancer\CyLending\Domain\Validator\LendingValidator" )
-     */
-
-    public function rejectAction(Lending $availabilityRequest = null)
+    public function rejectAction(Lending $availabilityRequest = null): ResponseInterface
     {
 
-        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT) ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT) : $this->configurationManager->getContentObject()->data['uid'];
+        $ceUid = $this->getContentElementUid();
 
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validateReject($availabilityRequest);
@@ -636,7 +592,7 @@ class LendingController extends ActionController
             $validationResults->clear();
             $validationResults->addInfo('successful.rejected');
             $forward = $forward->withArguments([
-                LendingController::TAB_KEY => LendingController::APROVAL_TAB,
+                LendingController::TAB_KEY => LendingController::APPROVAL_TAB,
 
             ]);
             $this->sendAvailabilityRequestResultMail($availabilityRequest);
@@ -645,8 +601,8 @@ class LendingController extends ActionController
 
         $availabilityRequest->setValidationResults($validationResults);
 
-        $forwardArguments[LendingController::TAB_KEY] = LendingController::APROVAL_TAB;
-        $forwardArguments[LendingController::CONTEXT_ELEMENT] = $ceUid;
+        $forwardArguments[LendingController::TAB_KEY] = LendingController::APPROVAL_TAB;
+        $forwardArguments[LendingController::CONTENT_ELEMENT] = $ceUid;
         $forwardArguments[LendingController::REJECT_REQUEST] = $this->toArray($availabilityRequest);
 
         $forward = $forward->withArguments($forwardArguments);
@@ -689,18 +645,9 @@ class LendingController extends ActionController
         return $validationResults;
     }
 
-    /**
-     *
-     * @param Lending $availabilityRequest
-     * @return ResponseInterface
-     *  @\TYPO3\CMS\Extbase\Annotation\Validate( param = "availabilityRequest", validator = "Cylancer\CyLending\Domain\Validator\LendingValidator" )
-     */
-
     public function approveAction(Lending $availabilityRequest = null): ForwardResponse
     {
-        $ceUid = $this->request->hasArgument(LendingController::CONTEXT_ELEMENT)
-            ? $this->request->getArgument(LendingController::CONTEXT_ELEMENT)
-            : $this->configurationManager->getContentObject()->data['uid'];
+        $ceUid = $this->getContentElementUid();
 
         $allLendingStorageUids = array_merge(
             GeneralUtility::intExplode(',', $this->settings['lendingStorageUids'], TRUE),
@@ -749,20 +696,17 @@ class LendingController extends ActionController
             $this->sendAvailabilityRequestResultMail($availabilityRequest);
             $this->informObserverGroup($availabilityRequest);
         } else {
-            $forwardArguments[LendingController::TAB_KEY] = LendingController::APROVAL_TAB;
+            $forwardArguments[LendingController::TAB_KEY] = LendingController::APPROVAL_TAB;
         }
 
-        $forwardArguments[LendingController::TAB_KEY] = LendingController::APROVAL_TAB;
-        $forwardArguments[LendingController::CONTEXT_ELEMENT] = $ceUid;
+        $forwardArguments[LendingController::TAB_KEY] = LendingController::APPROVAL_TAB;
+        $forwardArguments[LendingController::CONTENT_ELEMENT] = $ceUid;
         $forwardArguments[LendingController::APPROVE_REQUEST] = $this->toArray($availabilityRequest);
         $forward = $forward->withArguments($forwardArguments);
 
         return $forward;
     }
 
-    /**
-     * @param Lending $availabilityRequest
-     */
     private function informPreviousBorrower(Lending $availabilityRequest): void
     {
         $receiver = $availabilityRequest->getBorrower();
@@ -771,8 +715,10 @@ class LendingController extends ActionController
             $fluidEmail
                 ->setRequest($this->request)
                 ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                ->from(new Address(MailUtility::getSystemFromAddress(), 
-                    LocalizationUtility::translate('message.informPreviousBorrower.email.senderName', LendingController::EXTENSION_NAME)))
+                ->from(new Address(
+                    MailUtility::getSystemFromAddress(),
+                    LocalizationUtility::translate('message.informPreviousBorrower.email.senderName', LendingController::EXTENSION_NAME)
+                ))
                 ->subject(LocalizationUtility::translate('message.informPreviousBorrower.email.subject', LendingController::EXTENSION_NAME))
                 ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
                 ->setTemplate(LendingController::INFORM_PREVIOUS_BORROWER_MAIL_TEMPLATE, )
@@ -784,10 +730,7 @@ class LendingController extends ActionController
         }
     }
 
-    /**
-     * @param Lending $availabilityRequest
-     */
-    private function sendAvailabilityRequestResultMail(Lending $availabilityRequest)
+    private function sendAvailabilityRequestResultMail(Lending $availabilityRequest): void
     {
 
         $receiver = $availabilityRequest->getBorrower();
@@ -809,7 +752,7 @@ class LendingController extends ActionController
         }
     }
 
-    private function informObserverGroup(Lending $availabilityRequest)
+    private function informObserverGroup(Lending $availabilityRequest): void
     {
         $observers = $availabilityRequest->getObject()->getObserverGroup();
         if ($observers != null) {
@@ -863,13 +806,8 @@ class LendingController extends ActionController
         return $validationResults;
     }
 
-    /**
-     * @param  Lending $lending
-     */
-
     private function validate(Lending $lending, int $ceUid): ValidationResults
     {
-
         /** @var ValidationResults $validationResults */
         $validationResults = $lending->getValidationResults();
         if ($lending->getObject() == null) {
@@ -896,10 +834,10 @@ class LendingController extends ActionController
                 $validationResults->addError('from.isInThePast');
             }
         }
-       
+
 
         $until = false;
-        if ($lending->getUntil() == null|| str_starts_with($lending->getUntil(), '1970-01-01')){
+        if ($lending->getUntil() == null || str_starts_with($lending->getUntil(), '1970-01-01')) {
             $validationResults->addError('until.isEmpty');
         } else {
             $until = strtotime($lending->getUntil());
@@ -916,26 +854,32 @@ class LendingController extends ActionController
 
             if (!empty($this->getSetting('reasonsForPreventionService', $ceUid))) {
                 $reasonsForPreventionService = $this->getSetting('reasonsForPreventionService', $ceUid);
-                $storageUids = GeneralUtility::intExplode(',', $this->getSetting('reasonsForPreventionServiceStorageUids', $ceUid), TRUE);
 
-                $reasonsForPrevention = ($reasonsForPreventionService . '::reasonsForPreventionAction')
-                (
-                    $storageUids,
-                    LendingRepository::stringDateTimetoDate($lending->getFrom()),
-                    LendingRepository::stringDateTimetoDate($lending->getUntil())
-                );
-
-                if (count($reasonsForPrevention['data']) > 0) {
-                    $list = '';
-                    if (!empty($this->getSetting('reasonsForPreventionServiceTitle', $ceUid))) {
-                        $list .= '<strong>' . $this->getSetting('reasonsForPreventionServiceTitle', $ceUid) . '</strong>';
+                if (class_exists($reasonsForPreventionService)) {
+                    $storageUids = GeneralUtility::intExplode(',', $this->getSetting('reasonsForPreventionServiceStorageUids', $ceUid), TRUE);
+                    if (str_starts_with($reasonsForPreventionService, "\\")) {
+                        $reasonsForPreventionService = substr($reasonsForPreventionService, 1);
                     }
-                    $list .= '<ul>';
-                    foreach ($reasonsForPrevention['data'] as $reason) {
-                        $list .= '<li>' . $reason['description'] . '</li>';
+                    $reasonsForPrevention = GeneralUtility::makeInstance($reasonsForPreventionService)::reasonsForPreventionAction
+                    (
+                        $storageUids,
+                        LendingRepository::string2DateTime($lending->getFrom()),
+                        LendingRepository::string2DateTime($lending->getUntil())
+                    );
+                    /** @var  array */
+                    $data = $reasonsForPrevention['data'];
+                    if (count($data) > 0) {
+                        $list = '';
+                        if (!empty($this->getSetting('reasonsForPreventionServiceTitle', $ceUid))) {
+                            $list .= '<strong>' . $this->getSetting('reasonsForPreventionServiceTitle', $ceUid) . '</strong>';
+                        }
+                        $list .= '<ul>';
+                        foreach ($data as $reason) {
+                            $list .= '<li>' . $reason['description'] . '</li>';
+                        }
+                        $list .= '</ul>';
+                        $validationResults->addWarning('from.reasonsForPrevention', [$list]);
                     }
-                    $list .= '</ul>';
-                    $validationResults->addWarning('from.reasonsForPrevention', [$list]);
                 }
             }
 
