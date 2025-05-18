@@ -1,6 +1,8 @@
 <f:format.raw>
     <script defer="defer">
         {untilOffset}
+
+        let getMaxQuantityUrl = "{f:uri.action( pageType:'{settings.ajax.pageType}', controller:'AjaxConnect', action:'getMaxQuantity', absolute='true', arguments:{uid:600})}"
     </script>
 </f:format.raw>
 
@@ -18,15 +20,16 @@
         </label>
         <div class="col-sm-9">
             <f:form.select class="form-select" property="object" id="object">
-            <f:groupedFor each="{toReserve.allowedObjects}" as="allowedObjects" groupBy="lendingObject.groupName" groupKey="groupName">
+                <f:groupedFor each="{toReserve.allowedObjects}" as="allowedObjects" groupBy="lendingObject.groupName"
+                    groupKey="groupName">
                     <f:if condition="{groupName} == '' ">
                         <f:then>
-                                <f:for each="{allowedObjects}" as="allowedObject">
-                                    <f:form.select.option value="{allowedObject.lendingObject.uid}"
-                                        data="{'quantity':allowedObject.avaiableQuantity, 'highPriorityPossible': allowedObject.highPriorityLendingPossible}">
-                                        {allowedObject.lendingObject.title}
-                                    </f:form.select.option>
-                                </f:for>
+                            <f:for each="{allowedObjects}" as="allowedObject">
+                                <f:form.select.option value="{allowedObject.lendingObject.uid}"
+                                    data="{'quantity':allowedObject.avaiableQuantity, 'highPriorityPossible': allowedObject.highPriorityLendingPossible}">
+                                    {allowedObject.lendingObject.title}
+                                </f:form.select.option>
+                            </f:for>
                         </f:then>
                         <f:else>
                             <f:form.select.optgroup label="{groupName}">
@@ -63,7 +66,7 @@
     </div>
     <f:if condition="{toReserve.canHighPriorityLend}">
         <script>
-            var highPriorityLendingObjects = {highPriorityLendingObjects};
+            var highPriorityLendingObjects = { highPriorityLendingObjects };
         </script>
         <div class="row  mb-2">
             <div class="col-sm-3 col-form-label">

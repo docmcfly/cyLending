@@ -1,4 +1,16 @@
 <?php
+
+/**
+ *
+ * This file is part of the "lending" Extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * (c) 2025 C. Gogolin <service@cylancer.net>
+ *
+ */
+
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Lending of objects',
     'description' => 'You can organize lending of objects',
@@ -7,11 +19,11 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'stable',
     'clearCacheOnLoad' => 1,
-    'version' => '3.2.3',
+    'version' => '4.1.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '12.4.0-12.4.99',
-            'bootstrap_package' => '14.0.1-14.0.99',
+            'typo3' => '13.4.0-13.4.99',
+            'bootstrap_package' => '15.0.0-15.0.99',
         ],
         'conflicts' => [
         ],
@@ -23,6 +35,10 @@ $EM_CONF[$_EXTKEY] = [
 
 /**
  ** CHANGELOG:
+ *
+ *  4.1.0 :: UPD : UI form: The max quantities are updated, if the object, from or until field is changed (AJAX) 
+ *  4.0.0 :: UPD : Update to TYPO3 13 and Bootstrap 15.
+ *  3.3.0 :: ADD : After the lean request, you have an button for a new lean request 
  *  3.2.3 :: ADD : Add hyphens in the calendar detail view.
  *  3.2.2 :: Fix : Lendings and availability request with a start date in the past are no longer displayed under “My lendings or “My availability requests”. 
  *  3.2.1 :: Fix : Replace "appointment symbole" with "appointment symbol".

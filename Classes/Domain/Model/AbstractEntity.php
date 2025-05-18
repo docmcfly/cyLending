@@ -5,29 +5,24 @@ namespace Cylancer\CyLending\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity as TYPO3AbstractEntity;
 
-/* This file is part of the "lending" Extension for TYPO3 CMS.
+/**
+ *
+ * This file is part of the "lending" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2024 C. Gogolin <service@cylancer.net>
+ * (c) 2025 C. Gogolin <service@cylancer.net>
  *
- * @package Cylancer\CyLending\Domain\Model
  */
 abstract class AbstractEntity extends TYPO3AbstractEntity
 {
 
-    /**
-     * @var ValidationResults
-     */
 
-    protected $validationResults;
+    protected ?ValidationResults $validationResults;
 
 
-    /**
-     * @var array
-     */
-     protected $contextValidationResults = [];
+    protected array $contextValidationResults = [];
 
 
     public function __construct()
@@ -35,35 +30,20 @@ abstract class AbstractEntity extends TYPO3AbstractEntity
         $this->validationResults = new ValidationResults();
     }
 
-    /**
-     * 
-     * @return ValidationResults
-     */
-    public function getValidationResults()
+    public function getValidationResults(): ValidationResults
     {
-        if($this->validationResults === null)
-        {
-            $this->validationResults = new ValidationResults();
-        }   
+        if (!isset($this->validationResults)) {
+            $this->setValidationResults( new ValidationResults());
+        }
         return $this->validationResults;
     }
 
-    /**
-     * 
-     * @param ValidationResults $validationResults 
-     * @return self
-     */
-    public function setValidationResults($validationResults): self
+    public function setValidationResults(ValidationResults $validationResults): self
     {
         $this->validationResults = $validationResults;
         return $this;
     }
 
-    /**
-     * 
-     * @param string $context 
-     * @return self
-     */
     public function setContext(string $context): self
     {
         $this->contextValidationResults[$context] = $this->validationResults;
@@ -72,11 +52,8 @@ abstract class AbstractEntity extends TYPO3AbstractEntity
     }
 
 
-	/**
-	 * 
-	 * @return array
-	 */
-	public function getContextValidationResults() {
-		return $this->contextValidationResults;
-	}
+    public function getContextValidationResults(): array
+    {
+        return $this->contextValidationResults;
+    }
 }

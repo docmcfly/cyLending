@@ -1,3 +1,4 @@
+const dateFormat = /^\d{4}-(((0[13578]|1[02])-(([012]\d)|3[01]))|((0[469]|11)-(([012]\d)|30))|02-[012]\d)T(([01]\d)|(2[0-4])):[0-5]\d$/m;
 
 $('#from').change(
     function () {
@@ -8,11 +9,19 @@ $('#from').change(
             f.setHours(f.getHours() + parseInt(hours))
             f.setMinutes(f.getMinutes() + parseInt(minutes))
             $('#until').val(formatDate(f) + 'T' + formatTime(f));
+            updateMaxQty($('#object'))
         }
     }
 )
 
-$("form input[type='submit']").on('click', function(e) {
+
+$('#until').change(
+    function () {
+        updateMaxQty($('#object'))
+    }
+)
+
+$("form input[type='submit']").on('click', function (e) {
     let submit = $(this)
     submit.prop('disabled', true)
     submit.val('⌛ ' + submit.val())
@@ -42,15 +51,60 @@ function formatTime(time) {
 // qunatity handling
 var updateMaxQty = function (select) {
     let objectQty = 1;
-
+    let objectUid = -1;
     select.find("option").each(function () {
         if ($(this).is(':selected')) {
             objectQty = Math.max(parseInt($(this).attr('data-quantity')), objectQty)
+            objectUid = parseInt($(this).attr('value'))
         }
     })
+
+    let inputFrom = $('#from');
+    let from = inputFrom.val();
+
+    let error = objectUid == -1;
+
+    if (from.match(dateFormat)) {
+        from = from.substring(0, 10);
+    } else {
+        error = true;
+    }
+
+    let inputUntil = $('#until');
+    let until = inputUntil.val();
+    if (until.match(dateFormat)) {
+        until = until.substring(0, 10);
+    } else {
+        error = true;
+    }
+
+    updateMaxQtyValue(objectQty)
+
+    if (!error) {
+        $.ajax({
+            url: getMaxQuantityUrl,
+            method: "POST",
+            data: { object: objectUid, from: from, until: until },
+        }
+        )
+            .fail(function (error) {
+                console.log(error.responseText)
+            })
+            .done(function (result) {
+                console.log(result)
+                updateMaxQtyValue(result.result)
+
+
+            })
+    }
+}
+
+
+var updateMaxQtyValue = function (maxQty) {
+
     let qty = $('#quantity')
-    qty.attr('max', objectQty)
-    qty.val(Math.min(parseInt(qty.val()), objectQty))
+    qty.attr('max', maxQty)
+    qty.val(Math.min(parseInt(qty.val()), maxQty))
 
 }
 
@@ -65,13 +119,11 @@ var updateHighPriority = function (select) {
     })
     let hp = $('#highPriority')
     hp.prop('disabled', !highPriorityAllowed)
-    if(!highPriorityAllowed){
+    if (!highPriorityAllowed) {
         hp.prop('checked', false)
     }
 
 }
-
-
 
 $('#object').on('change', function () {
     updateMaxQty($(this))
@@ -82,4 +134,5 @@ $('#object').on('change', function () {
 
 updateMaxQty($('#object'))
 updateHighPriority($('#object'))
+
 

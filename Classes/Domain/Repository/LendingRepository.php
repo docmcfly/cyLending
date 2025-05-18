@@ -5,28 +5,28 @@ use Cylancer\CyLending\Domain\Model\FrontendUser;
 use Cylancer\CyLending\Domain\Model\Lending;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  *
- * This file is part of the "Lending" Extension for TYPO3 CMS.
+ * This file is part of the "lending" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2024 C. Gogolin <service@cylancer.net>
+ * (c) 2025 C. Gogolin <service@cylancer.net>
  *
- * @package Cylancer\CyLending\Domain\Repository
- *         
  */
+
 class LendingRepository extends Repository
 {
-    const SQL_DATE_FORMAT = "Y-m-d H:i:s";
-    const DATE_FORMAT = "Y-m-d";
+    public const SQL_DATE_FORMAT = "Y-m-d H:i:s";
+    public const DATE_FORMAT = "Y-m-d";
 
-    const NO_LIMIT = -1;
+    public const NO_LIMIT = -1;
 
-    public function findAllNotRejectedSince($until)
+    public function findAllNotRejectedSince($until): array|QueryResultInterface
     {
         $today = date(LendingRepository::SQL_DATE_FORMAT, time());
         $this->persistenceManager->clearState();
@@ -59,10 +59,6 @@ class LendingRepository extends Repository
         return $q->execute();
     }
 
-    /**
-     * @param array $canApproveLendingObjects
-     * @return array
-     */
     public function findAllAvailabilityRequests(array $canApproveLendingObjects): array
     {
         if (count(array_keys($canApproveLendingObjects)) == 0) {
@@ -180,7 +176,7 @@ class LendingRepository extends Repository
         return count($this->getOverlapsAvailabilityRequests($lending, 1)->toArray()) > 0;
     }
 
-    public function getOverlapsAvailabilityRequests(Lending $lending, int $limit = LendingRepository::NO_LIMIT, int $state = Lending::STATE_APPROVED)
+    public function getOverlapsAvailabilityRequests(Lending $lending, int $limit = LendingRepository::NO_LIMIT, int $state = Lending::STATE_APPROVED): array|QueryResultInterface
     {
         $q = $this->createQuery();
 
@@ -231,6 +227,21 @@ class LendingRepository extends Repository
     }
 
 
+    public static function string2DateTime(string $dateTime): \DateTime
+    {
+        $parseResult = date_parse_from_format(LendingRepository::SQL_DATE_FORMAT, $dateTime);
+        if ($parseResult['error_count'] > 0) {
+            throw new \Exception("Date format is invalid: " . $dateTime);
+        }
+
+        $return = new \DateTime();
+        return $return
+            ->setDate($parseResult['year'], $parseResult['month'], $parseResult['day'])
+            ->setTime($parseResult['hour'], $parseResult['minute'], $parseResult['second'], 0);
+    }
+
+
+
     public static function stringDatetoDateTime(string $date): \DateTime
     {
         $parseResult = date_parse_from_format(LendingRepository::DATE_FORMAT, $date);
@@ -258,6 +269,7 @@ class LendingRepository extends Repository
         $interval = new \DateInterval('P' . abs($offset) . 'M');
         return $offset < 0 ? $date->sub($interval) : $date->add($interval);
     }
+
     public static function addDays(\DateTime $date, int $offset = 1): \DateTime
     {
         $interval = new \DateInterval('P' . abs($offset) . 'D');

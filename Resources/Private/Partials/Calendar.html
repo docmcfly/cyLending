@@ -2,12 +2,27 @@
     <f:asset.script identifier="calendar.js" priority="true"
         src="EXT:cy_lending/Resources/Public/JavaScript/calendar.js" />
     <div class="mt-4" id='calendar'></div>
+
+
     <f:format.raw>
-        <script defer="defer">
-            let language = '{language}'
+
+        <script>
+
+            let language = "{language}";
+            let translation = {
+                daysOfWeek: [<f:translate key='lending.overview.calendar.label.weekDays' />],
+                daysOfWeekShort: [<f:translate key='lending.overview.calendar.label.weekDaysShort' />],
+                btnNextButton: "<f:translate key='lending.overview.calendar.label.nextMount'/>",
+                btnPreviousMonth: "<f:translate key='lending.overview.calendar.label.previousMonth' />",
+                btnToday: "<f:translate key='lending.overview.calendar.label.today' />",
+                appointmentsOfTheDay: "<f:translate key='lending.overview.calendar.label.appointmentsOfTheDay' />" ,
+                monthNames: [<f:translate key='lending.overview.calendar.label.monthNames' />],
+            }
             let currentMonthEvents = {currentMonthEvents}
             let ajaxConnect = '{f:uri.action(pageType:"{settings.ajax.pageType}", controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{lspid:allLendingStorageUids}")}'
             let _appointmentSymbol = '{appointmentSymbol}'
+
+
         </script>
     </f:format.raw>
 
@@ -33,7 +48,7 @@
                 $.ajax({
                     url: ajaxConnect,
                     method: "POST",
-                    data: {year: previousMonth.getFullYear(), month: previousMonth.getMonth() + 1},
+                    data: { year: previousMonth.getFullYear(), month: previousMonth.getMonth() + 1 },
                 }
                 )
                     .fail(function (error) {
@@ -51,7 +66,7 @@
                 $.ajax({
                     url: ajaxConnect,
                     method: "POST",
-                    data: {year: nextMonth.getFullYear(), month: nextMonth.getMonth() + 1},
+                    data: { year: nextMonth.getFullYear(), month: nextMonth.getMonth() + 1 },
                 }
                 )
                     .fail(function (error) {
@@ -63,6 +78,10 @@
                         calendar.renderEvents()
                     })
             },
+            texts: {
+                [language]: translation
+            },
+
         })
             .importEvents(currentMonthEvents)
             .renderCalendar();
