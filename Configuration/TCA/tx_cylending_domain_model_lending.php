@@ -20,7 +20,7 @@ return
             'crdate' => 'crdate',
             'delete' => 'deleted',
             'default_sortby' => 'from DESC, purpose ASC ',
-            'iconfile' => 'EXT:cy_lending/Resources/Public/Icons/LendingObject.svg',
+            'iconfile' => 'EXT:cy_lending/Resources/Public/Icons/Lending.svg',
             'searchFields' => 'object, from, borrower, purpose, approver, state, purpose, high_priority',
         ],
         'types' => [
@@ -44,21 +44,19 @@ return
             'from' => [
                 'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.from',
                 'config' => [
-                    'type' => 'input',
+                    'type' => 'datetime',
                     'dbType' => 'datetime',
-                    'renderType' => 'inputDateTime',
-                    'eval' => 'datetime',
+                    'format' => 'datetime',
                     'required' => true,
-                    'default' => date('Y-m-d H:i:s', time()),
+                    'default' => time(),
                 ]
             ],
             'until' => [
                 'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.until',
                 'config' => [
-                    'type' => 'input',
+                    'type' => 'datetime',
                     'dbType' => 'datetime',
-                    'renderType' => 'inputDateTime',
-                    'eval' => 'datetime',
+                    'format' => 'datetime',
                     'required' => true,
                 ]
             ],
@@ -88,10 +86,9 @@ return
                     'type' => 'check',
                     'renderType' => 'checkboxToggle',
                     'items' => [
-                       [
-                          0 => '',
-                          1 => '',
-                       ]
+                        [
+                            'label' => '',
+                        ]
                     ],
                 ]
             ],
@@ -101,16 +98,31 @@ return
                     'type' => 'select',
                     'renderType' => 'selectSingle',
                     'items' => [
-                        ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.unknown', 0],
-                        ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.availabilityRequest', 1],
-                        ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.approved', 2],
-                        ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.rejected', 3],
-                        ['LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.canceled', 4],
+                        [
+                            'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.unknown',
+                            'value' => 0
+                        ],
+                        [
+                            'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.availabilityRequest',
+                            'value' => 1
+                        ],
+                        [
+                            'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.approved',
+                            'value' => 2
+                        ],
+                        [
+                            'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.rejected',
+                            'value' => 3
+                        ],
+                        [
+                            'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.state.canceled',
+                            'value' => 4
+                        ],
                     ],
                     'minitems' => 1,
                     'maxitems' => 1,
                     'required' => true,
-                  //  'readOnly' => true,
+                    //  'readOnly' => true,
                     'exclude' => true,
                 ]
             ],
@@ -128,8 +140,7 @@ return
             'quantity' => [
                 'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lending.quantity',
                 'config' => [
-                    'type' => 'input',
-                    'eval' => 'int',
+                    'type' => 'number',
                     'required' => true,
                     'default' => 1,
                     'range' => [

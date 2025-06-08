@@ -64,11 +64,20 @@
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.approverGroup">
 				<source>The approver group</source>
 			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.approverGroup.none">
+				<source>None approver group (=&gt; automatic appovement)</source>
+			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.observerGroup">
 				<source>The observer group</source>
 			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.observerGroup.none">
+				<source>None observer group</source>
+			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.highPriorityGroup">
 				<source>Can lend with high priority (group)</source>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.highPriorityGroup.none">
+				<source>None high priority group</source>
 			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.quantity">
 				<source>Total amount</source>

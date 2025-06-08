@@ -84,13 +84,25 @@
 				<source>The approver group</source>
 				<target state="tanslated">Gruppe der Genehmiger</target>
 			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.approverGroup.none">
+				<source>None approver group (=&gt; automatic appovement)</source>
+				<target state="tanslated">Keine Genehmiger-Gruppe (=&gt; automatische Genehmigung)</target>
+			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.observerGroup">
 				<source>The observer group</source>
 				<target state="tanslated">Gruppe der Beobachter</target>
 			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.observerGroup.none">
+				<source>None observer group</source>
+				<target state="tanslated">Keine Beobachter-Gruppe</target>
+			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.highPriorityGroup">
 				<source>Can lend with high priority (group)</source>
 				<target state="tanslated">Kann mit hoher Priorität ausleihen (Gruppe)</target>
+			</trans-unit>
+			<trans-unit id="tx_cylending_domain_model_product_lendingobject.highPriorityGroup.none">
+				<source>None high priority group</source>
+				<target state="tanslated">Keine "Hohe Priorität"-Gruppe</target>
 			</trans-unit>
 			<trans-unit id="tx_cylending_domain_model_product_lendingobject.quantity">
 				<source>Total amount</source>
