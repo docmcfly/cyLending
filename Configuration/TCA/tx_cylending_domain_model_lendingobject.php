@@ -54,8 +54,7 @@ return
             'color' => [
                 'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lendingobject.objectColor',
                 'config' => [
-                    'type' => 'input',
-                    'renderType' => 'colorpicker',
+                    'type' => 'color',
                     'required' => true,
                 ]
             ],
@@ -68,9 +67,11 @@ return
                     'maxitems' => 1,
                     'minitems' => 0,
                     'items' => [
-                        ['', 0]
+                        [
+                            'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lendingobject.approverGroup.none',
+                            'value' =>  0
+                        ]
                     ],
-                    //'allowNonIdValues' => true,
                 ]
             ],
             'observer_group' => [
@@ -82,7 +83,10 @@ return
                     'maxitems' => 1,
                     'minitems' => 0,
                     'items' => [
-                        ['', 0]
+                        [
+                            'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lendingobject.observerGroup.none',
+                            'value' =>  0
+                        ]
                     ],
                 ]
             ],
@@ -95,15 +99,17 @@ return
                     'maxitems' => 1,
                     'minitems' => 0,
                     'items' => [
-                        ['', 0]
+                        [
+                            'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lendingobject.highPriorityGroup.none',
+                            'value' =>  0
+                        ]
                     ],
                 ]
             ],
             'quantity' => [
                 'label' => 'LLL:EXT:cy_lending/Resources/Private/Language/locallang_db.xlf:tx_cylending_domain_model_product_lendingobject.quantity',
                 'config' => [
-                    'type' => 'input',
-                    'eval' => 'int',
+                    'type' => 'number',
                     'required' => true,
                     'default' => 1,
                     'range' => [
