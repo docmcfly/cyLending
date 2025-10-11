@@ -22,13 +22,45 @@ ExtensionUtility::configurePlugin(
     'CyLending',
     'Lending',
     [
-        LendingController::class => ['show', 'reserve', 'approve', 'reject', 'cancel', 'cancelAvailabilityRequest'],
-        AjaxConnectController::class => ['getEvents', 'getMaxQuantity']
+        LendingController::class => [
+            'show',
+            'reserve',
+        ],
+        AjaxConnectController::class => [
+            'getEvents',
+            'getMaxQuantity',
+            'getReserveForm',
+            'reserve',
+            'getMyLendings',
+            'cancelMyLending',
+            'getMyAvailabilityRequests',
+            'cancelMyAvailabilityRequest',
+            'isAvailabilityRequestsVisible',
+            'getAvailabilityRequests',
+            'approve',
+            'reject',
+        ]
     ],
     // non-cacheable actions
     [
-        LendingController::class => ['show', 'reserve', 'approve', 'reject', 'cancel', 'cancelAvailabilityRequest'],
-        AjaxConnectController::class => ['getEvents', 'getMaxQuantity']
+        LendingController::class => [
+            'show',
+            'reserve',
+        ],
+        AjaxConnectController::class => [
+            'getEvents',
+            'getMaxQuantity',
+            'getReserveForm',
+            'reserve',
+            'getMyLendings',
+            'cancelMyLending',
+            'getMyAvailabilityRequests',
+            'cancelMyAvailabilityRequest',
+            'isAvailabilityRequestsVisible',
+            'getAvailabilityRequests',
+            'approve',
+            'reject',
+        ]
     ],
     ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );

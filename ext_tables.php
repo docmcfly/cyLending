@@ -15,3 +15,8 @@ declare(strict_types=1);
 
 defined('TYPO3') || die('Access denied.');
 
+// automatic garbage collention of stored messages
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['TYPO3\CMS\Scheduler\Task\TableGarbageCollectionTask']['options']['tables']['tx_cylending_domain_model_lending'] = [
+    'dateField' => 'tstamp',
+    'expirePeriod' => 45
+];

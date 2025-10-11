@@ -6,8 +6,7 @@
 <f:layout name="Default"/>
 <f:section name="content">
 <f:translate
-	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.salutation"
-	arguments="{0:user.firstName, 1:user:user.lastName}" />
+	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.salutation" />
 
 <f:translate
 	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.youHaveRequest" />
@@ -15,7 +14,7 @@
 <f:translate
 	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.object" />:
 {availabilityRequest.object.title}
-				
+
 <f:translate
 		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.purpose" />:
 {availabilityRequest.purpose}
@@ -39,11 +38,9 @@
 		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.approver.email.borrower" />:
 {availabilityRequest.borrower.firstName} {availabilityRequest.borrower.lastName}
 
-<f:translate key="lending.overview.approval.action.approve" />:
-<f:format.raw><f:uri.action pageUid="{pageUid}" action="approve" pluginName="lending" controller="Lending" absolute="true" noCache="true" 	arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid,'contextElement': contextElement}"></f:uri.action></f:format.raw>
 
-<f:translate key="lending.overview.approval.action.reject" />:
-<f:format.raw><f:uri.action pageUid="{pageUid}" action="reject" pluginName="lending" controller="Lending" absolute="true" noCache="true" arguments="{'tab':'approval','availabilityRequest':availabilityRequest.uid,'contextElement': contextElement}"></f:uri.action></f:format.raw>
+<f:translate key="lending.overview.approval.action.show" />:
+<f:format.raw><f:uri.action pageUid="{pageUid}" action="show" pluginName="lending" controller="Lending" absolute="true" noCache="true" ></f:uri.action></f:format.raw>
 </f:section>
 </body></html>
 

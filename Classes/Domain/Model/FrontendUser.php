@@ -1,7 +1,7 @@
 <?php
 namespace Cylancer\CyLending\Domain\Model;
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -16,6 +16,8 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class FrontendUser extends AbstractEntity
 {
+
+    use ToArrayTrait;
 
     /** @var ObjectStorage<FrontendUserGroup> */
     protected $usergroup;

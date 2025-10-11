@@ -24,23 +24,37 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class ValidationService implements SingletonInterface
 {
+    private const EXTENSION_NAME = 'cy_lending';
+
+    private LendingService $lendingService;
 
     public function __construct(
         private readonly FrontendUserService $frontendUserService,
         private readonly LendingRepository $lendingRepository,
-        private readonly LendingService $lendingService,
+        private readonly MiscService $miscService,
     ) {
     }
 
+    public function injectLendingService(LendingService $lendingService, ): void
+    {
+        $this->lendingService = $lendingService;
+    }
 
-    public function validate(
+    /**
+     * @param \Cylancer\CyLending\Domain\Model\Lending $lending
+     * @param string[] $confirmedWarnings
+     * @param array $flexformSettings
+     * @return ValidationResults
+     */
+    private function validate(
         Lending $lending,
-        int $ceUid,
-        string $reasonsForPreventionService,
-        string $reasonsForPreventionServiceTitle
+        array $confirmedWarnings,
+        array $flexformSettings,
     ): ValidationResults {
+
         /** @var ValidationResults $validationResults */
         $validationResults = $lending->getValidationResults();
+        $validationResults->setConfirmedWarnings($confirmedWarnings);
         if ($lending->getObject() == null) {
             $validationResults->addError('object.isEmpty');
         }
@@ -61,11 +75,8 @@ class ValidationService implements SingletonInterface
             $from = strtotime($lending->getFrom());
             if ($from === false) {
                 $validationResults->addError('from.invalid');
-            } else if ($from < time()) {
-                $validationResults->addError('from.isInThePast');
             }
         }
-
 
         $until = false;
         if ($lending->getUntil() == null || str_starts_with($lending->getUntil(), '1970-01-01')) {
@@ -74,17 +85,15 @@ class ValidationService implements SingletonInterface
             $until = strtotime($lending->getUntil());
             if ($until === false) {
                 $validationResults->addError('until.invalid');
-            } else if ($until < time()) {
-                $validationResults->addError('until.isInThePast');
             }
         }
 
         if ($from !== false && $until !== false && $from > $until) {
             $validationResults->addError('until.isBeforeFrom');
         } else {
-
+            $reasonsForPreventionService = $flexformSettings['reasonsForPreventionService'];
             if (!empty($reasonsForPreventionService) && class_exists($reasonsForPreventionService)) {
-                $storageUids = GeneralUtility::intExplode(',', $this->getSetting('reasonsForPreventionServiceStorageUids', $ceUid), TRUE);
+                $storageUids = GeneralUtility::intExplode(',', $flexformSettings['reasonsForPreventionServiceStorageUids'], TRUE);
                 if (str_starts_with($reasonsForPreventionService, "\\")) {
                     $reasonsForPreventionService = substr($reasonsForPreventionService, 1);
                 }
@@ -97,6 +106,7 @@ class ValidationService implements SingletonInterface
                 /** @var  array */
                 $data = $reasonsForPrevention['data'];
                 if (count($data) > 0) {
+                    $reasonsForPreventionServiceTitle = $flexformSettings['reasonsForPreventionServiceTitle'];
                     $list = '';
                     if (!empty($reasonsForPreventionServiceTitle)) {
                         $list .= '<strong>' . $reasonsForPreventionServiceTitle . '</strong>';
@@ -106,7 +116,7 @@ class ValidationService implements SingletonInterface
                         $list .= '<li>' . $reason['description'] . '</li>';
                     }
                     $list .= '</ul>';
-                    $validationResults->addWarning('from.reasonsForPrevention', [$list]);
+                    $validationResults->addWarning('reasonsForPrevention', [$list]);
                 }
             }
 
@@ -127,7 +137,7 @@ class ValidationService implements SingletonInterface
                     $key = $available == 1 ? 'piece' : 'pieces';
                     $validationResults->addError('quantity.tooLarge', [
                         $available,
-                        LocalizationUtility::translate($key, LendingController::EXTENSION_NAME)
+                        LocalizationUtility::translate($key, ValidationService::EXTENSION_NAME)
                     ]);
                 } else {
                     $max = $this->lendingService->calculateMaximum($this->lendingRepository->getOverlapsAvailabilityRequests($lending, LendingRepository::NO_LIMIT, Lending::STATE_AVAILABILITY_REQUEST));
@@ -135,7 +145,7 @@ class ValidationService implements SingletonInterface
                         $key = $max == 1 ? 'piece' : 'pieces';
                         $validationResults->addInfo('quantity.availabilityRequests', [
                             $max,
-                            LocalizationUtility::translate($key, LendingController::EXTENSION_NAME)
+                            LocalizationUtility::translate($key, ValidationService::EXTENSION_NAME)
                         ]);
                     }
 
@@ -150,22 +160,66 @@ class ValidationService implements SingletonInterface
         return $validationResults;
     }
 
+
+    /**
+     * @param \Cylancer\CyLending\Domain\Model\Lending $lending
+     * @param string[] $confirmedWarnings
+     * @param array $flexformSettings
+     * @return ValidationResults
+     */
+    public function validateReserve(
+        Lending $lending,
+        array $confirmedWarnings,
+        array $flexformSettings,
+    ): ValidationResults {
+
+        /** @var ValidationResults $validationResults */
+        $validationResults = $this->validate(
+            $lending,
+            $confirmedWarnings,
+            $flexformSettings
+        );
+
+        $validationResults->setConfirmedWarnings($confirmedWarnings);
+
+        if (!$validationResults->hasError('from.isEmpty') && !$validationResults->hasError('from.invalid')) {
+            $from = strtotime($lending->getFrom());
+            if ($from < time()) {
+                $validationResults->addError('from.isInThePast');
+            }
+        }
+
+        if (!$validationResults->hasError('until.isEmpty') && !$validationResults->hasError('until.invalid')) {
+            $until = strtotime($lending->getUntil());
+            if ($until < time()) {
+                $validationResults->addError('until.isInThePast');
+            }
+        }
+
+        return $validationResults;
+    }
+
+    /**
+     *
+     * @param Lending $lending
+     * @param string[] $confirmedWarnings
+     * @param array  $flexformSettings
+     * @return ValidationResults
+     */
     public function validateApprove(
         Lending $lending,
-        int $ceUid,
-        string $reasonsForPreventionService,
-        string $reasonsForPreventionServiceTitle,
-        $stored = true,
+        array $confirmedWarnings = [],
+        $flexformSettings,
 
     ): ValidationResults {
         /** @var ValidationResults $validationResults */
         $validationResults = $this->validate(
             $lending,
-            $ceUid,
-            $reasonsForPreventionService,
-            $reasonsForPreventionServiceTitle
+            $confirmedWarnings,
+            $flexformSettings
         );
-        if ($stored && $this->lendingRepository->findByUid($lending->getUid()) == null) {
+
+        if (!$lending->_isNew() && $this->lendingRepository->findByUid($lending->getUid()) == null) {
             $validationResults->addError('requestDeleted');
         } else {
             if (!$this->canApproveLendingObject($lending->getObject())) {
@@ -177,11 +231,18 @@ class ValidationService implements SingletonInterface
             ) {
                 $validationResults->addWarning('existsOverlapsAvailabilityRequests');
             }
-
+            // debug($lending->getState());
             if ($lending->getState() != Lending::STATE_AVAILABILITY_REQUEST) {
                 $validationResults->addError('requestAlreadyBeenProcessed');
             }
+            if (!$validationResults->hasError('until.isEmpty') && $validationResults->hasError('until.invalid')) {
+                $until = strtotime($lending->getUntil());
+                if ($until < time()) {
+                    $validationResults->addError('until.isInThePast');
+                }
+            }
         }
+
         return $validationResults;
     }
 

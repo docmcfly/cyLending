@@ -16,7 +16,7 @@
 				<source>&lt;strong&gt;Important hint:&lt;/strong&gt; You can only continue the process if you confirm that you have taken note of this warning by ticking the box in front of the warning.</source>
 				<target state="tanslated">&lt;strong&gt;Wichtiger Hinweis:&lt;/strong&gt; Sie können den Prozess nur dann fortfahren, wenn sie durch Setzen eines Hakens vor der Warungen bestätigen, dass sie diese Warnung zur Kenntnis genommen haben.</target>
 			</trans-unit>
-			
+
 			<trans-unit id="lending.overview.tab.lending">
 				<source>Lending</source>
 				<target state="tanslated">Ausleihe</target>
@@ -160,7 +160,7 @@
 				<source>&lt;strong&gt;Exist lendings:&lt;/strong&gt; I made arrangements with the other borrower. </source>
 				<target state="tanslated">&lt;strong&gt;Bestehende Ausleihen:&lt;/strong&gt; Ich habe mich mit der anderen Ausleiherin bzw. dem anderen Ausleiher abgesprochen.</target>
 			</trans-unit>
-			<trans-unit id="lending.overview.availabilityRequest.form.warning.from.reasonsForPrevention">
+			<trans-unit id="lending.overview.availabilityRequest.form.warning.reasonsForPrevention">
 				<source>List of possible reasons for prevention: %s</source>
 				<target state="tanslated">Liste möglicher Verhinderungsgründe: %s </target>
 			</trans-unit>
@@ -176,7 +176,6 @@
 				<source>Loan requests for %s units are already awaiting approval.</source>
 				<target state="tanslated">Ausleihanfragen für %s Stück warten bereits auf ihre Genehmigung.  </target>
 			</trans-unit>
-			
 			<trans-unit id="lending.overview.availabilityRequest.form.error.automaticApproved">
 				<source>Availability request was not automatic approved. Please contact the webmaster.</source>
 				<target state="tanslated">Ausleihanfrage wurde nicht automatisch genehmigt. Bitte wende Dich an den Webmaster.</target>
@@ -215,7 +214,7 @@
 				<source>The loan period overlaps with other loans.</source>
 				<target state="tanslated">Die Ausleihe überlappt sich zeitlich mit anderen Ausleihen.</target>
 			</trans-unit>
-			<trans-unit id="lending.overview.approval.form.warning.from.reasonsForPrevention">
+			<trans-unit id="lending.overview.approval.form.warning.reasonsForPrevention">
 				<source>List of possible reasons for prevention: %s</source>
 				<target state="tanslated">Liste möglicher Verhinderungsgründe: %s </target>
 			</trans-unit>
@@ -227,9 +226,15 @@
 				<source>You have approve the availability request successful.</source>
 				<target state="tanslated">Sie haben die Ausleihanfrage erfolgreich genehmigt.</target>
 			</trans-unit>
-			<trans-unit id="lending.overview.reject.form.info.successful.rejected">
+
+			<trans-unit id="lending.overview.approval.form.info.successful.rejected">
 				<source>You have reject the availability request successful.</source>
 				<target state="tanslated">Sie haben die Ausleihanfrage erfolgreich abgelehnt.</target>
+			</trans-unit>
+
+			<trans-unit id="lending.overview.approval.action.show">
+				<source>To the webpage with the loan requests</source>
+				<target state="tanslated">Zur Seite mit den Ausleihanfragen</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.approval.action.approve">
 				<source>Approve availability request</source>
@@ -239,6 +244,7 @@
 				<source>Reject availability request</source>
 				<target state="tanslated">Ausleihanfrage ablehnen</target>
 			</trans-unit>
+			
 			<trans-unit id="lending.overview.approval.noneEntries">
 				<source>None entry exists</source>
 				<target state="tanslated">Aktuell keine Ausleihanfragen vorhanden</target>
@@ -297,6 +303,10 @@
 			</trans-unit>
 
 
+			<trans-unit id="lending.overview.myAvailabilityRequests.noneEntries">
+				<source>There are currently no borrowing requests</source>
+				<target state="tanslated">Aktuell existieren keine Ausleihanfragen</target>
+			</trans-unit>
 			<trans-unit id="lending.overview.myAvailabilityRequest.form.object">
 				<source>Lending object</source>
 				<target state="tanslated">Ausleihobjekt</target>
@@ -375,6 +385,10 @@
 			</trans-unit>
 
 
+			<trans-unit id="lending.overview.myLendings.noneEntries">
+				<source>Currently, there are no approved loans</source>
+				<target state="tanslated">Aktuell existieren keine genehmigten Ausleihen</target>
+			</trans-unit>
 			<trans-unit id="lending.overview.myLending.form.object">
 				<source>Lending object</source>
 				<target state="tanslated">Ausleihobjekt</target>
@@ -461,8 +475,8 @@
 				<target state="tanslated">Eine neue Ausleihanfrage</target>
 			</trans-unit>
 			<trans-unit id="message.approver.email.salutation">
-				<source>Hello %s %s.</source>
-				<target state="tanslated">Hallo %s %s.</target>
+				<source>Hello,</source>
+				<target state="tanslated">Hallo,</target>
 			</trans-unit>
 			<trans-unit id="message.approver.email.youHaveRequest">
 				<source>You have availability request:</source>
@@ -541,7 +555,7 @@
 				<source>Until</source>
 				<target state="tanslated">Bis</target>
 			</trans-unit>
-			
+
 
 			<trans-unit id="message.observer.email.senderName">
 				<source>Lending service</source>
@@ -552,8 +566,8 @@
 				<target state="tanslated">Status einer Ausleihanfrage</target>
 			</trans-unit>
 			<trans-unit id="message.observer.email.salutation">
-				<source>Hello %s %s.</source>
-				<target state="tanslated">Hallo %s %s.</target>
+				<source>Hello.</source>
+				<target state="tanslated">Hallo,</target>
 			</trans-unit>
 			<trans-unit id="message.observer.email.requestIsApproved">
 				<source>An availability request is &lt;strong style="color:green; "&gt;approved&lt;/strong&gt;.</source>

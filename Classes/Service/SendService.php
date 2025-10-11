@@ -34,6 +34,16 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class SendService implements SingletonInterface
 {
 
+    private const EXTENSION_NAME = 'cy_lending';
+
+    private const APPROVER_MAIL_TEMPLATE = 'ApproverMessageMail';
+    private const AVAILABILITY_REQUEST_RESULT_MAIL_TEMPLATE = 'AvailabilityRequestResultMail';
+    private const INFORM_PREVIOUS_BORROWER_MAIL_TEMPLATE = 'InformPreviousBorrowerMail';
+    private const OBSERVER_MAIL_TEMPLATE = 'ObserverMessageMail';
+    private const INFORM_CANCEL_LENDING_MAIL_TEMPLATE = 'InformCancelLendingMail';
+    private const INFORM_CANCEL_AVAILABILITY_REQUEST_MAIL_TEMPLATE = 'InformCancelAvailabilityRequestMail';
+
+
     public function __construct(
         private readonly FrontendUserGroupRepository $frontendUserGroupRepository,
         private readonly FrontendUserRepository $frontendUserRepository,
@@ -69,11 +79,11 @@ class SendService implements SingletonInterface
                         ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
                         ->from(new Address(
                             MailUtility::getSystemFromAddress(),
-                            LocalizationUtility::translate('message.cancelAvailabilityRequest.email.senderName', LendingController::EXTENSION_NAME)
+                            LocalizationUtility::translate('message.cancelAvailabilityRequest.email.senderName', SendService::EXTENSION_NAME)
                         ))
-                        ->subject(LocalizationUtility::translate('message.cancelAvailabilityRequest.email.subject', LendingController::EXTENSION_NAME))
+                        ->subject(LocalizationUtility::translate('message.cancelAvailabilityRequest.email.subject', SendService::EXTENSION_NAME))
                         ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                        ->setTemplate(LendingController::INFORM_CANCEL_AVAILABILITY_REQUEST_MAIL_TEMPLATE)
+                        ->setTemplate(SendService::INFORM_CANCEL_AVAILABILITY_REQUEST_MAIL_TEMPLATE)
                         ->assign('availabilityRequest', $myAvailabilityRequest)
                         ->assign('language', $language)
                         ->assign('user', $receiver)
@@ -86,13 +96,17 @@ class SendService implements SingletonInterface
 
     /**
      * @param Lending $myLending
-     * @param array $frontendUserStorageUids
+     * @param int[] $frontendUserStorageUids
      * @param RequestInterface $request
      * @param string $language
      * @return void
      */
-    public function informAboutCanceling(Lending $myLending, array $frontendUserStorageUids, RequestInterface $request, string $language): void
-    {
+    public function informAboutCanceling(
+        Lending $myLending,
+        array $frontendUserStorageUids,
+        RequestInterface $request,
+        string $language
+    ): void {
 
         /** @var FrontendUserGroup $g */
         $observers = $myLending->getObject()->getObserverGroup();
@@ -113,11 +127,11 @@ class SendService implements SingletonInterface
                         ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
                         ->from(new Address(
                             MailUtility::getSystemFromAddress(),
-                            LocalizationUtility::translate('message.cancel.email.senderName', LendingController::EXTENSION_NAME)
+                            LocalizationUtility::translate('message.cancel.email.senderName', SendService::EXTENSION_NAME)
                         ))
-                        ->subject(LocalizationUtility::translate('message.cancel.email.subject', LendingController::EXTENSION_NAME))
+                        ->subject(LocalizationUtility::translate('message.cancel.email.subject', SendService::EXTENSION_NAME))
                         ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                        ->setTemplate(LendingController::INFORM_CANCEL_LENDING_MAIL_TEMPLATE)
+                        ->setTemplate(SendService::INFORM_CANCEL_LENDING_MAIL_TEMPLATE)
                         ->assign('availabilityRequest', $myLending)
                         ->assign('language', $language)
                         ->assign('user', $receiver)
@@ -131,7 +145,7 @@ class SendService implements SingletonInterface
 
     /**
      * @param Lending $lending
-     * @param array $frontendUserStorageUids
+     * @param int[] $frontendUserStorageUids
      * @param RequestInterface $request
      * @param string $language
      * @return void
@@ -140,29 +154,37 @@ class SendService implements SingletonInterface
     {
 
         $approverGroup = $this->frontendUserService->getTopGroups($lending->getObject()->getApproverGroup());
+
+        $receivers = [];
+
         /** @var FrontendUser $receiver */
         foreach ($this->frontendUserRepository->getUsersOfGroups($approverGroup, $frontendUserStorageUids) as $receiver) {
             if (!empty($receiver->getEmail())) {
-                $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
-                $fluidEmail
-                    ->setRequest($request)
-                    ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                    ->from(new Address(
-                        MailUtility::getSystemFromAddress(),
-                        LocalizationUtility::translate('message.approver.email.senderName', LendingController::EXTENSION_NAME)
-                    ))
-                    ->subject(LocalizationUtility::translate('message.approver.email.subject', LendingController::EXTENSION_NAME))
-                    ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                    ->setTemplate(LendingController::APPROVER_MAIL_TEMPLATE)
-                    ->assign('availabilityRequest', $lending)
-                    ->assign('user', $receiver)
-                    ->assign('language', $language)
-                    ->assign('pageUid', $pageId)
-                ;
-                GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
-
+                $receivers[] = $receiver;
             }
         }
+
+        if (!empty($receivers)) {
+            $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
+            $fluidEmail
+                ->setRequest($request)
+                ->from(new Address(
+                    MailUtility::getSystemFromAddress(),
+                    LocalizationUtility::translate('message.approver.email.senderName', SendService::EXTENSION_NAME)
+                ))
+                ->subject(LocalizationUtility::translate('message.approver.email.subject', SendService::EXTENSION_NAME))
+                ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
+                ->setTemplate(SendService::APPROVER_MAIL_TEMPLATE)
+                ->assign('availabilityRequest', $lending)
+                ->assign('language', $language)
+                ->assign('pageUid', $pageId)
+            ;
+            foreach ($receivers as $receiver) {
+                $fluidEmail->addBcc(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()));
+            }
+            GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
+        }
+
     }
 
 
@@ -182,11 +204,11 @@ class SendService implements SingletonInterface
                 ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
                 ->from(new Address(
                     MailUtility::getSystemFromAddress(),
-                    LocalizationUtility::translate('message.informPreviousBorrower.email.senderName', LendingController::EXTENSION_NAME)
+                    LocalizationUtility::translate('message.informPreviousBorrower.email.senderName', SendService::EXTENSION_NAME)
                 ))
-                ->subject(LocalizationUtility::translate('message.informPreviousBorrower.email.subject', LendingController::EXTENSION_NAME))
+                ->subject(LocalizationUtility::translate('message.informPreviousBorrower.email.subject', SendService::EXTENSION_NAME))
                 ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                ->setTemplate(LendingController::INFORM_PREVIOUS_BORROWER_MAIL_TEMPLATE, )
+                ->setTemplate(SendService::INFORM_PREVIOUS_BORROWER_MAIL_TEMPLATE, )
                 ->assign('user', $receiver)
                 ->assign('language', $language)
                 ->assign('availabilityRequest', $availabilityRequest)
@@ -209,10 +231,10 @@ class SendService implements SingletonInterface
             $fluidEmail
                 ->setRequest($request)
                 ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                ->from(new Address(MailUtility::getSystemFromAddress(), LocalizationUtility::translate('message.borrower.email.senderName', LendingController::EXTENSION_NAME)))
-                ->subject(LocalizationUtility::translate('message.borrower.email.subject', LendingController::EXTENSION_NAME))
+                ->from(new Address(MailUtility::getSystemFromAddress(), LocalizationUtility::translate('message.borrower.email.senderName', SendService::EXTENSION_NAME)))
+                ->subject(LocalizationUtility::translate('message.borrower.email.subject', SendService::EXTENSION_NAME))
                 ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                ->setTemplate(LendingController::AVAILABILITY_REQUEST_RESULT_MAIL_TEMPLATE, )
+                ->setTemplate(SendService::AVAILABILITY_REQUEST_RESULT_MAIL_TEMPLATE, )
                 ->assign('user', $receiver)
                 ->assign('language', $language)
                 ->assign('availabilityRequest', $availabilityRequest)
@@ -223,7 +245,7 @@ class SendService implements SingletonInterface
 
     /**
      * @param Lending $availabilityRequest
-     * @param array $frontendUserStorageUids
+     * @param int[] $frontendUserStorageUids
      * @param RequestInterface $request
      * @param string $language
      * @return void
@@ -233,23 +255,28 @@ class SendService implements SingletonInterface
         $observers = $availabilityRequest->getObject()->getObserverGroup();
         if ($observers != null) {
             $groups = $this->frontendUserService->getTopGroups($observers);
+            $receivers = [];
             /** @var FrontendUser $receiver */
             foreach ($this->frontendUserRepository->getUsersOfGroups($groups, $frontendUserStorageUids) as $receiver) {
                 if (!empty($receiver->getEmail())) {
-                    $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
-                    $fluidEmail
-                        ->setRequest($request)
-                        ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                        ->from(new Address(MailUtility::getSystemFromAddress(), LocalizationUtility::translate('message.observer.email.senderName', LendingController::EXTENSION_NAME)))
-                        ->subject(LocalizationUtility::translate('message.observer.email.subject', LendingController::EXTENSION_NAME))
-                        ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                        ->setTemplate(LendingController::OBSERVER_MAIL_TEMPLATE, )
-                        ->assign('user', $receiver)
-                        ->assign('language', $language)
-                        ->assign('availabilityRequest', $availabilityRequest)
-                    ;
-                    GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
+                    $receivers[] = $receiver;
                 }
+            }
+            if (!empty($receivers)) {
+                $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
+                $fluidEmail
+                    ->setRequest($request)
+                    ->from(new Address(MailUtility::getSystemFromAddress(), LocalizationUtility::translate('message.observer.email.senderName', SendService::EXTENSION_NAME)))
+                    ->subject(LocalizationUtility::translate('message.observer.email.subject', SendService::EXTENSION_NAME))
+                    ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
+                    ->setTemplate(SendService::OBSERVER_MAIL_TEMPLATE, )
+                    ->assign('language', $language)
+                    ->assign('availabilityRequest', $availabilityRequest)
+                ;
+                foreach ($receivers as $receiver) {
+                    $fluidEmail->addBcc(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()));
+                }
+                GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
             }
         }
     }

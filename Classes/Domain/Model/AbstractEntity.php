@@ -33,7 +33,7 @@ abstract class AbstractEntity extends TYPO3AbstractEntity
     public function getValidationResults(): ValidationResults
     {
         if (!isset($this->validationResults)) {
-            $this->setValidationResults( new ValidationResults());
+            $this->setValidationResults(new ValidationResults());
         }
         return $this->validationResults;
     }
@@ -56,4 +56,5 @@ abstract class AbstractEntity extends TYPO3AbstractEntity
     {
         return $this->contextValidationResults;
     }
+
 }
