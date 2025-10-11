@@ -47,9 +47,9 @@ class AllowedLendingObject
         $this->highPriorityLendingPossible = $frontendUserService->containsUser($this->lendingObject->getHighPriorityGroup(), $this->lending->getBorrower());
     }
 
-    public function getHighPriorityLendingPossible(): bool
+    public function getHighPriorityLendingPossible(): int
     {
-        return $this->highPriorityLendingPossible;
+        return $this->highPriorityLendingPossible ? 1 : 0;
     }
 
     public function getAvaiableQuantity(): int

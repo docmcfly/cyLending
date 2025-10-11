@@ -3,9 +3,12 @@ namespace Cylancer\CyLending\Service;
 
 use Cylancer\CyLending\Domain\Model\Lending;
 use Cylancer\CyLending\Domain\Model\LendingObject;
+use Cylancer\CyLending\Domain\Model\ValidationResults;
 use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -25,7 +28,11 @@ class LendingService implements SingletonInterface
 {
 
     public function __construct(
-        private readonly LendingRepository $lendingRepository
+        private readonly LendingRepository $lendingRepository,
+        private readonly FrontendUserService $frontendUserService,
+        private readonly ValidationService $validationService,
+        private readonly PersistenceManager $persistenceManager,
+        private readonly SendService $sendService,
     ) {
     }
 
@@ -119,5 +126,85 @@ class LendingService implements SingletonInterface
 
     }
 
+    /**
+     * @param Lending|int $availabilityRequest
+     * @param int $ceUid
+     * @param RequestInterface $request
+     * @param string $language
+     * @param int[] $frontendUserStroageUids
+     * @param string $reasonsForPreventionService
+     * @param string $reasonsForPreventionServiceTitle
+     * @return ValidationResults
+     */
+    public function approve(
+        Lending|int $availabilityRequest,
+        int $ceUid,
+        RequestInterface $request,
+        string $language,
+        array $frontendUserStroageUids,
+        string $reasonsForPreventionService,
+        string $reasonsForPreventionServiceTitle
+    ): ValidationResults {
+        if (is_int($availabilityRequest)) {
+            $availabilityRequest = $this->lendingRepository->findByUid($$availabilityRequest);
+        }
+
+        /** @var ValidationResults $validationResults */
+
+        $validationResults = $this->validationService->validateApprove(
+            $availabilityRequest,
+            $ceUid,
+            $reasonsForPreventionService,
+            $reasonsForPreventionServiceTitle
+        );
+
+        if ($validationResults->isOkay()) {
+
+            $availabilityRequest->setState(Lending::STATE_APPROVED);
+            $availabilityRequest->setApprover($this->frontendUserService->getCurrentUser());
+
+            $this->lendingRepository->update($availabilityRequest);
+
+            $previousBorrowerRequests = [];
+
+            if ($availabilityRequest->getHighPriority()) {
+                foreach ($this->lendingRepository->getOverlapsAvailabilityRequests($availabilityRequest) as $req) {
+                    if ($req->getState() == Lending::STATE_APPROVED) {
+                        $req->setApprover($this->frontendUserService->getCurrentUser());
+                        $req->setState(Lending::STATE_AVAILABILITY_REQUEST);
+                        $this->lendingRepository->update($req);
+                        $previousBorrowerRequests[] = $req;
+                    }
+                }
+            }
+
+            $this->persistenceManager->persistAll();
+            $validationResults->clear();
+            $validationResults->addInfo('successful.approved');
+
+
+            foreach ($previousBorrowerRequests as $previousBorrowerRequest) {
+                $this->sendService->informPreviousBorrower(
+                    $previousBorrowerRequest,
+                    $request,
+                    $language
+                );
+            }
+
+            $this->sendService->sendAvailabilityRequestResultMail(
+                $availabilityRequest,
+                $request,
+                $language
+            );
+            $this->sendService->informObserverGroup(
+                $availabilityRequest,
+                $frontendUserStroageUids,
+                $request,
+                $language
+            );
+        }
+        return $validationResults;
+
+    }
 
 }
