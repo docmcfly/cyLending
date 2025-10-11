@@ -27,7 +27,7 @@
                             <f:for each="{allowedObjects}" as="allowedObject">
                                 <f:form.select.option value="{allowedObject.lendingObject.uid}"
                                     data="{'quantity':allowedObject.avaiableQuantity, 'highPriorityPossible': allowedObject.highPriorityLendingPossible}">
-                                    {allowedObject.lendingObject.title}
+                                    {allowedObject.lendingObject.title} 
                                 </f:form.select.option>
                             </f:for>
                         </f:then>

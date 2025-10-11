@@ -7,6 +7,7 @@ A warning is issued for loans that overlap in time. External appointment sources
 
 ## Change log
 
+* 4.1.2 :: FIX : Fix the permant disbaled high priority flag.
 * 4.1.1 :: UPD : Update (cleaning) TCA configuration
 * 4.1.0 :: UPD : UI form: The max quantities are updated, if the object, from or until field is changed (AJAX) 
 * 4.0.0 :: UPD : Update to TYPO3 13 and Bootstrap 15.

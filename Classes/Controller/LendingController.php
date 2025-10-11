@@ -13,6 +13,8 @@ use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use Cylancer\CyLending\Service\FrontendUserService;
 use Cylancer\CyLending\Service\LendingService;
 use Cylancer\CyLending\Service\MiscService;
+use Cylancer\CyLending\Service\SendService;
+use Cylancer\CyLending\Service\ValidationService;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Mime\Address;
 use TYPO3\CMS\Core\Context\Context;
@@ -78,7 +80,9 @@ class LendingController extends ActionController
         private readonly FrontendUserService $frontendUserService,
         private readonly PersistenceManager $persistenceManager,
         private readonly LendingService $lendingService,
-        private readonly SiteFinder $siteFinder
+        private readonly SiteFinder $siteFinder,
+        private readonly ValidationService $validationService,
+        private readonly SendService $sendService,
     ) {
     }
 
@@ -105,7 +109,7 @@ class LendingController extends ActionController
 
     private function getSetting($key, ?int $uid = null): mixed
     {
-         if ($uid != null && !isset($this->settings[$key])) {
+        if ($uid != null && !isset($this->settings[$key])) {
             array_merge($this->settings, $this->miscService->getFlexformSettings($uid));
         }
         return isset($this->settings[$key]) ? $this->settings[$key] : null;
@@ -300,7 +304,7 @@ class LendingController extends ActionController
         $ceUid = $this->getContentElementUid();
 
         /** @var ValidationResults $validationResults */
-        $validationResults = $this->validateCancelAvailabilityRequest($myAvailabilityRequest, $ceUid);
+        $validationResults = $this->validationService->validateCancelAvailabilityRequest($myAvailabilityRequest);
         /** @var ForwardResponse $forward */
         $forward = new ForwardResponse('show');
         if ($validationResults->isOkay()) {
@@ -310,7 +314,12 @@ class LendingController extends ActionController
             $this->lendingRepository->update($myAvailabilityRequest);
             $this->persistenceManager->persistAll();
 
-            $this->informAboutCancelAvailabilityRequest($myAvailabilityRequest);
+            $this->sendService->informAboutCancelAvailabilityRequest(
+                $myAvailabilityRequest,
+                GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']),
+                $this->request,
+                $this->getLanguage()
+            );
         }
 
         $forwardArguments = [
@@ -324,64 +333,12 @@ class LendingController extends ActionController
         return $forward;
     }
 
-
-    private function validateCancelAvailabilityRequest(Lending $myAvailabilityRequest, int $ceUid): ValidationResults
-    {
-
-        /** @var ValidationResults $validationResults */
-        $validationResults = $myAvailabilityRequest->getValidationResults();
-        if ($myAvailabilityRequest->getBorrower()->getUid() != $this->frontendUserService->getCurrentUserUid()) {
-            $validationResults->addError('notYourLending');
-        }
-
-        return $validationResults;
-    }
-
-
-    private function informAboutCancelAvailabilityRequest(Lending $myAvailabilityRequest): void
-    {
-
-        /** @var FrontendUserGroup $g */
-        $observers = $myAvailabilityRequest->getObject()->getObserverGroup();
-        $approvers = $myAvailabilityRequest->getObject()->getApproverGroup();
-
-        $groups =
-            array_merge(
-                $this->frontendUserService->getAllGroups($observers),
-                $this->frontendUserService->getAllGroups($approvers)
-            );
-        if (!empty($groups)) {
-            $frontendUserStorageUids = GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']);
-            /** @var FrontendUser $receiver */
-            foreach ($this->frontendUserRepository->getUsersOfGroups($groups, $frontendUserStorageUids) as $receiver) {
-                if (!empty($receiver->getEmail())) {
-                    $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
-                    $fluidEmail
-                        ->setRequest($this->request)
-                        ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                        ->from(new Address(
-                            MailUtility::getSystemFromAddress(),
-                            LocalizationUtility::translate('message.cancelAvailabilityRequest.email.senderName', LendingController::EXTENSION_NAME)
-                        ))
-                        ->subject(LocalizationUtility::translate('message.cancelAvailabilityRequest.email.subject', LendingController::EXTENSION_NAME))
-                        ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                        ->setTemplate(LendingController::INFORM_CANCEL_AVAILABILITY_REQUEST_MAIL_TEMPLATE)
-                        ->assign('availabilityRequest', $myAvailabilityRequest)
-                        ->assign('language', $this->getLanguage())
-                        ->assign('user', $receiver)
-                    ;
-                    GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
-                }
-            }
-        }
-    }
-
     public function cancelAction(Lending $myLending = null): ResponseInterface
     {
         $ceUid = $this->getContentElementUid();
 
         /** @var ValidationResults $validationResults */
-        $validationResults = $this->validateCancel($myLending, $ceUid);
+        $validationResults = $this->validationService->validateCancel($myLending);
         /** @var ForwardResponse $forward */
         $forward = new ForwardResponse('show');
         if ($validationResults->isOkay()) {
@@ -392,7 +349,12 @@ class LendingController extends ActionController
             $this->lendingRepository->update($myLending);
             $this->persistenceManager->persistAll();
 
-            $this->informAboutCanceling($myLending);
+            $this->sendService->informAboutCanceling(
+                $myLending,
+                GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']),
+                $this->request,
+                $this->getLanguage()
+            );
         }
 
         $forwardArguments = [
@@ -404,56 +366,6 @@ class LendingController extends ActionController
 
         $forward = $forward->withArguments($forwardArguments);
         return $forward;
-    }
-
-    private function informAboutCanceling(Lending $myLending): void
-    {
-
-        /** @var FrontendUserGroup $g */
-        $observers = $myLending->getObject()->getObserverGroup();
-        $approvers = $myLending->getObject()->getApproverGroup();
-
-        $groups =
-            array_merge(
-                $this->frontendUserService->getAllGroups($observers),
-                $this->frontendUserService->getAllGroups($approvers)
-            );
-        if (!empty($groups)) {
-            $frontendUserStorageUids = GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']);
-            /** @var FrontendUser $receiver */
-            foreach ($this->frontendUserRepository->getUsersOfGroups($groups, $frontendUserStorageUids) as $receiver) {
-                if (!empty($receiver->getEmail())) {
-                    $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
-                    $fluidEmail
-                        ->setRequest($this->request)
-                        ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                        ->from(new Address(
-                            MailUtility::getSystemFromAddress(),
-                            LocalizationUtility::translate('message.cancel.email.senderName', LendingController::EXTENSION_NAME)
-                        ))
-                        ->subject(LocalizationUtility::translate('message.cancel.email.subject', LendingController::EXTENSION_NAME))
-                        ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                        ->setTemplate(LendingController::INFORM_CANCEL_LENDING_MAIL_TEMPLATE)
-                        ->assign('availabilityRequest', $myLending)
-                        ->assign('language', $this->getLanguage())
-                        ->assign('user', $receiver)
-                    ;
-                    GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
-                }
-            }
-        }
-    }
-
-    private function validateCancel(Lending $myLending, int $ceUid): ValidationResults
-    {
-
-        /** @var ValidationResults $validationResults */
-        $validationResults = $myLending->getValidationResults();
-        if ($myLending->getBorrower()->getUid() != $this->frontendUserService->getCurrentUserUid()) {
-            $validationResults->addError('notYourLending');
-        }
-
-        return $validationResults;
     }
 
     public function reserveAction(Lending $toReserve = null): ResponseInterface
@@ -479,12 +391,23 @@ class LendingController extends ActionController
 
 
         /** @var ValidationResults $validationResults */
-        $validationResults = $this->validate($toReserve, $ceUid);
+        $validationResults = $this->validationService->validate(
+            $toReserve,
+            $ceUid,
+            $this->getSetting('reasonsForPreventionService'),
+            $this->getSetting('reasonsForPreventionServiceTitle')
+        );
         if ($validationResults->isOkay() && $toReserve->getObject()->getApproverGroup() == null) {
             // simulate an availability request...
             $state = $toReserve->getState();
             $toReserve->setState(Lending::STATE_AVAILABILITY_REQUEST); // only for the validation
-            $this->validateApprove($toReserve, $ceUid, false);
+            $this->validationService->validateApprove(
+                $toReserve,
+                $ceUid,
+                $this->getSetting('reasonsForPreventionService'),
+                $this->getSetting('reasonsForPreventionServiceTitle'),
+                false
+            );
             $toReserve->setState($state); // reset the state
 
         }
@@ -492,9 +415,6 @@ class LendingController extends ActionController
         /** @var ForwardResponse $forward */
         $forward = new ForwardResponse('show');
         $forwardArguments = [];
-
-
-
 
         if ($validationResults->isOkay()) {
             $toReserve->setState(Lending::STATE_AVAILABILITY_REQUEST);
@@ -514,7 +434,13 @@ class LendingController extends ActionController
             } else {
                 $validationResults->clear();
                 $validationResults->addInfo('successful');
-                $this->sendApproverEMails($toReserve);
+                $this->sendService->sendApproverEMails(
+                    $toReserve,
+                    $this->getPageId(),
+                    GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']),
+                    $this->request,
+                    $this->getLanguage()
+                );
             }
         }
 
@@ -541,36 +467,7 @@ class LendingController extends ActionController
             ->getName();
     }
 
-    private function sendApproverEMails(Lending $lending): void
-    {
 
-        $approverGroup = $this->frontendUserService->getTopGroups($lending->getObject()->getApproverGroup());
-        $frontendUserStorageUids = GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']);
-
-        /** @var FrontendUser $receiver */
-        foreach ($this->frontendUserRepository->getUsersOfGroups($approverGroup, $frontendUserStorageUids) as $receiver) {
-            if (!empty($receiver->getEmail())) {
-                $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
-                $fluidEmail
-                    ->setRequest($this->request)
-                    ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                    ->from(new Address(
-                        MailUtility::getSystemFromAddress(),
-                        LocalizationUtility::translate('message.approver.email.senderName', LendingController::EXTENSION_NAME)
-                    ))
-                    ->subject(LocalizationUtility::translate('message.approver.email.subject', LendingController::EXTENSION_NAME))
-                    ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                    ->setTemplate(LendingController::APPROVER_MAIL_TEMPLATE)
-                    ->assign('availabilityRequest', $lending)
-                    ->assign('user', $receiver)
-                    ->assign('language', $this->getLanguage())
-                    ->assign('pageUid', $this->getPageId())
-                ;
-                GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
-
-            }
-        }
-    }
 
     public function rejectAction(Lending $availabilityRequest = null): ResponseInterface
     {
@@ -578,7 +475,7 @@ class LendingController extends ActionController
         $ceUid = $this->getContentElementUid();
 
         /** @var ValidationResults $validationResults */
-        $validationResults = $this->validateReject($availabilityRequest);
+        $validationResults = $this->validationService->validateReject($availabilityRequest);
 
         /** @var ForwardResponse $forward */
         $forward = new ForwardResponse('show');
@@ -595,8 +492,17 @@ class LendingController extends ActionController
                 LendingController::TAB_KEY => LendingController::APPROVAL_TAB,
 
             ]);
-            $this->sendAvailabilityRequestResultMail($availabilityRequest);
-            $this->informObserverGroup($availabilityRequest);
+            $this->sendService->sendAvailabilityRequestResultMail(
+                $availabilityRequest,
+                $this->request,
+                $this->getLanguage()
+            );
+            $this->sendService->informObserverGroup(
+                $availabilityRequest,
+                GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']),
+                $this->request,
+                $this->getLanguage()
+            );
         }
 
         $availabilityRequest->setValidationResults($validationResults);
@@ -609,41 +515,7 @@ class LendingController extends ActionController
         return $forward;
     }
 
-    private function canApproveLendingObject(?LendingObject $lendingObject): bool
-    {
-        if ($lendingObject == null) {
-            return false;
-        }
 
-        if ($lendingObject->getApproverGroup() == null) {
-            return true;
-        }
-        $approverGroupUid = $lendingObject->getApproverGroup()->getUid();
-        foreach ($this->frontendUserService->getCurrentUser()->getUsergroup() as $frontendUserGroup) {
-            if ($this->frontendUserService->containsGroup($frontendUserGroup, $approverGroupUid)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private function validateReject(Lending $lending): ValidationResults
-    {
-
-        /** @var ValidationResults $validationResults */
-        $validationResults = new ValidationResults();
-        if ($this->lendingRepository->findByUid($lending->getUid()) == null) {
-            $validationResults->addError('requestDeleted');
-        } else {
-            if (!$this->canApproveLendingObject($lending->getObject())) {
-                $validationResults->addError('userNotApprover.reject');
-            }
-            if ($lending->getState() != Lending::STATE_AVAILABILITY_REQUEST) {
-                $validationResults->addError('requestAlreadyBeenProcessed');
-            }
-        }
-        return $validationResults;
-    }
 
     public function approveAction(Lending $availabilityRequest = null): ForwardResponse
     {
@@ -658,18 +530,32 @@ class LendingController extends ActionController
         $querySettings->setStoragePageIds($allLendingStorageUids);
         $this->lendingRepository->setDefaultQuerySettings($querySettings);
 
-        if ($availabilityRequest == null && $this->request->hasArgument('availabilityRequest')) {
-            $uid = intval($this->request->getArgument('availabilityRequest'));
-            $availabilityRequest = $this->lendingRepository->findByUid($uid);
-        }
-
         /** @var ForwardResponse $forward */
         $forward = new ForwardResponse('show');
         $forwardArguments = [];
 
+        $this->lendingService->approve(
+            $availabilityRequest == null && $this->request->hasArgument('availabilityRequest')
+            ? intval($this->request->getArgument(argumentName: 'availabilityRequest'))
+            : $availabilityRequest,
+            $this->getContentElementUid()
+        );
+
+
+        if ($availabilityRequest == null && $this->request->hasArgument('availabilityRequest')) {
+            $uid = intval($this->request->getArgument(argumentName: 'availabilityRequest'));
+            $availabilityRequest = $this->lendingRepository->findByUid($uid);
+        }
+
+
         /** @var ValidationResults $validationResults */
 
-        $validationResults = $this->validateApprove($availabilityRequest, $ceUid);
+        $validationResults = $this->validationService->validateApprove(
+            $availabilityRequest,
+            $ceUid,
+            $this->getSetting('reasonsForPreventionService'),
+            $this->getSetting('reasonsForPreventionServiceTitle')
+        );
 
         if ($validationResults->isOkay()) {
 
@@ -684,7 +570,11 @@ class LendingController extends ActionController
                         $req->setApprover($this->frontendUserService->getCurrentUser());
                         $req->setState(Lending::STATE_AVAILABILITY_REQUEST);
                         $this->lendingRepository->update($req);
-                        $this->informPreviousBorrower($req);
+                        $this->sendService->informPreviousBorrower(
+                            $req,
+                            $this->request,
+                            $this->getLanguage()
+                        );
                     }
                 }
             }
@@ -693,8 +583,17 @@ class LendingController extends ActionController
             $validationResults->clear();
             $validationResults->addInfo('successful.approved');
 
-            $this->sendAvailabilityRequestResultMail($availabilityRequest);
-            $this->informObserverGroup($availabilityRequest);
+            $this->sendService->sendAvailabilityRequestResultMail(
+                $availabilityRequest,
+                $this->request,
+                $this->getLanguage()
+            );
+            $this->sendService->informObserverGroup(
+                $availabilityRequest,
+                GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']),
+                $this->request,
+                $this->getLanguage()
+            );
         } else {
             $forwardArguments[LendingController::TAB_KEY] = LendingController::APPROVAL_TAB;
         }
@@ -707,221 +606,8 @@ class LendingController extends ActionController
         return $forward;
     }
 
-    private function informPreviousBorrower(Lending $availabilityRequest): void
-    {
-        $receiver = $availabilityRequest->getBorrower();
-        if (!empty($receiver->getEmail())) {
-            $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
-            $fluidEmail
-                ->setRequest($this->request)
-                ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                ->from(new Address(
-                    MailUtility::getSystemFromAddress(),
-                    LocalizationUtility::translate('message.informPreviousBorrower.email.senderName', LendingController::EXTENSION_NAME)
-                ))
-                ->subject(LocalizationUtility::translate('message.informPreviousBorrower.email.subject', LendingController::EXTENSION_NAME))
-                ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                ->setTemplate(LendingController::INFORM_PREVIOUS_BORROWER_MAIL_TEMPLATE, )
-                ->assign('user', $receiver)
-                ->assign('language', $this->getLanguage())
-                ->assign('availabilityRequest', $availabilityRequest)
-            ;
-            GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
-        }
-    }
-
-    private function sendAvailabilityRequestResultMail(Lending $availabilityRequest): void
-    {
-
-        $receiver = $availabilityRequest->getBorrower();
-        if (!empty($receiver->getEmail())) {
-            $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
-            $fluidEmail
-                ->setRequest($this->request)
-                ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                ->from(new Address(MailUtility::getSystemFromAddress(), LocalizationUtility::translate('message.borrower.email.senderName', LendingController::EXTENSION_NAME)))
-                ->subject(LocalizationUtility::translate('message.borrower.email.subject', LendingController::EXTENSION_NAME))
-                ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                ->setTemplate(LendingController::AVAILABILITY_REQUEST_RESULT_MAIL_TEMPLATE, )
-                ->assign('user', $receiver)
-                ->assign('language', $this->getLanguage())
-                ->assign('availabilityRequest', $availabilityRequest)
-            ;
-            GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
-
-        }
-    }
-
-    private function informObserverGroup(Lending $availabilityRequest): void
-    {
-        $observers = $availabilityRequest->getObject()->getObserverGroup();
-        if ($observers != null) {
-            $groups = $this->frontendUserService->getTopGroups($observers);
-            $frontendUserStorageUids = GeneralUtility::intExplode(',', $this->settings['frontendUserStroageUids']);
-
-            /** @var FrontendUser $receiver */
-            foreach ($this->frontendUserRepository->getUsersOfGroups($groups, $frontendUserStorageUids) as $receiver) {
-                if (!empty($receiver->getEmail())) {
-                    $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
-                    $fluidEmail
-                        ->setRequest($this->request)
-                        ->to(new Address($receiver->getEmail(), $receiver->getFirstName() . ' ' . $receiver->getLastName()))
-                        ->from(new Address(MailUtility::getSystemFromAddress(), LocalizationUtility::translate('message.observer.email.senderName', LendingController::EXTENSION_NAME)))
-                        ->subject(LocalizationUtility::translate('message.observer.email.subject', LendingController::EXTENSION_NAME))
-                        ->format(FluidEmail::FORMAT_BOTH) // send HTML and plaintext mail
-                        ->setTemplate(LendingController::OBSERVER_MAIL_TEMPLATE, )
-                        ->assign('user', $receiver)
-                        ->assign('language', $this->getLanguage())
-                        ->assign('availabilityRequest', $availabilityRequest)
-                    ;
-                    GeneralUtility::makeInstance(MailerInterface::class)->send($fluidEmail);
-
-                }
-            }
-        }
-    }
-
-    private function validateApprove(Lending $lending, int $ceUid, $stored = true): ValidationResults
-    {
-
-        /** @var ValidationResults $validationResults */
-        $validationResults = $this->validate($lending, $ceUid);
-        if ($stored && $this->lendingRepository->findByUid($lending->getUid()) == null) {
-            $validationResults->addError('requestDeleted');
-        } else {
-            if (!$this->canApproveLendingObject($lending->getObject())) {
-                $validationResults->addError('userNotApprover.approve');
-            }
-            if (
-                !$lending->getHighPriority()
-                && $this->lendingRepository->existsOverlapsAvailabilityRequests($lending)
-            ) {
-                $validationResults->addWarning('existsOverlapsAvailabilityRequests');
-            }
-
-            if ($lending->getState() != Lending::STATE_AVAILABILITY_REQUEST) {
-                $validationResults->addError('requestAlreadyBeenProcessed');
-            }
-        }
-        return $validationResults;
-    }
-
-    private function validate(Lending $lending, int $ceUid): ValidationResults
-    {
-        /** @var ValidationResults $validationResults */
-        $validationResults = $lending->getValidationResults();
-        if ($lending->getObject() == null) {
-            $validationResults->addError('object.isEmpty');
-        }
-
-        if ($lending->getHighPriority()) {
-            if ($lending->getObject()->getHighPriorityGroup() == null) {
-                $validationResults->addError('highPriorityNotPossible');
-
-            } else if (!$this->frontendUserService->containsUser($lending->getObject()->getHighPriorityGroup(), $lending->getBorrower())) {
-                $validationResults->addError('highPriorityNotPossible');
-            }
-        }
-
-        $from = false;
-        if ($lending->getFrom() == null || str_starts_with($lending->getFrom(), '1970-01-01')) {
-            $validationResults->addError('from.isEmpty');
-        } else {
-            $from = strtotime($lending->getFrom());
-            if ($from === false) {
-                $validationResults->addError('from.invalid');
-            } else if ($from < time()) {
-                $validationResults->addError('from.isInThePast');
-            }
-        }
 
 
-        $until = false;
-        if ($lending->getUntil() == null || str_starts_with($lending->getUntil(), '1970-01-01')) {
-            $validationResults->addError('until.isEmpty');
-        } else {
-            $until = strtotime($lending->getUntil());
-            if ($until === false) {
-                $validationResults->addError('until.invalid');
-            } else if ($until < time()) {
-                $validationResults->addError('until.isInThePast');
-            }
-        }
-
-        if ($from !== false && $until !== false && $from > $until) {
-            $validationResults->addError('until.isBeforeFrom');
-        } else {
-
-            if (!empty($this->getSetting('reasonsForPreventionService', $ceUid))) {
-                $reasonsForPreventionService = $this->getSetting('reasonsForPreventionService', $ceUid);
-
-                if (class_exists($reasonsForPreventionService)) {
-                    $storageUids = GeneralUtility::intExplode(',', $this->getSetting('reasonsForPreventionServiceStorageUids', $ceUid), TRUE);
-                    if (str_starts_with($reasonsForPreventionService, "\\")) {
-                        $reasonsForPreventionService = substr($reasonsForPreventionService, 1);
-                    }
-                    $reasonsForPrevention = GeneralUtility::makeInstance($reasonsForPreventionService)::reasonsForPreventionAction
-                    (
-                        $storageUids,
-                        LendingRepository::string2DateTime($lending->getFrom()),
-                        LendingRepository::string2DateTime($lending->getUntil())
-                    );
-                    /** @var  array */
-                    $data = $reasonsForPrevention['data'];
-                    if (count($data) > 0) {
-                        $list = '';
-                        if (!empty($this->getSetting('reasonsForPreventionServiceTitle', $ceUid))) {
-                            $list .= '<strong>' . $this->getSetting('reasonsForPreventionServiceTitle', $ceUid) . '</strong>';
-                        }
-                        $list .= '<ul>';
-                        foreach ($data as $reason) {
-                            $list .= '<li>' . $reason['description'] . '</li>';
-                        }
-                        $list .= '</ul>';
-                        $validationResults->addWarning('from.reasonsForPrevention', [$list]);
-                    }
-                }
-            }
-
-            // individual objects can also be borrowed several times at the same time
-            if ($lending->getObject()->getQuantity() == 1) {
-                if (!$lending->getHighPriority() && $this->lendingRepository->existsOverlapsAvailabilityRequests($lending)) {
-                    $validationResults->addWarning('existsOverlapsAvailabilityRequests');
-                }
-
-                // if the item is present more than once, the maximum number of pieces may not be exceeded
-            } else {
-
-                $max = $this->lendingService->calculateMaximum($this->lendingRepository->getOverlapsAvailabilityRequests($lending));
-                $available = $lending->getObject()->getQuantity() - $max;
-                if ($available == 0) {
-                    $validationResults->addError('quantity.notAvailable');
-                } else if ($lending->getQuantity() > $available) {
-                    $key = $available == 1 ? 'piece' : 'pieces';
-                    $validationResults->addError('quantity.tooLarge', [
-                        $available,
-                        LocalizationUtility::translate($key, LendingController::EXTENSION_NAME)
-                    ]);
-                } else {
-                    $max = $this->lendingService->calculateMaximum($this->lendingRepository->getOverlapsAvailabilityRequests($lending, LendingRepository::NO_LIMIT, Lending::STATE_AVAILABILITY_REQUEST));
-                    if ($max > 0) {
-                        $key = $max == 1 ? 'piece' : 'pieces';
-                        $validationResults->addInfo('quantity.availabilityRequests', [
-                            $max,
-                            LocalizationUtility::translate($key, LendingController::EXTENSION_NAME)
-                        ]);
-                    }
-
-                }
-
-            }
-        }
-
-        if (strlen(trim($lending->getPurpose())) === 0) {
-            $validationResults->addError('purpose.isEmpty');
-        }
-        return $validationResults;
-    }
 
     public function toArray(Lending $lending): array
     {
