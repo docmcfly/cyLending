@@ -59,7 +59,7 @@ class LendingRepository extends Repository
         return $q->execute();
     }
 
-    public function findAllAvailabilityRequests(array $canApproveLendingObjects): array
+    public function findAllFutureAvailabilityRequests(array $canApproveLendingObjects): array
     {
         if (count(array_keys($canApproveLendingObjects)) == 0) {
             return [];
@@ -81,9 +81,11 @@ class LendingRepository extends Repository
         return $q->execute()->toArray();
     }
 
-
-
-    public function findMyAvailabilityRequests(?FrontendUser $frontendUser): array
+    /**
+     * @param mixed $frontendUser
+     * @return Lending[]
+     */
+    public function findMyAvailabilityRequests(FrontendUser $frontendUser): array
     {
         if ($frontendUser == null) {
             return [];
@@ -105,8 +107,6 @@ class LendingRepository extends Repository
         //      debug($queryParser->convertQueryToDoctrineQueryBuilder($q)->getSQL());
         return $q->execute()->toArray();
     }
-
-
 
     public function findMyLendings(?FrontendUser $frontendUser): array
     {
@@ -152,6 +152,7 @@ class LendingRepository extends Repository
         );
         $q->setOrderings([
             'high_priority' => QueryInterface::ORDER_DESCENDING,
+            'state' => QueryInterface::ORDER_ASCENDING,
             'from' => QueryInterface::ORDER_ASCENDING,
             'purpose' => QueryInterface::ORDER_ASCENDING,
         ]);

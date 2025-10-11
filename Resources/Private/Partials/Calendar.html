@@ -1,7 +1,7 @@
 <div class="mt-4">
     <f:asset.script identifier="calendar.js" priority="true"
         src="EXT:cy_lending/Resources/Public/JavaScript/calendar.js" />
-    <div class="mt-4" id='calendar'></div>
+    <div class="mt-4" id='calendar' class="calendar"></div>
 
 
     <f:format.raw>
@@ -19,7 +19,7 @@
                 monthNames: [<f:translate key='lending.overview.calendar.label.monthNames' />],
             }
             let currentMonthEvents = {currentMonthEvents}
-            let ajaxConnect = '{f:uri.action(pageType:"{settings.ajax.pageType}", controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{lspid:allLendingStorageUids}")}'
+            let ajaxConnect = '{f:uri.action(pageType:"{settings.ajax.pageType}", controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{ceUid:ceUid}")}'
             let _appointmentSymbol = '{appointmentSymbol}'
 
 
@@ -30,43 +30,16 @@
         //   <f:format.cdata>
         let selector = '#calendar'
 
-
-        let calculateOtherMonth = function (offset) {
-            let currentMonth = $(selector + ' .currentMonth').attr('data-month')
-            let currentYear = $(selector + ' .currentMonth').attr('data-year')
-
-            let result = new Date(currentYear, currentMonth, 1);
-            return new Date(result.setMonth(result.getMonth() + offset))
-
-        }
-
         new Calendar(selector, language, {
             appointmentSymbol: ' ' + _appointmentSymbol,
-            previousMonthButtonHook: function (calendar) {
 
-                let previousMonth = calculateOtherMonth(-1);
+            updateMonthButtonHook : function (calendar, offset) {
+
+                let _month = Calendar.calculateOtherMonth(selector, offset);
                 $.ajax({
                     url: ajaxConnect,
                     method: "POST",
-                    data: { year: previousMonth.getFullYear(), month: previousMonth.getMonth() + 1 },
-                }
-                )
-                    .fail(function (error) {
-                        console.log(error.responseText)
-                    })
-                    .done(function (response) {
-                        //  console.log(result)
-                        calendar.importEvents(response)// alert(result)
-                        calendar.renderEvents()
-                    })
-            },
-            nextMonthButtonHook: function (calendar) {
-
-                let nextMonth = calculateOtherMonth(1);
-                $.ajax({
-                    url: ajaxConnect,
-                    method: "POST",
-                    data: { year: nextMonth.getFullYear(), month: nextMonth.getMonth() + 1 },
+                    data: { year: _month.getFullYear(), month: _month.getMonth() + 1 },
                 }
                 )
                     .fail(function (error) {

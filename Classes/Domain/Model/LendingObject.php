@@ -2,8 +2,6 @@
 declare(strict_types=1);
 namespace Cylancer\CyLending\Domain\Model;
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
-
 /**
  *
  * This file is part of the "lending" Extension for TYPO3 CMS.
@@ -15,8 +13,10 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  *
  */
 
- class LendingObject extends AbstractEntity
+class LendingObject extends AbstractEntity
 {
+	use ToArrayTrait;
+
 	public const OBJECT_AVAILABILITY = -1;
 
 	/** @var string */
@@ -31,17 +31,17 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 	protected ?FrontendUserGroup $observerGroup = null;
 	protected ?FrontendUserGroup $highPriorityGroup = null;
 	protected int $quantity = 1;
-	public function getTitle():?string 
+	public function getTitle(): ?string
 	{
 		return $this->title;
 	}
-	 public function setTitle(?string $title): self
+	public function setTitle(?string $title): self
 	{
 		$this->title = $title;
 		return $this;
 	}
 
-	public function getColor():?string 
+	public function getColor(): ?string
 	{
 		return $this->color;
 	}
@@ -52,7 +52,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 		return $this;
 	}
 
-	public function  getApproverGroup() :?FrontendUserGroup
+	public function getApproverGroup(): ?FrontendUserGroup
 	{
 		return $this->approverGroup;
 	}
@@ -63,7 +63,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 		return $this;
 	}
 
-	public function getObserverGroup() :?FrontendUserGroup
+	public function getObserverGroup(): ?FrontendUserGroup
 	{
 		return $this->observerGroup;
 	}
@@ -74,7 +74,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 		return $this;
 	}
 
-	public function getGroupName() :?string
+	public function getGroupName(): ?string
 	{
 		return $this->groupName;
 	}
@@ -85,7 +85,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 		return $this;
 	}
 
-	public function getQuantity():int
+	public function getQuantity(): int
 	{
 		return $this->quantity;
 	}
@@ -96,7 +96,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 		return $this;
 	}
 
-	public function getHighPriorityGroup():?FrontendUserGroup
+	public function getHighPriorityGroup(): ?FrontendUserGroup
 	{
 		return $this->highPriorityGroup;
 	}

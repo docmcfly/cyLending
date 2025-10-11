@@ -3,80 +3,99 @@
 	.error {
 		color: var(--bs-primary);
 	}
+
 	.warning {
 		color: var(--bs-warning);
 	}
-	.alert-warning ul{
+
+	.alert-warning ul {
 		margin-left: 1rem;
 		margin-bottom: 0;
 	}
-
 </style>
 
-<div id="validationResults-{prefix}">
-<f:if condition="{context}"><f:then>
-	<f:variable name="validationResults">{object.contextValidationresults.{context}}</f:variable>
-</f:then>
-	<f:else>
-		<f:variable name="validationResults">{object.validationResults}</f:variable>
-	</f:else>
-</f:if>
 
-<f:for each="{validationResults.infos}" as="info" key="infoKey">
-	<div class="alert alert-success" data-infokey="{prefix}.{infoKey}">
-		<f:translate key="{prefix}.{infoKey}" arguments="{info.arguments}" />
-	</div>
-</f:for>
-<f:if condition="{validationResults.warnings}">
+<div id="validationResults-{prefix}">
+	<f:form.hidden name="confirmedWarnings[]" value="" />
+	<script type="text/javascript" defer="defer">
+		$(document).ready(function () {
+			let form = $('#' + $.escapeSelector('validationResults-{prefix}')).first().parents("form").first()
+			console.log(form.find(".error").length)
+			form.find(".error").each(function (e) {
+				$(this).removeClass("error")
+			})
+			form.find(".warning").each(function (e) {
+				$(this).removeClass("warning")
+			})
+		})
+	</script>
 	
-	<div class="alert alert-warning" ><f:format.raw><f:translate key="validationResults.warnings.help" /></f:format.raw></div>
-	<f:for each="{validationResults.warnings}" key="warningKey" as="warning"  iteration="iter">
-		<div class="alert alert-warning" data-warningkey="{prefix}.{warningKey}">
-			<f:form.checkbox 
-			property="validationResults.confirmedWarnings" 
-			value="{warning.id}" 
-			multiple="1"  
-			id="{prefix}.{warningKey}" class="form-check-input warning-checkbox" />
-			&nbsp;&nbsp;
+	
+	<f:if condition="{context}">
+		<f:then>
+			<f:variable name="validationResults">{object.contextValidationresults.{context}}</f:variable>
+		</f:then>
+		<f:else>
+			<f:variable name="validationResults">{object.validationResults}</f:variable>
+		</f:else>
+	</f:if>
+	
+	<f:for each="{validationResults.infos}" as="info" key="infoKey">
+		<div class="alert alert-success" data-infokey="{prefix}.{infoKey}">
+			<f:translate key="{prefix}.{infoKey}" arguments="{info.arguments}" />
+		</div>
+	</f:for>
+	<f:if condition="{validationResults.warnings}">
+
+		<div class="alert alert-warning">
 			<f:format.raw>
-				<f:translate key="{prefix}.{warningKey}" arguments="{warning.arguments}" />
+				<f:translate key="validationResults.warnings.help" />
 			</f:format.raw>
 		</div>
-	</f:for>
+		<f:for each="{validationResults.warnings}" key="warningKey" as="warning" iteration="iter">
+			<div class="alert alert-warning" data-warningkey="{prefix}.{warningKey}">
+				<f:form.checkbox name="tx_cylending_lending[confirmedWarnings]" value="{warning.id}" multiple="1"
+					id="{prefix}.{warningKey}" class="form-check-input warning-checkbox" checked="{warning.isConfirmed}"/>
+				&nbsp;&nbsp;
+				<f:format.raw>
+					<f:translate key="{prefix}.{warningKey}" arguments="{warning.arguments}" />
+				</f:format.raw>
+			</div>
+		</f:for>
 
-	<script type="text/javascript" defer="defer">
-		$(document).ready(function () {
-			let label
-			let forLabel
-			<f:for each="{validationResults.warnings}" as="warning" key="warningKey">
-				label = $('#{warning.id}Label')
-				label.addClass('warning')
-				forLabel = $('#'+label.attr('for'))
-				forLabel.addClass('warning')
-			</f:for>
-			
-		})
-	</script>
-</f:if>
+		<script type="text/javascript" defer="defer">
+			$(document).ready(function () {
+				let label
+				let forLabel
+				<f:for each="{validationResults.warnings}" as="warning" key="warningKey">
+					label = $('#{warning.id}Label')
+					label.addClass('warning')
+					forLabel = $('#'+label.attr('for'))
+					forLabel.addClass('warning')
+				</f:for>
 
-<f:if condition="{validationResults.errors}">
-	<script type="text/javascript" defer="defer">
-		$(document).ready(function () {
-			let label
-			let forLabel
-			<f:for each="{object.validationResults.errors}" as="error">
-				label = $('#{error.id}Label')
-				label.addClass('error')
-				forLabel = $('#'+label.attr('for'))
-				forLabel.addClass('error')
-			</f:for>
-		})
-	</script>
+			})
+		</script>
+	</f:if>
 
-	<f:for each="{validationResults.errors}" as="error" key="errorKey">
-		<div class="alert alert-danger" data-errorkey="{prefix}.{errorKey}">
-			<f:translate key="{prefix}.{errorKey}" arguments="{error.arguments}" />
-		</div>
-	</f:for>
-</f:if>
+	<f:if condition="{validationResults.errors}">
+		<script type="text/javascript" defer="defer">
+			$(document).ready(function () {
+				let label
+				let forLabel
+				<f:for each="{object.validationResults.errors}" as="error">
+					label = $('#{error.id}Label')
+					label.addClass('error')
+					forLabel = $('#'+label.attr('for'))
+					forLabel.addClass('error')
+				</f:for>
+			})
+		</script>
+
+		<f:for each="{validationResults.errors}" as="error" key="errorKey">
+			<div class="alert alert-danger" data-errorkey="{prefix}.{errorKey}">
+				<f:translate key="{prefix}.{errorKey}" arguments="{error.arguments}" />
+			</div>
+		</f:for>
+	</f:if>
 </div>

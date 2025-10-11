@@ -21,6 +21,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 class Lending extends AbstractEntity
 {
+	use ToArrayTrait;
+
 	public const STATE_UNKNOWN = 0;
 	public const STATE_AVAILABILITY_REQUEST = 1;
 	public const STATE_APPROVED = 2;
@@ -168,6 +170,9 @@ class Lending extends AbstractEntity
 		return $this;
 	}
 
+	/**
+	 * @return AllowedLendingObject[]
+	 */
 	public function getAllowedObjects(): array
 	{
 		return $this->allowedObjects;

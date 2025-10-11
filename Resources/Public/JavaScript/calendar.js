@@ -30,14 +30,11 @@ class Calendar {
 
         // default date formatter
         formatter: {
-            dateOptions: {"year": "numeric", "month": "numeric", "day": "numeric"},
-            timeOptions: {hour: "numeric", minute: "2-digit"},
+            dateOptions: { "year": "numeric", "month": "numeric", "day": "numeric" },
+            timeOptions: { hour: "numeric", minute: "2-digit" },
         },
 
-
-
-        previousMonthButtonHook: function (calendar) {},
-        nextMonthButtonHook: function (calendar) {},
+        updateMonthButtonHook: function (calendar, offset) { },
 
         // translations
         texts: {
@@ -118,6 +115,8 @@ class Calendar {
         this.selector = selector
         this.texts = this.merge(this.properties.texts['en'], this.properties.texts[language]);
         this.language = language
+        $(selector).data('calendar', this)
+        $(selector).addClass('calendar')
     }
 
     importEvents(events) {
@@ -131,7 +130,22 @@ class Calendar {
             }
             this.events.set(event.idx, event)
         }
-        console.log(this.events.size)
+        this.events = new Map(
+            [...this.events.entries()]
+                .sort(([keyA, valA], [keyB, valB]) => {
+                    const aStriped = Boolean(valA.striped);
+                    const bStriped = Boolean(valB.striped);
+                    if (aStriped !== bStriped) return aStriped ? 1 : -1; // nicht-striped zuerst
+
+                    // sekundär: numerisch nach DB-Idx, falls Keys numerisch sind
+                    const nA = Number(keyA);
+                    const nB = Number(keyB);
+                    if (!Number.isNaN(nA) && !Number.isNaN(nB)) return nA - nB;
+
+                    // sonst lexikografisch als Fallback
+                    return String(keyA).localeCompare(String(keyB));
+                })
+        );
         return this
     }
 
@@ -154,16 +168,24 @@ class Calendar {
         return this.texts
     }
 
+    static calculateOtherMonth(selector, offset) {
+        let currentMonth = $(selector + ' .currentMonth').attr('data-month')
+        let currentYear = $(selector + ' .currentMonth').attr('data-year')
+
+        let result = new Date(currentYear, currentMonth, 1);
+        return new Date(result.setMonth(result.getMonth() + offset))
+    }
+
     hasDateFormat(date) {
-        return (/^\d{4}-[01]\d-[0-3]\d$/gm).test(date);
+        return date != null && (/^\d{4}-[01]\d-[0-3]\d$/gm).test(date);
     }
 
     hasTimeFormat(time) {
-        return (/^[0-2]\d:[0-5]\d:[0-5]\d$/gm).test(time)
+        return time != null && (/^[0-2]\d:[0-5]\d:[0-5]\d$/gm).test(time)
     }
 
     hasDateTimeFormat(dateTime) {
-        return (/^\d{4}-[01]\d-[0-3]\d [0-2]\d:[0-5]\d:[0-5]\d$/gm).test(dateTime)
+        return dateTime != null && (/^\d{4}-[01]\d-[0-3]\d [0-2]\d:[0-5]\d:[0-5]\d$/gm).test(dateTime)
     }
 
     parseDate(date) {
@@ -203,6 +225,23 @@ class Calendar {
         );
     }
 
+    cleanVisibleEvents() {
+        let calendar = this
+        $(this.selector + ' div.calendar-date[data-date]')
+            .each(function (e) {
+                let rawDate = $(this).attr('data-date')
+                if (calendar.hasDateFormat(rawDate)) {
+                    let day = calendar.parseDate(rawDate)
+                    let iter = calendar.events.entries()
+                    for (const [idx, event] of iter) {
+                        if (calendar.contains(event, day)) {
+                            calendar.events.delete(idx)
+                        }
+                    }
+                }
+            })
+    }
+
     cleanEvents(events) {
 
         let eventsCount = events.length
@@ -214,10 +253,11 @@ class Calendar {
 
             if (start === null || end === null) {
                 event.valid = false
+            } else {
+                event.valid = true
+                event.start = start
+                event.end = end
             }
-            event.valid = true
-            event.start = start
-            event.end = end
         }
         return events
     }
@@ -265,35 +305,41 @@ class Calendar {
         cal.append(content)
 
         let btnNextMonth = $(this.selector + ' .btn.nextMonth')
-        btnNextMonth.on('click', {calendar: this}, function (event) {
+        btnNextMonth.on('click', { calendar: this }, function (event) {
             let calendar = event.data.calendar
-            calendar.properties.nextMonthButtonHook(calendar)
+            calendar.properties.updateMonthButtonHook(calendar, 1)
             calendar.currentDay.setMonth(calendar.currentDay.getMonth() + 1)
             calendar.renderMonth()
         })
 
         let btnPreviousMonth = $(this.selector + ' .btn.previousMonth')
-        btnPreviousMonth.on('click', {calendar: this}, function (event) {
+        btnPreviousMonth.on('click', { calendar: this }, function (event) {
 
             let calendar = event.data.calendar
-            calendar.properties.previousMonthButtonHook(calendar)
+            calendar.properties.updateMonthButtonHook(calendar, -1)
             calendar.currentDay.setMonth(calendar.currentDay.getMonth() - 1)
             calendar.renderMonth()
         })
 
-        $(this.selector + ' .btn.toToday').on('click', {calendar: this}, function (event) {
+        $(this.selector + ' .btn.toToday').on('click', { calendar: this }, function (event) {
             let calendar = event.data.calendar
             calendar.currentDay = new Date()
             calendar.currentDay.setDate(1)
             calendar.renderMonth()
             let today = $(".today").get(0)
-            today.scrollIntoView({behavior: 'smooth'})
-            calendar.updateDetails($(today.parentElement))
+            today.scrollIntoView({ behavior: 'smooth' })
+            calendar.updateDetails($(today.parentElement).attr('data-date'))
         })
 
         this.renderMonth()
     }
 
+    updateMonth(offset = 0) {
+        this.cleanVisibleEvents()
+        this.properties.updateMonthButtonHook(this, offset)
+        this.renderMonth()
+        this.refreshDetails()
+    }
 
     updateButton(button, active) {
         button.prop("disabled", !active);
@@ -305,7 +351,6 @@ class Calendar {
             button.addClass('btn-light')
         }
     }
-
 
     renderMonth() {
         // calculate the first day in the month calendar view table: 
@@ -366,7 +411,7 @@ class Calendar {
                 } else { // day of the month...
                     grid += '<div class="row gx-0" data-week="' + i + '" >' + "\n"
                     for (let j = 0; j < 7; j++) {
-                        grid += '<div class="overflowHidden col border-top  '
+                        grid += '<div class="calendar-date overflowHidden col border-top  '
                         if (j > 0) {
                             grid += 'border-start '
                         }
@@ -418,8 +463,8 @@ class Calendar {
         }
 
 
-        $(this.selector + ' [data-date]').on('click', {calendar: this}, function (event) {
-            event.data.calendar.updateDetails($(this))
+        $(this.selector + ' [data-date]').on('click', { calendar: this }, function (event) {
+            event.data.calendar.updateDetails($(this).attr('data-date'))
         })
 
         this.renderEvents()
@@ -450,7 +495,7 @@ class Calendar {
     }
 
     contains(event, date) {
-        if (event.valid === false) {
+        if (event.valid === false || date == null) {
             return false
         }
         let startDate = this.toDate(event.start)
@@ -473,61 +518,68 @@ class Calendar {
             + event.end.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
     }
 
-    updateDetails(obj) {
-        let d = obj.attr('data-date')
-        let day = this.parseDate(d)
-        let currentDay = this.formatDate(day);;
+    refreshDetails() {
         let details = $(this.selector + ' .details')
-        details.empty()
-        let add = '<h3 class="p-2" >' + day.toLocaleDateString(this.language) + '</h3>' + "\n"
-        let iter = this.events.entries()
-        for (const [idx, event] of iter) {
-            if (this.contains(event, day)) {
-                let backgroundColor = event.backgroundColor
-                add += '<div class="mb-2 p-1 text-dark" '
-                add += 'title="' + this.createTooltip(event) + '" '
-                add += 'style="'
-                if (event.striped === true) {
-                    add += 'background-image: ' + this.getStripedBackground(backgroundColor) + ';'
-                } else {
-                    add += 'background-color:' + backgroundColor + ';'
-                }
-                //  add += 'color:' + this.idealTextColor(backgroundColor, event.striped) + ';'
-                add += '">' + "\n"
-                add += '<div style="hyphens: auto;" class="fw-bold px-1 bg-white me-5" >' + event.title + '</div>'
-                add += '<div style="hyphens: auto;" class="small overflowHidden  px-1 bg-white me-5">'
-                if (event.responsible) {
-                    add += event.responsible + '<br>'
-                }
-                if (event.description) {
-                    add += event.description + '<br>'
-                }
-                let startDate = this.formatDate(event.start);
-                let endDate = this.formatDate(event.end);
-                if (startDate !== currentDay || endDate !== currentDay
-                    || event.start.getHours() !== 0 || event.start.getMinutes() !== 0
-                    || event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
+        this.updateDetails(details.attr('data-date'))
+    }
 
-                    if (startDate !== currentDay || (event.start.getHours() === 0 && event.start.getMinutes() === 0)) {
-                        add += event.start.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
+    updateDetails(d) {
+        if (this.hasDateFormat(d)) {
+            let day = this.parseDate(d)
+            let currentDay = this.formatDate(day);;
+            let details = $(this.selector + ' .details')
+            details.attr('data-date', d)
+            details.empty()
+            let add = '<h3 class="p-2" >' + day.toLocaleDateString(this.language) + '</h3>' + "\n"
+            let iter = this.events.entries()
+            for (const [idx, event] of iter) {
+                if (this.contains(event, day)) {
+                    let backgroundColor = event.backgroundColor
+                    add += '<div class="mb-2 p-1 text-dark" '
+                    add += 'title="' + this.createTooltip(event) + '" '
+                    add += 'style="'
+                    if (event.striped === true) {
+                        add += 'background-image: ' + this.getStripedBackground(backgroundColor) + ';'
+                    } else {
+                        add += 'background-color:' + backgroundColor + ';'
                     }
-                    if (event.start.getHours() !== 0 || event.start.getMinutes() !== 0) {
-                        add += event.start.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
+                    //  add += 'color:' + this.idealTextColor(backgroundColor, event.striped) + ';'
+                    add += '">' + "\n"
+                    add += '<div style="hyphens: auto;" class="fw-bold px-1 bg-white me-5" >' + event.title + '</div>'
+                    add += '<div style="hyphens: auto;" class="small overflowHidden  px-1 bg-white me-5">'
+                    if (event.responsible) {
+                        add += event.responsible + '<br>'
                     }
-                    add += "&nbsp;-&nbsp;"
-                    if (endDate !== currentDay) {
-                        add += event.end.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
+                    if (event.description) {
+                        add += event.description + '<br>'
                     }
-                    if (event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
-                        add += event.end.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
+                    let startDate = this.formatDate(event.start);
+                    let endDate = this.formatDate(event.end);
+                    if (startDate !== currentDay || endDate !== currentDay
+                        || event.start.getHours() !== 0 || event.start.getMinutes() !== 0
+                        || event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
+
+                        if (startDate !== currentDay || (event.start.getHours() === 0 && event.start.getMinutes() === 0)) {
+                            add += event.start.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
+                        }
+                        if (event.start.getHours() !== 0 || event.start.getMinutes() !== 0) {
+                            add += event.start.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
+                        }
+                        add += "&nbsp;-&nbsp;"
+                        if (endDate !== currentDay) {
+                            add += event.end.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
+                        }
+                        if (event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
+                            add += event.end.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
+                        }
                     }
+                    add += '</div>' + "\n"
+                    add += '</div>' + "\n"
                 }
-                add += '</div>' + "\n"
-                add += '</div>' + "\n"
             }
+            details.append(add)
+            $(".details").get(0).scrollIntoView({ block: 'center', behavior: 'smooth' });
         }
-        details.append(add)
-        $(".details").get(0).scrollIntoView({behavior: 'smooth'});
     }
 
     renderEvents() {

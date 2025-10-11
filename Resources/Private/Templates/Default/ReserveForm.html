@@ -1,18 +1,10 @@
-<f:format.raw>
-    <script defer="defer">
-        {untilOffset}
-
-        let getMaxQuantityUrl = "{f:uri.action( pageType:'{settings.ajax.pageType}', controller:'AjaxConnect', action:'getMaxQuantity', absolute='true', arguments:{uid:600})}"
-    </script>
-</f:format.raw>
-
-
-
 <f:form class="form reserve" noCache="true" action="reserve" method="POST" enctype="multipart/form-data"
-    arguments="{'contextElement': contextElement}" objectName="toReserve" object="{toReserve}">
-    <f:render partial="validationResults"
-        arguments="{prefix:'lending.overview.availabilityRequest.form', validationResults: availabilityRequestValidationResults, object: toReserve}" />
+    arguments="{ceUid:ceUid}" objectName="toReserve" object="{toReserve}" controller="AjaxConnect"
+    pageType="{settings.ajax.pageType}">
+    <div class="messages">
+        <f:form.hidden name="confirmedWarnings[]" value="" />
 
+    </div>
 
     <div class="row mt-3 mb-2">
         <label id="objectLabel" for="object" class="col-sm-3 col-form-label">
@@ -27,7 +19,7 @@
                             <f:for each="{allowedObjects}" as="allowedObject">
                                 <f:form.select.option value="{allowedObject.lendingObject.uid}"
                                     data="{'quantity':allowedObject.avaiableQuantity, 'highPriorityPossible': allowedObject.highPriorityLendingPossible}">
-                                    {allowedObject.lendingObject.title} 
+                                    {allowedObject.lendingObject.title}
                                 </f:form.select.option>
                             </f:for>
                         </f:then>
@@ -52,7 +44,7 @@
             <f:translate key="lending.overview.availabilityRequest.form.purpose" />
         </label>
         <div class="col-sm-9">
-            <f:form.textfield class="form-control" property="purpose" type="text" id="purpose"
+            <f:form.textfield class="form-control" property="purpose" type="text" id="purpose" autocomplete="off"
                 additionalAttributes="{list:'purposeList'}"
                 placeholder="{f:if(condition:'{purposes->f:count()} > 0', then:'{f:translate(key:\'lending.overview.availabilityRequest.form.purpose.placeholder\')}')}" />
             <f:if condition="{purposes->f:count()} > 0">
@@ -73,7 +65,7 @@
                 &nbsp;
             </div>
             <div class="col-sm-9">
-                <f:form.checkbox class="form-check-input" property="highPriority" id="highPriority" value="1" />
+                <f:form.checkbox class="form-check-input" property="highPriority" id="highPriority" value="true" />
                 <label id="highPriorityLabel" for="highPriority" class="form-check-label">
                     <f:translate key="lending.overview.availabilityRequest.form.highPriority" />
                 </label>

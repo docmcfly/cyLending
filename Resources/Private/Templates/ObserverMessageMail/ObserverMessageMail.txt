@@ -6,15 +6,14 @@
 <f:layout name="Default"/>
 <f:section name="content">
 <f:translate
-	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.salutation"
-	arguments="{0:user.firstName, 1:user.lastName}" />
+	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.salutation"/>
 
 <f:format.stripTags><f:if condition="{availabilityRequest.state} == 2"><f:then><f:translate	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.requestIsApproved" /></f:then><f:else><f:translate	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.requestIsRejected" /></f:else></f:if></f:format.stripTags>
 
 <f:translate
 	key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.object" />:
 {availabilityRequest.object.title}
-				
+
 <f:translate
 		key="LLL:EXT:cy_lending/Resources/Private/Language/locallang.xlf:message.observer.email.purpose" />:
 {availabilityRequest.purpose}

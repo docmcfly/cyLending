@@ -17,6 +17,7 @@ use Cylancer\CyLending\Service\LendingService;
  */
 class AllowedLendingObject
 {
+    use ToArrayTrait;
 
     protected Lending $lending;
 
