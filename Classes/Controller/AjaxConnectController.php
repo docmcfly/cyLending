@@ -30,10 +30,6 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  */
 class AjaxConnectController extends AbstractController
 {
-
-    private const string TEMPLATE = 'Templates';
-    private const string PARTIAL = 'Partials';
-
     public function __construct(
         private readonly LendingService $lendingService,
         private readonly LendingObjectRepository $lendingObjectRepository,
