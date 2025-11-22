@@ -7,6 +7,7 @@ A warning is issued for loans that overlap in time. External appointment sources
 
 ## Change log
 
+* 5.0.2 :: FIX : Removes unused constants.
 * 5.0.1 :: FIX : Removes unused constants.
 * 5.0.0 :: UPD : Change the all interactions to an ajax communication.
 * 4.1.2 :: FIX : Fix the permant disbaled high priority flag.
