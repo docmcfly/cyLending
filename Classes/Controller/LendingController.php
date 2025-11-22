@@ -34,19 +34,9 @@ class LendingController extends AbstractController
 {
 
 
-    private const string TO_RESERVE = 'toReserve';
-    private const string APPROVE_REQUEST = 'approveRequest';
-    private const string REJECT_REQUEST = 'rejectRequest';
-    private const string CANCEL_LENDING = 'cancelLending';
-    private const string CANCEL_AVAILABILITY_REQUEST = 'cancelAvailabilityRequest';
-    private const string CONTENT_ELEMENT = 'contentElement';
-
-    private const string TAB_KEY = 'tab';
-    private const string LENDING_TAB = 'lending';
-    private const string CALENDAR_TAB = 'calendar';
-    private const string APPROVAL_TAB = 'approval';
-    private const string MY_LENDINGS_TAB = 'myLendings';
-    private const string MY_AVAILABILITY_REQUESTS_TAB = 'myAvailabilityRequests';
+    private const CONTENT_ELEMENT = 'contentElement';
+    private const TAB_KEY = 'tab';
+    private const CALENDAR_TAB = 'calendar';
 
     public function __construct(
         private readonly Context $context,
