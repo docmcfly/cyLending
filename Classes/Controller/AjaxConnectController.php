@@ -419,9 +419,13 @@ class AjaxConnectController extends AbstractController
         if (is_array($parsedBody)) {
             $year = intval($parsedBody['year']);
             $month = intval($parsedBody['month']);
+            $storageUids = array_merge(
+                GeneralUtility::intExplode(',', $flexformSettings['lendingStorageUids']),
+                GeneralUtility::intExplode(',', $flexformSettings['otherLendingStorageUids']),
+            );
             return $this->jsonResponse(
                 json_encode(
-                    $this->lendingService->getVisualAvailabilityRequestsAsEventsOf($year, $month, GeneralUtility::intExplode(',', $flexformSettings['lendingStorageUids'], TRUE))
+                    $this->lendingService->getVisualAvailabilityRequestsAsEventsOf($year, $month, $storageUids)
                 )
             );
         }
