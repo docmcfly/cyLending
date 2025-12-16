@@ -21,6 +21,8 @@
             let currentMonthEvents = {currentMonthEvents}
             let ajaxConnect = '{f:uri.action(pageType:"{settings.ajax.pageType}", controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{ceUid:ceUid}")}'
             let _appointmentSymbol = '{appointmentSymbol}'
+            let _maxPastMonth =  {calendarMaxPastMonth}
+            let _maxFutureMonth =  {calendarMaxFutureMonth}
 
 
         </script>
@@ -32,7 +34,8 @@
 
         new Calendar(selector, language, {
             appointmentSymbol: ' ' + _appointmentSymbol,
-
+            maxPastMonth: _maxPastMonth,
+            maxFutureMonth: _maxFutureMonth,
             updateMonthButtonHook : function (calendar, offset) {
 
                 let _month = Calendar.calculateOtherMonth(selector, offset);

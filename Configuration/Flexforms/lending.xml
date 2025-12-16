@@ -47,8 +47,31 @@
 						</config>
 
 					</settings.usualLendingTermMinutes>
+					<settings.calendarMaxPastMonth>
+						<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.calendarMaxPastMonth</label>
+						<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.calendarMaxPastMonth.description</description>
+						<config>
+							<type>number</type>
+							<default>1</default>
+							<range>
+								<lower>1</lower>
+								<upper>24</upper>
+							</range>
+						</config>
+					</settings.calendarMaxPastMonth>
+					<settings.calendarMaxFutureMonth>
+						<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.calendarMaxFutureMonth</label>
+						<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.calendarMaxFutureMonth.description</description>
+						<config>
+							<type>number</type>
+							<default>12</default>
+							<range>
+								<lower>1</lower>
+								<upper>24</upper>
+							</range>
+						</config>
+					</settings.calendarMaxFutureMonth>
 					<settings.appointmentSymbol>
-
 						<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.appointmentSymbol</label>
 						<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.appointmentSymbol.description</description>
 						<config>
@@ -56,7 +79,6 @@
 							<max>2</max>
 							<default>🕗</default>
 						</config>
-
 					</settings.appointmentSymbol>
 				</el>
 			</ROOT>

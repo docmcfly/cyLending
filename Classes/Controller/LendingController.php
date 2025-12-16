@@ -103,6 +103,8 @@ class LendingController extends AbstractController
         $this->view->assign(LendingController::CONTENT_ELEMENT, value: $ceUid);
 
         $this->view->assign('appointmentSymbol', $flexformSettings['appointmentSymbol']);
+        $this->view->assign('calendarMaxPastMonth', $flexformSettings['calendarMaxPastMonth']);
+        $this->view->assign('calendarMaxFutureMonth', $flexformSettings['calendarMaxFutureMonth']);
 
         $this->view->assign('ceUid', $ceUid);
 
