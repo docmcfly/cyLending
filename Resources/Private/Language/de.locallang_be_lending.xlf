@@ -39,6 +39,22 @@
 				<source>Is displayed on the calendar day if there is an appointment on this day.</source>
 				<target state="tanslated">Wird am Kalendertag angezeigt, wenn ein Termin an diesem Tag vorliegt</target>
 			</trans-unit>
+			<trans-unit id="flexforms_general.settings.calendarMaxPastMonth">
+				<source>Maximum selectable month in the past</source>
+				<target state="tanslated">Maximal einstellbarer Monat in der Vergangenheit</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.calendarMaxPastMonth.description">
+				<source>How many months can you scroll back in the calendar view?</source>
+				<target state="tanslated">Wie viele Monate kann man in der Kalenderansicht in die Vergangenheit blättern?</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.calendarMaxFutureMonth">
+				<source>Maximum selectable month in the future</source>
+				<target state="tanslated">Maximal einstellbarer Monat in der Vergangenheit</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.calendarMaxFutureMonth.description">
+				<source>How many months can you scroll forward in the calendar view?</source>
+				<target state="tanslated">Wie viele Monate kann man in der Kalenderansicht in die Zukunft blättern?</target>
+			</trans-unit>
 			<trans-unit id="flexforms_storageLocations.title">
 				<source>Storage locations</source>
 				<target state="tanslated">Speicherorte</target>
