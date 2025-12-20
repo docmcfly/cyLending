@@ -136,5 +136,45 @@ Here another extension can provide reasons that argue against a loan. For this, 
 public static function reasonsForPreventionAction(array $storageUids, \DateTime $from, \DateTime $until, string $visibility = 'ALL'): array
 ```
 
-***Beispiel***
-In this example the service of the extension `Cylancer\Participants` is queried. The request contains the selected Page UIDs and the time period.
+***Example***
+In this example the service of the extension [`Cylancer\Participants`](https://github.com/docmcfly/participants) is queried. The request contains the selected Page UIDs and the time period.
+
+### For user
+
+#### Calender overview
+
+In the calendar view, all loans and loan requests are displayed. Clicking on a day opens a detail view that shows 
+every loan on the selected date.
+
+When you navigate from month to month, the data are fetched from the server at that point, which can cause slight delays.
+
+Note: On especially busy calendars it may appear that a day is empty—even though it isn’t. Any day that has a symbol 
+next to the date number has either a loan or a loan request.
+
+Technical note: The[calendar](https://github.com/docmcfly/boostrap5EventCalendar) is also available separately as a JavaScript library on GitHub.
+
+![Calender overview](./Documentation/images/fe/calendar.png)
+
+#### Lending form
+
+The leanding form allows the user to submit a loan request.
+
+ ![Lending form](./Documentation/images/fe/lendingForm.png)
+
+#### Overview of loan requests
+
+In this overview the user sees which loan requests they have already submitted.
+
+![Overview of loan requests](./Documentation/images/fe/overviewLoanRequests.png)
+
+#### Overview of approved loans
+
+This overview lists all approved loan requests.
+
+![Overview of approved loans](./Documentation/images/fe/overviewApprovedLoans.png)
+
+#### Overview of approval requests
+
+If you have permission to loan an item, you can use this list to view, approve, or reject all requests.
+
+![Overview of approval requests](./Documentation/images/fe/overviewApprovalRequests.png)
