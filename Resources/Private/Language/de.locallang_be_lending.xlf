@@ -32,7 +32,7 @@
 				<target state="tanslated">Übliche Ausleihdauer (Minuten)</target>
 			</trans-unit>
 			<trans-unit id="flexforms_general.settings.appointmentSymbol">
-				<source>Appointment symbole</source>
+				<source>Appointment symbol</source>
 				<target state="tanslated">Terminsymbol</target>
 			</trans-unit>
 			<trans-unit id="flexforms_general.settings.appointmentSymbol.description">

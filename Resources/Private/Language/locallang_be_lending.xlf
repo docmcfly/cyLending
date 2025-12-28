@@ -25,7 +25,7 @@
 				<source>Usual lending term (minutes)</source>
 			</trans-unit>
 			<trans-unit id="flexforms_general.settings.appointmentSymbol">
-				<source>Appointment symbole</source>
+				<source>Appointment symbol</source>
 			</trans-unit>
 			<trans-unit id="flexforms_general.settings.appointmentSymbol.description">
 				<source>Is displayed on the calendar day if there is an appointment on this day.</source>
