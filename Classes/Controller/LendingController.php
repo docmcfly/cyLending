@@ -64,16 +64,6 @@ class LendingController extends AbstractController
 
     }
 
-
-
-    private function getSetting($key, ?int $uid = null): mixed
-    {
-        if ($uid != null && !isset($this->settings[$key])) {
-            array_merge($this->settings, $this->miscService->getFlexformSettings($uid));
-        }
-        return isset($this->settings[$key]) ? $this->settings[$key] : null;
-    }
-
     private function getAllLendingStorageUids(array $flexformSettings): array
     {
         return array_merge(
@@ -91,7 +81,6 @@ class LendingController extends AbstractController
     public function showAction(): ResponseInterface
     {
         $ceUid = $this->getContentElementUid();
-
         $flexformSettings = $this->getFlexformSettings($ceUid);
         $this->prepareLendingRepository($flexformSettings);
         $this->prepareLendingObjectRepository($flexformSettings);

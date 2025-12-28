@@ -19,7 +19,7 @@
                 monthNames: [<f:translate key='lending.overview.calendar.label.monthNames' />],
             }
             let currentMonthEvents = {currentMonthEvents}
-            let ajaxConnect = '{f:uri.action(pageType:"{settings.ajax.pageType}", controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{ceUid:ceUid}")}'
+            let ajaxConnect = '{f:uri.action(controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{ceUid:ceUid}")}'
             let _appointmentSymbol = '{appointmentSymbol}'
             let _maxPastMonth =  {calendarMaxPastMonth}
             let _maxFutureMonth =  {calendarMaxFutureMonth}

@@ -19,35 +19,8 @@ plugin.tx_cylending {
     settings {
       # default items per page for asynchronous requests
       defaultItemsPerPage = 12
-       
-      # ajax page types
-      ajax{
-         pageType = 778
-      }
    }
 
 }
 
-
-tx_cylending_ajaxConnect = PAGE
-tx_cylending_ajaxConnect {
-   typeNum < plugin.tx_cylending.settings.ajax.pageType
-
-   10 = USER
-   10 {
-      userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-      extensionName = CyLending
-      pluginName = Lending
-      vendorName = cylancer
-  }
- 
-   config {
-      disableAllHeaderCode = 1
-      additionalHeaders = Content-type:application/json
-      xhtml_cleaning = 0
-      admPanel = 0
-      debug = 0
-      no_cache = 1
-   }
-}
  

@@ -12,6 +12,7 @@ use Cylancer\CyLending\Service\SendService;
 use Cylancer\CyLending\Service\ValidationService;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -77,7 +78,10 @@ class AjaxConnectController extends AbstractController
             ]
         );
 
-        return $this->jsonResponse(json_encode($result));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode($result)),
+            200
+        );
     }
 
     /**
@@ -116,7 +120,10 @@ class AjaxConnectController extends AbstractController
 
         $result['toReserve'] = ($result['result'] ? $this->createLending() : $toReserve)->toArray();
 
-        return $this->jsonResponse(json_encode($result));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode($result)),
+            200
+        );
     }
 
     /**
@@ -139,7 +146,10 @@ class AjaxConnectController extends AbstractController
                 "context" => 'cancelLending'
             ]
         );
-        return $this->jsonResponse(json_encode($result));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode($result)),
+            200
+        );
     }
 
     /**
@@ -175,7 +185,10 @@ class AjaxConnectController extends AbstractController
                     ]
                 );
         }
-        return $this->jsonResponse(json_encode($result));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode($result)),
+            200
+        );
     }
 
     /**
@@ -198,7 +211,10 @@ class AjaxConnectController extends AbstractController
                 "context" => 'cancelAvailabilityRequest'
             ]
         );
-        return $this->jsonResponse(json_encode($result));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode($result)),
+            200
+        );
     }
 
 
@@ -232,7 +248,10 @@ class AjaxConnectController extends AbstractController
                     ]
                 );
         }
-        return $this->jsonResponse(json_encode($result));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode($result)),
+            200
+        );
 
     }
 
@@ -247,7 +266,10 @@ class AjaxConnectController extends AbstractController
 
         $result['isVisible'] = !empty($this->getAllCanApproveLendingObject());
 
-        return $this->jsonResponse(json_encode($result));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode($result)),
+            200
+        );
     }
 
 
@@ -272,7 +294,10 @@ class AjaxConnectController extends AbstractController
                 "availabilityRequests" => $this->lendingRepository->findAllFutureAvailabilityRequests($canApproveLendingObjects),
             ]
         );
-        return $this->jsonResponse(json_encode($result));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode($result)),
+            200
+        );
     }
     /**
      * @param int $ceUid
@@ -313,7 +338,10 @@ class AjaxConnectController extends AbstractController
 
         }
 
-        return $this->jsonResponse(json_encode($result));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode($result)),
+            200
+        );
     }
 
 
@@ -350,7 +378,10 @@ class AjaxConnectController extends AbstractController
                     ]
                 );
         }
-        return $this->jsonResponse(json_encode($result));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode($result)),
+            200
+        );
     }
 
 
@@ -370,15 +401,6 @@ class AjaxConnectController extends AbstractController
 
         return $return;
     }
-    private function getAllLendingStorageUids(array $flexformSettings): array
-    {
-        return array_merge(
-            GeneralUtility::intExplode(',', $flexformSettings['lendingStorageUids'], TRUE),
-            GeneralUtility::intExplode(',', $flexformSettings['otherLendingStorageUids'], TRUE)
-        );
-
-    }
-
 
     private function createStandaloneView(): StandaloneView
     {
@@ -416,20 +438,26 @@ class AjaxConnectController extends AbstractController
 
 
         $parsedBody = $this->request->getParsedBody();
-        if (is_array($parsedBody)) {
-            $year = intval($parsedBody['year']);
-            $month = intval($parsedBody['month']);
-            $storageUids = array_merge(
+        if (\is_array($parsedBody)) {
+            $year = \intval($parsedBody['year']);
+            $month = \intval($parsedBody['month']);
+            $storageUids = \array_merge(
                 GeneralUtility::intExplode(',', $flexformSettings['lendingStorageUids']),
                 GeneralUtility::intExplode(',', $flexformSettings['otherLendingStorageUids']),
             );
-            return $this->jsonResponse(
-                json_encode(
-                    $this->lendingService->getVisualAvailabilityRequestsAsEventsOf($year, $month, $storageUids)
-                )
+            throw new PropagateResponseException(
+                $this->jsonResponse(
+                    json_encode(
+                        $this->lendingService->getVisualAvailabilityRequestsAsEventsOf($year, $month, $storageUids)
+                    )
+                ),
+                200
             );
         }
-        return $this->jsonResponse(json_encode([]));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode([])),
+            200
+        );
     }
 
     /**
@@ -462,14 +490,20 @@ class AjaxConnectController extends AbstractController
             $querySettings->setStoragePageIds($storageUids);
             $this->lendingRepository->setDefaultQuerySettings($querySettings);
 
-            return $this->jsonResponse(
-                json_encode([
-                    'result' => $obj->getQuantity() - $this->lendingService->calculateMaximum($this->lendingRepository->getOverlapsAvailabilityRequests($tmp)),
-                    'settings' => $flexformSettings
-                ])
+            throw new PropagateResponseException(
+                $this->jsonResponse(
+                    json_encode([
+                        'result' => $obj->getQuantity() - $this->lendingService->calculateMaximum($this->lendingRepository->getOverlapsAvailabilityRequests($tmp)),
+                        'settings' => $flexformSettings
+                    ])
+                ),
+                200
             );
         }
-        return $this->jsonResponse(json_encode([]));
+        throw new PropagateResponseException(
+            $this->jsonResponse(json_encode([])),
+            200
+        );
     }
 
 

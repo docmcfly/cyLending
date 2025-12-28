@@ -7,6 +7,8 @@ A warning is issued for loans that overlap in time. External appointment sources
 
 ## Change log
 
+* 5.2.0 :: UPD : Remove the oldschool page type handling for ajax connect. 
+* 5.1.2 :: FIX : Update calendar.js
 * 5.1.1 :: FIX : Add missing defaults.
 * 5.1.0 :: UPD : You can set how many months you can scroll forward or backward.
 * 5.0.3 :: FIX : Display the missing "other" lendings.

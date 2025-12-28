@@ -28,7 +28,7 @@
 					data-bs-toggle="tab" data-bs-target="#nav-lending" type="button" role="tab"
 					aria-controls="nav-lending"
 					aria-selected="{f:if(condition:'{tab} === \'lending\' ', then: 'true', else:'false')}"
-					data-uri="{f:uri.action( pageType:'{settings.ajax.pageType}', controller:'AjaxConnect', action:'getReserveForm', absolute='true', arguments:{ceUid:ceUid})}"
+					data-uri="{f:uri.action( controller:'AjaxConnect', action:'getReserveForm', absolute='true', arguments:{ceUid:ceUid})}"
 					data-refresh="single">
 					<f:translate key="lending.overview.tab.lending" />
 				</button>
@@ -37,22 +37,22 @@
 					data-bs-target="#nav-myAvailabilityRequests" type="button" role="tab"
 					aria-controls="nav-myAvailabilityRequests"
 					aria-selected="{f:if(condition:'{tab} === \'myAvailabilityRequests\' ', then: 'true', else:'false')}"
-					data-uri="{f:uri.action( pageType:'{settings.ajax.pageType}', controller:'AjaxConnect', action:'getMyAvailabilityRequests', absolute='true', arguments:{ceUid:ceUid})}">
+					data-uri="{f:uri.action( controller:'AjaxConnect', action:'getMyAvailabilityRequests', absolute='true', arguments:{ceUid:ceUid})}">
 					<f:translate key="lending.overview.tab.myAvailabilityRequests" />
 				</button>
 				<button class="nav-link {f:if(condition:'{tab} === \'myLendings\' ', then: 'active')}"
 					id="nav-myLendings-tab" data-bs-toggle="tab" data-bs-target="#nav-myLendings" type="button"
 					role="tab" aria-controls="nav-myLendings"
 					aria-selected="{f:if(condition:'{tab} === \'myLendings\' ', then: 'true', else:'false')}"
-					data-uri="{f:uri.action( pageType:'{settings.ajax.pageType}', controller:'AjaxConnect', action:'getMyLendings', absolute='true', arguments:{ceUid:ceUid})}">
+					data-uri="{f:uri.action( controller:'AjaxConnect', action:'getMyLendings', absolute='true', arguments:{ceUid:ceUid})}">
 					<f:translate key="lending.overview.tab.myLendings" />
 				</button>
 				<button class="nav-link d-none {f:if(condition:'{tab} === \'approval\' ', then: 'active')}"
 					id="nav-approval-tab" data-bs-toggle="tab" data-bs-target="#nav-approval" type="button" role="tab"
 					aria-controls="nav-approval"
 					aria-selected="{f:if(condition:'{tab} === \'approval\' ', then: 'true', else:'false')}"
-					data-uri="{f:uri.action( pageType:'{settings.ajax.pageType}', controller:'AjaxConnect', action:'getAvailabilityRequests', absolute='true', arguments:{ceUid:ceUid})}"
-					data-visible-uri="{f:uri.action( pageType:'{settings.ajax.pageType}', controller:'AjaxConnect', action:'isAvailabilityRequestsVisible', absolute='true', arguments:{ceUid:ceUid})}"
+					data-uri="{f:uri.action( controller:'AjaxConnect', action:'getAvailabilityRequests', absolute='true', arguments:{ceUid:ceUid})}"
+					data-visible-uri="{f:uri.action( controller:'AjaxConnect', action:'isAvailabilityRequestsVisible', absolute='true', arguments:{ceUid:ceUid})}"
 					data-form-update="updateApprovalButtons">
 					<f:translate key="lending.overview.tab.approval" />
 				</button>
@@ -66,7 +66,7 @@
 			<f:format.raw>
 				<script defer="defer">
 					{untilOffset}
-					let getMaxQuantityUrl = "{f:uri.action( pageType:'{settings.ajax.pageType}', controller:'AjaxConnect', action:'getMaxQuantity', absolute='true', arguments:{ceUid:ceUid })}"
+					let getMaxQuantityUrl = "{f:uri.action( controller:'AjaxConnect', action:'getMaxQuantity', absolute='true', arguments:{ceUid:ceUid })}"
 				</script>
 			</f:format.raw>
 
