@@ -19,7 +19,7 @@ class Calendar {
         // font color of the weekend days
         weekendColor: 'var(--bs-primary)',
 
-        // is the 
+        // is the appointment symbol
         appointmentSymbol: ' 🕗',
 
         // how many month you can switch in the past. (it exists no limit if the value less as one)
@@ -272,6 +272,7 @@ class Calendar {
             let event = events[i]
 
             let start = this.parseMoment(event.start)
+            event.openEnd = this.hasDateFormat(event.end)
             let end = this.parseMoment(event.end)
 
             if (start === null || end === null) {
@@ -579,8 +580,9 @@ class Calendar {
                     } else {
                         add += 'background-color:' + backgroundColor + ';'
                     }
-                    add += '" ><div class="bg-white mb-1 mx-0 p-2">' + event.title + '</div></div>'
-                    add += '<div style="hyphens: auto;" class="small overflowHidden p-2 bg-white ">'
+                    add += '" ><div class="bg-white m-0 p-2">' + event.title + '</div></div>'
+
+                    let time = ''
                     let startDate = this.formatDate(event.start);
                     let endDate = this.formatDate(event.end);
                     if (startDate !== currentDay || endDate !== currentDay
@@ -588,40 +590,58 @@ class Calendar {
                         || event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
 
                         if (startDate !== currentDay || (event.start.getHours() === 0 && event.start.getMinutes() === 0)) {
-                            add += event.start.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
+                            time += event.start.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
                         }
                         if (event.start.getHours() !== 0 || event.start.getMinutes() !== 0) {
-                            add += event.start.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
+                            time += event.start.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
                         }
-                        add += "&nbsp;-&nbsp;"
-                        if (endDate !== currentDay) {
-                            add += event.end.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
-                        }
-                        if (event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
-                            add += event.end.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
+                        if (!event.openEnd) {
+                            time += "&nbsp;-&nbsp;"
+                            if (endDate !== currentDay) {
+                                time += event.end.toLocaleDateString(this.language, this.properties.formatter.dateOptions) + ' '
+                            }
+                            if (event.end.getHours() !== 0 || event.end.getMinutes() !== 0) {
+                                time += event.end.toLocaleTimeString(this.language, this.properties.formatter.timeOptions)
+                            }
                         }
                     }
-                    add += '<hr>'
+
+                    let description = ''
                     if (this.hasText(event.responsible)) {
-                        add += event.responsible
+                        description += event.responsible
                         if (!event.responsible.endsWith('</p>')) {
-                            add += '<br>'
+                            description += '<br>'
                         }
                     }
                     if (this.hasText(event.description)) {
-                        add += event.description
+                        description += event.description
                         if (!event.description.endsWith('</p>')) {
-                            add += '<br>'
+                            description += '<br>'
                         }
                     }
-                    add += '</div>' + "\n"
-                    add += '</div>' + "\n"
+
+                    if (this.hasText(time) || this.hasText(description)) {
+                        add += '<div style="hyphens: auto;" class="small overflowHidden mt-1 p-2 bg-white ">'
+                        if (this.hasText(time)) {
+                            add += time
+                        }
+                        if (this.hasText(time) && this.hasText(description)) {
+                            add += '<hr>'
+                        }
+                        if (this.hasText(description)) {
+                            add += description
+                        }
+                        add += '</div>' + "\n"
+                    }
+
                 }
+                add += '</div>' + "\n"
             }
             details.append(add)
-            $(".details").get(0).scrollIntoView({ block: 'center', behavior: 'smooth' });
         }
+        $(".details").get(0).scrollIntoView({ block: 'center', behavior: 'smooth' });
     }
+
 
     renderEvents() {
         let iter = this.events.entries()
@@ -651,14 +671,24 @@ class Calendar {
             return;
         }
 
-        if (start.getTime() > end.getTime()) {
-            return;
+        if (event.openEnd) {
+            // opened-end event: same day - time doesn't matter
+            if (start.getFullYear() !== end.getFullYear() || start.getMonth() !== end.getMonth() || start.getDate() !== end.getDate()) {
+                return;
+            }
+        } else {
+            if (start.getTime() > end.getTime()) {
+                return;
+            }
         }
-        if (start.getTime() > this.monthEndDate.getTime() || end.getTime() < this.monthStartDate.getTime()) {
+        // the event does not overlap the current month
+        if( this.toDate(end).getTime() < this.toDate(this.monthStartDate).getTime() || this.toDate(start).getTime() > this.toDate(this.monthEndDate).getTime()) {
             return;
         }
 
-        // end time is specified and it is 0:00 
+        if(end.getFullYear() < this.monthStartDate.getFullYear())
+
+        // end time is specified and it is 0:00
         if (event.end.length > 10 && end.getHours() === 0 && end.getMinutes() === 0) {
             end.setDate(end.getDate() - 1) // display the event only to the day before.
         }
@@ -737,7 +767,3 @@ class Calendar {
     }
 
 }
-
-
-
-
