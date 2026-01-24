@@ -65,8 +65,6 @@ var updateMaxQty = function (select) {
                 .done(function (result) {
                     console.log(result)
                     updateMaxQtyValue(result.result)
-
-
                 })
         }
     }
@@ -87,7 +85,7 @@ var updateHighPriority = function (select) {
 
     select.find("option").each(function () {
         if ($(this).is(':selected')) {
-            $(this).attr('data-highprioritypossible') === '1' ? highPriorityAllowed = true : highPriorityAllowed = false
+            highPriorityAllowed =  $(this).attr('data-highprioritypossible') === '1'
         }
     })
     let hp = $('#highPriority')
@@ -95,8 +93,24 @@ var updateHighPriority = function (select) {
     if (!highPriorityAllowed) {
         hp.prop('checked', false)
     }
-
 }
+
+var updateSubmitButton = function (select) {
+    let automaticReservation = false;
+    select.find("option").each(function () {
+        if ($(this).is(':selected')) {
+            automaticReservation =  $(this).attr('data-automaticreservation') === '1'
+        }
+    })
+    let form = select.closest('form')
+    let submit = form.find('input[type=submit]')
+    if (automaticReservation) {
+        submit.val(submit.attr('data-textautomaticreservation'))
+    } else {
+        submit.val(submit.attr('data-textrequest'))
+    }
+}
+
 
 var updateApproval = function (e) {
     $.ajax({
@@ -167,11 +181,13 @@ var updateButtons = function (form) {
                 populateForm(_form, response.toReserve)
                 updateMaxQty($('#object'))
                 updateHighPriority($('#object'))
+                updateSubmitButton($('#object'))
             })
         })
         $('#object').on('change', function () {
             updateMaxQty($(this))
             updateHighPriority($(this))
+            updateSubmitButton($(this))
         }
         )
         $('#from').change(
@@ -186,13 +202,13 @@ var updateButtons = function (form) {
                     updateMaxQty($('#object'))
                 }
             }
-
         )
         $('#until').change(
             function () {
                 updateMaxQty($('#object'))
             }
         )
+        updateSubmitButton($('#object'))
     }
 }
 

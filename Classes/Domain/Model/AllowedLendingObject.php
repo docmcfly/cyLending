@@ -74,4 +74,9 @@ class AllowedLendingObject
     {
         return $this->lendingObject;
     }
+    public function getAutomaticReservation(): int
+    {
+        return $this->lendingObject->getApproverGroup() == null ? 1 : 0;
+    }
+
 }

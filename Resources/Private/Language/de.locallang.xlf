@@ -100,9 +100,13 @@
 				<source>Borrower</source>
 				<target state="tanslated">Ausleiher:in</target>
 			</trans-unit>
-			<trans-unit id="lending.overview.availabilityRequest.form.submit">
+			<trans-unit id="lending.overview.availabilityRequest.form.submit.request">
 				<source>Query availability</source>
 				<target state="tanslated">Verfügbarkeit abfragen</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.availabilityRequest.form.submit.automaticReservation">
+				<source>Automatically reserve</source>
+				<target state="tanslated">Automatisch reservieren</target>
 			</trans-unit>
 			<trans-unit id="lending.overview.availabilityRequest.form.label.reasonsForPreventionFound">
 				<source>Reasons for prevention</source>
