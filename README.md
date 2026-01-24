@@ -7,6 +7,7 @@ A warning is issued for loans that overlap in time. External appointment sources
 
 ## Change log
 
+* 5.2.2 :: UPD : The reservation submit button changes the text in the case of automatic reservation objects.
 * 5.2.1 :: UPD : Update of the calendar library.
 * 5.2.0 :: UPD : Remove the oldschool page type handling for ajax connect.
 * 5.1.2 :: FIX : Update calendar.js
