@@ -90,8 +90,9 @@ class LendingController extends AbstractController
 
         // COMMON
         $this->view->assign(LendingController::CONTENT_ELEMENT, value: $ceUid);
-
-        $this->view->assign('appointmentSymbol', $flexformSettings['appointmentSymbol'] ?? ' 🕗');
+        $this->view->assign('withAppointmentSymbol', $flexformSettings['appointmentSymbol'] ?? '🕗');
+        $this->view->assign('withAppointmentColor', $flexformSettings['withAppointmentColor'] ?? '#ff98b4ff');
+        $this->view->assign('displayAppointmentCounter', $flexformSettings['displayAppointmentCounter'] ?? true);
         $this->view->assign('calendarMaxPastMonth', $flexformSettings['calendarMaxPastMonth'] ?? 1);
         $this->view->assign('calendarMaxFutureMonth', $flexformSettings['calendarMaxFutureMonth'] ?? 12);
 

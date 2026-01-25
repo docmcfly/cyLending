@@ -75,11 +75,28 @@
 						<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.appointmentSymbol</label>
 						<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.appointmentSymbol.description</description>
 						<config>
+     						<default>🕗</default>
 							<type>input</type>
 							<max>2</max>
-							<default>🕗</default>
 						</config>
 					</settings.appointmentSymbol>
+					<settings.withAppointmentColor>
+						<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.withAppointmentColor</label>
+						<description>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.withAppointmentColor.description</description>
+						<config>
+							<type>color</type>
+							<nullable>true</nullable>
+							<default>#d8937e</default>
+						</config>
+					</settings.withAppointmentColor>
+					<settings.displayAppointmentCounter>
+						<label>LLL:EXT:cy_lending/Resources/Private/Language/locallang_be_lending.xlf:flexforms_general.settings.displayAppointmentCounter</label>
+						<config>
+							<type>check</type>
+							<renderType>checkboxToggle</renderType>
+     						<default>1</default>
+						</config>
+					</settings.displayAppointmentCounter>
 				</el>
 			</ROOT>
 		</sDEF>

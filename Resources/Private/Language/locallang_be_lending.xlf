@@ -10,7 +10,7 @@
 				<source>Shows items already borrowed and you can submit a loan request.</source>
 			</trans-unit>
 			<trans-unit id="flexforms_general.title">
-				<source>Common</source>
+				<source>Settings</source>
 			</trans-unit>
 			<trans-unit id="flexforms_general.settings.approverGroup">
 				<source>Approver group</source>
@@ -29,6 +29,15 @@
 			</trans-unit>
 			<trans-unit id="flexforms_general.settings.appointmentSymbol.description">
 				<source>Is displayed on the calendar day if there is an appointment on this day.</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.withAppointmentColor">
+				<source>Appointment color</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.withAppointmentColor.description">
+				<source>Calendar day highlighted with this color when an appointment is scheduled on that day.</source>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.displayAppointmentCounter">
+				<source>Display the appointment counter</source>
 			</trans-unit>
 			<trans-unit id="flexforms_general.settings.calendarMaxPastMonth">
 				<source>Maximum selectable month in the past</source>

@@ -7,6 +7,9 @@ A warning is issued for loans that overlap in time. External appointment sources
 
 ## Change log
 
+* 5.3.2 :: UPD : Update of the calendar library.
+* 5.3.1 :: UPD : Rename "common" to "settings".
+* 5.3.0 :: UPD : You can set the 'date has an appointment' color and choose whether to display the appointment count.
 * 5.2.2 :: UPD : The reservation submit button changes the text in the case of automatic reservation objects.
 * 5.2.1 :: UPD : Update of the calendar library.
 * 5.2.0 :: UPD : Remove the oldschool page type handling for ajax connect.
@@ -61,7 +64,6 @@ A warning is issued for loans that overlap in time. External appointment sources
 * 0.9.5 :: FIX : Object descriptions (translations)
 * 0.9.4 :: ADD : Adds a limit of the next and the previous month button.
 * 0.9.3 :: Initial beta version
-
 
 ## Documentation
 
