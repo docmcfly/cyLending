@@ -20,7 +20,9 @@
             }
             let currentMonthEvents = {currentMonthEvents}
             let ajaxConnect = '{f:uri.action(controller:"AjaxConnect",absolute:1, action:"getEvents",  arguments="{ceUid:ceUid}")}'
-            let _appointmentSymbol = '{appointmentSymbol}'
+            let _withAppointmentSymbol = '{withAppointmentSymbol}'
+            let _withAppointmentColor = '{withAppointmentColor}'
+            let _displayAppointmentCounter = <f:if condition="{displayAppointmentCounter}"><f:then>true</f:then><f:else>false</f:else></f:if>
             let _maxPastMonth =  {calendarMaxPastMonth}
             let _maxFutureMonth =  {calendarMaxFutureMonth}
 
@@ -33,9 +35,12 @@
         let selector = '#calendar'
 
         new Calendar(selector, language, {
-            appointmentSymbol: ' ' + _appointmentSymbol,
+            withAppointmentSymbol: _withAppointmentSymbol,
+            withAppointmentColor: _withAppointmentColor,
+            displayAppointmentCounter: _displayAppointmentCounter,
             maxPastMonth: _maxPastMonth,
             maxFutureMonth: _maxFutureMonth,
+            dayBoxHeight:'9.2em',
             updateMonthButtonHook : function (calendar, offset) {
 
                 let _month = Calendar.calculateOtherMonth(selector, offset);

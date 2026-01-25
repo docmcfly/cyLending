@@ -3,15 +3,15 @@ class Calendar {
 
     properties = {
 
-        maxEventBoxes: 7,
+        maxEventBoxes: 20,
         // background color from today
         todayBgColor: '#ded9a1',
 
         // special color for weekend day out of focus
         primaryLightColor: '#d39c8c',
 
-        // is the color for not important data. By example the other day from the next or the prevoious month.  
-        outOfFocusColor: '#C0C0C0',
+        // is the color for not important data. By example the other day from the next or the prevoious month.
+        outOfFocusColor: '#858585;',
 
         // day box height
         dayBoxHeight: '8.2em',
@@ -20,7 +20,13 @@ class Calendar {
         weekendColor: 'var(--bs-primary)',
 
         // is the appointment symbol
-        appointmentSymbol: ' 🕗',
+        withAppointmentSymbol: '🕗',
+
+        // is the appointment symbol
+        withAppointmentColor: '#f0ad99',
+
+        // displays the appointment counter after the appointment symbol if this flag is true
+        displayAppointmentCounter: true,
 
         // how many month you can switch in the past. (it exists no limit if the value less as one)
         maxPastMonth: 1,
@@ -100,8 +106,24 @@ class Calendar {
     .weekday-5.notCurrentMonth .dateNumber, .weekday-6.notCurrentMonth .dateNumber{\
     	color: var(--primary-light);\
     }\
-    .withAppointment::after{\
-        content:"'+ this.properties.appointmentSymbol + '"; \
+    .dateNumberBoxContent {\
+        background-color:#f5f5f5;\
+    }\
+    .dateNumber {\
+        font-weight: bold;\
+        background-color: #f5f5f5;\
+    }\
+    .dateNumberBox {\
+        background-color: black;\
+    }\
+    .dateNumberBox:has(.withAppointment) {\
+        background-color:  '+ this.properties.withAppointmentColor + ';\
+    }\
+    .dateNumberBox:not(:has(.withAppointment)) {\
+        background-color:  #f5f5f5;\
+    }\
+    .withAppointment::before{\
+        content:"'+ this.properties.withAppointmentSymbol + '"; \
     }\
     .content {\
         color: var(--bs-black);\
@@ -448,7 +470,10 @@ class Calendar {
                             grid += 'notCurrentMonth '
                         }
                         grid += 'dateBox weekday-' + j + ' ">'
-                        grid += '<span class="dateNumber  px-2">' + day.getDate() + '</span>'
+                        grid += '<div class="dateNumberBox p-1"><div class="dateNumberBoxContent">'
+                        grid += '  <span class="dateNumber  px-2">' + day.getDate() + '</span>'
+                        grid += '  <span class="dateAppointmentInfo float-end pe-2 d-none d-lg-inline"></span>'
+                        grid += '</div></div>'
                         day.setDate(day.getDate() + 1)
                         for (let k = 0; k < this.properties.maxEventBoxes; k++) {
                             grid += '<div  data-eventbox="' + k + '"><div class="content fs-6 overflowHidden p-0 px-1 m-1 me-2" >&nbsp;</div></div>'
@@ -682,16 +707,16 @@ class Calendar {
             }
         }
         // the event does not overlap the current month
-        if( this.toDate(end).getTime() < this.toDate(this.monthStartDate).getTime() || this.toDate(start).getTime() > this.toDate(this.monthEndDate).getTime()) {
+        if (this.toDate(end).getTime() < this.toDate(this.monthStartDate).getTime() || this.toDate(start).getTime() > this.toDate(this.monthEndDate).getTime()) {
             return;
         }
 
-        if(end.getFullYear() < this.monthStartDate.getFullYear())
+        if (end.getFullYear() < this.monthStartDate.getFullYear())
 
-        // end time is specified and it is 0:00
-        if (event.end.length > 10 && end.getHours() === 0 && end.getMinutes() === 0) {
-            end.setDate(end.getDate() - 1) // display the event only to the day before.
-        }
+            // end time is specified and it is 0:00
+            if (event.end.length > 10 && end.getHours() === 0 && end.getMinutes() === 0) {
+                end.setDate(end.getDate() - 1) // display the event only to the day before.
+            }
 
 
         let dc = 1;
@@ -732,8 +757,10 @@ class Calendar {
         for (let i = 0; i < dc; i++) {
             let dateBox = $("[data-date='" + this.formatDate(tmp) + "']")
             let eventBox = dateBox.find("[data-eventbox='" + row + "']")
-            let dateNumber = dateBox.find('span.dateNumber')
-            dateNumber.addClass("withAppointment")
+            let dateAppointmentInfo = dateBox.find('span.dateAppointmentInfo')
+            let dateNumberBox = dateBox.find('div.dateNumberBox')
+
+            dateAppointmentInfo.addClass("withAppointment")
             if (i == 0) {
                 let titleBox = eventBox.find('div.content')
                 titleBox.addClass("bg-white")
@@ -748,6 +775,19 @@ class Calendar {
                 eventBox.css("background-image", this.getStripedBackground(event.backgroundColor))
             } else {
                 eventBox.css("background-color", event.backgroundColor)
+            }
+            if (this.properties.displayAppointmentCounter) {
+                let count = dateBox.find("div[data-eventbox][data-empty='false']").length
+                if (count == 0) {
+                    dateNumberBox.attr('title', '')
+                    dateAppointmentInfo.text('')
+                } else {
+                    dateNumberBox.attr('title', this.properties.withAppointmentSymbol + ' [' + count + ']')
+                    dateAppointmentInfo.text(' [' + count + ']')
+                }
+            } else {
+                dateAppointmentInfo.text('')
+                dateNumberBox.attr('title', '')
             }
             // eventBox.css("color", this.idealTextColor(event.backgroundColor, event.striped))
             tmp.setDate(tmp.getDate() + 1)

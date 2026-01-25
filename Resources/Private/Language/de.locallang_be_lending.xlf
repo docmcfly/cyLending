@@ -12,8 +12,8 @@
 				<target state="tanslated">Zeigt bereits ausgeliehene Objekte und man kann einen Ausleihantrag stellen.</target>
 			</trans-unit>
 			<trans-unit id="flexforms_general.title">
-				<source>Common</source>
-				<target state="tanslated">Allgemein</target>
+				<source>Settings</source>
+				<target state="tanslated">Einstellungen</target>
 			</trans-unit>
 			<trans-unit id="flexforms_general.settings.approverGroup">
 				<source>Approver group</source>
@@ -38,6 +38,18 @@
 			<trans-unit id="flexforms_general.settings.appointmentSymbol.description">
 				<source>Is displayed on the calendar day if there is an appointment on this day.</source>
 				<target state="tanslated">Wird am Kalendertag angezeigt, wenn ein Termin an diesem Tag vorliegt</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.withAppointmentColor">
+				<source>Appointment color</source>
+				<target state="tanslated">Terminfarbe</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.withAppointmentColor.description">
+				<source>Calendar day highlighted with this color when an appointment is scheduled on that day.</source>
+				<target state="tanslated">Kalendertag mit dieser Farbe umrahmt, wenn ein Termin an diesem Tag vorliegt</target>
+			</trans-unit>
+			<trans-unit id="flexforms_general.settings.displayAppointmentCounter">
+				<source>Display the appointment counter</source>
+				<target state="tanslated">Anzeigen der Terminanzahl</target>
 			</trans-unit>
 			<trans-unit id="flexforms_general.settings.calendarMaxPastMonth">
 				<source>Maximum selectable month in the past</source>
