@@ -7,6 +7,7 @@ A warning is issued for loans that overlap in time. External appointment sources
 
 ## Change log
 
+* 5.3.3 :: UPD : Update of the calendar library.
 * 5.3.2 :: UPD : Update of the calendar library.
 * 5.3.1 :: UPD : Rename "common" to "settings".
 * 5.3.0 :: UPD : You can set the 'date has an appointment' color and choose whether to display the appointment count.

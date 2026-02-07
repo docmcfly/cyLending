@@ -34,6 +34,9 @@ class Calendar {
         // how many month you can switch in the future. (it exists no limit if the value less as one)
         maxFutureMonth: 12,
 
+        // is the appointment symbol if the event is canceled.
+        canceledAppointmentSymbol: '⛔',
+
         monthSelectorsReference: function (calendar) { return calendar.today },
 
         // default date formatter
@@ -57,6 +60,7 @@ class Calendar {
                 btnToday: 'Heute',
                 appointmentsOfTheDay: 'Termine des Tages',
                 monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+                canceledAdditionalNote: 'Abgesagt',
             },
             en: {
                 daysOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
@@ -66,6 +70,7 @@ class Calendar {
                 btnToday: 'Today',
                 appointmentsOfTheDay: 'Appointments of the day',
                 monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                canceledAdditionalNote: 'Canceled',
             }
         },
     }
@@ -96,6 +101,9 @@ class Calendar {
         overflow: hidden;\
     	margin: 0;\
     	margin-bottom: 1px;\
+    }\
+    [data-eventbox] div.canceled, div.container.details div.canceled {\
+        text-decoration:line-through; \
     }\
     .today{\
     	background-color: '+ this.properties.todayBgColor + ';\
@@ -470,13 +478,13 @@ class Calendar {
                             grid += 'notCurrentMonth '
                         }
                         grid += 'dateBox weekday-' + j + ' ">'
-                        grid += '<div class="dateNumberBox p-1"><div class="dateNumberBoxContent">'
+                        grid += '<div class="dateNumberBox py-1"><div class="dateNumberBoxContent">'
                         grid += '  <span class="dateNumber  px-2">' + day.getDate() + '</span>'
                         grid += '  <span class="dateAppointmentInfo float-end pe-2 d-none d-lg-inline"></span>'
                         grid += '</div></div>'
                         day.setDate(day.getDate() + 1)
                         for (let k = 0; k < this.properties.maxEventBoxes; k++) {
-                            grid += '<div  data-eventbox="' + k + '"><div class="content fs-6 overflowHidden p-0 px-1 m-1 me-2" >&nbsp;</div></div>'
+                            grid += '<div  data-eventbox="' + k + '"><div class="content fs-6 overflowHidden p-0 px-1 mx-1" >&nbsp;</div></div>'
                         }
                         grid += '</div></div>' + "\n"
                     }
@@ -605,7 +613,15 @@ class Calendar {
                     } else {
                         add += 'background-color:' + backgroundColor + ';'
                     }
-                    add += '" ><div class="bg-white m-0 p-2">' + event.title + '</div></div>'
+                    add += '" ><div class="bg-white m-0 p-2'
+                    add += '">'
+                    if (event.canceled) {
+                        add += '<div class="canceled">' + event.title + '</div>'
+                        add += '<div>' + this.properties.canceledAppointmentSymbol + ' ' + this.t().canceledAdditionalNote + '</div>'
+                    } else {
+                        add += event.title
+                    }
+                    add += '</div></div>'
 
                     let time = ''
                     let startDate = this.formatDate(event.start);
@@ -686,7 +702,7 @@ class Calendar {
             eb.attr('data-empty', 'true')
             eb.attr('data-idx', '')
             eb.attr('title', '')
-            eb.html('<div class="content fs-6 overflowHidden p-0 px-1 m-1 me-2" >&nbsp;</div>')
+            eb.html('<div class="content fs-6 overflowHidden p-0 px-1 mx-1" >&nbsp;</div>')
         })
 
         let start = event.start
@@ -764,11 +780,23 @@ class Calendar {
             if (i == 0) {
                 let titleBox = eventBox.find('div.content')
                 titleBox.addClass("bg-white")
-                titleBox.text(this.createTooltip(event))
+                if (event.canceled) {
+                    let canceledText = this.properties.canceledAppointmentSymbol + '&nbsp;'
+                    canceledText += '<span class="canceled">'+event.title+'</span>'
+                    titleBox.html(canceledText)
+                } else {
+                    titleBox.text(event.title)
+                }
             }
             eventBox.attr('data-empty', 'false')
             eventBox.attr('data-idx', event.idx)
-            eventBox.attr('title', this.createTooltip(event))
+            if (event.canceled) {
+                eventBox.attr('title', this.properties.canceledAppointmentSymbol + ' ' + this.t().canceledAdditionalNote+ ': ' +this.createTooltip(event))
+            } else {
+                eventBox.attr('title', this.createTooltip(event))
+
+            }
+
             if (event.cssClass) {
                 eventBox.addClass(event.cssClass)
             } else if (event.striped === true) {
