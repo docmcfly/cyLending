@@ -19,11 +19,11 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'service@cylancer.net',
     'state' => 'stable',
     'clearCacheOnLoad' => 1,
-    'version' => '5.3.3',
+    'version' => '5.4.0',
     'constraints' => [
         'depends' => [
             'typo3' => '13.4.0-13.4.99',
-            'bootstrap_package' => '15.0.0-15.0.99',
+            'bootstrap_package' => '15.0.0-16.0.99',
         ],
         'conflicts' => [
         ],
