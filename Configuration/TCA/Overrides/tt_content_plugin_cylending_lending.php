@@ -7,7 +7,7 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2025 C. Gogolin <service@cylancer.net>
+ * (c) 2026 C. Gogolin <service@cylancer.net>
  *
  */
 
@@ -19,7 +19,7 @@ defined('TYPO3') or die();
 
 $extension = 'cyLending';
 $extensionDir = 'cy_lending';
- $plugin = 'lending';
+$plugin = 'lending';
 
 
 $signatur = strtolower("{$extension}_{$plugin}");

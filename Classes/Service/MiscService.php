@@ -12,13 +12,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2025 C. Gogolin <service@cylancer.net>
+ * (c) 2026 C. Gogolin <service@cylancer.net>
  *
  */
 
 class MiscService implements SingletonInterface
 {
-
 
     public function __construct(
         private readonly ContentElementRepository $contentElementRepository
@@ -27,19 +26,15 @@ class MiscService implements SingletonInterface
 
     public function getFlexformSettings(int $uid)
     {
-
         /** @var \Cylancer\CyLending\Domain\Model\ContentElement $ce */
         $ce = $this->contentElementRepository->findByUid($uid);
-        if ($ce->getListType() != 'cylending_lending') {
-            throw new \Exception($ce->getListType() . ' is not supported!');
-        }
         $return = [];
         foreach (GeneralUtility::xml2array($ce->getPiFlexform())['data'] as $cat) {
             foreach ($cat['lDEF'] as $key => $value) {
-                $return[substr($key, 9)] = $value ['vDEF'];
+                $return[substr($key, 9)] = $value['vDEF'];
             }
         }
-         return $return;
+        return $return;
     }
 
 }
