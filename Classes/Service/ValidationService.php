@@ -1,7 +1,6 @@
 <?php
 namespace Cylancer\CyLending\Service;
 
-use Cylancer\CyLending\Controller\LendingController;
 use Cylancer\CyLending\Domain\Model\Lending;
 use Cylancer\CyLending\Domain\Model\LendingObject;
 use Cylancer\CyLending\Domain\Model\ValidationResults;

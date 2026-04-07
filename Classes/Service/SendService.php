@@ -1,13 +1,9 @@
 <?php
 namespace Cylancer\CyLending\Service;
 
-use Cylancer\CyLending\Controller\LendingController;
 use Cylancer\CyLending\Domain\Model\Lending;
-use Cylancer\CyLending\Domain\Model\LendingObject;
-use Cylancer\CyLending\Domain\Model\ValidationResults;
 use Cylancer\CyLending\Domain\Repository\FrontendUserGroupRepository;
 use Cylancer\CyLending\Domain\Repository\FrontendUserRepository;
-use Cylancer\CyLending\Domain\Repository\LendingRepository;
 use Cylancer\CyLending\Domain\Model\FrontendUser;
 use Cylancer\CyLending\Domain\Model\FrontendUserGroup;
 
@@ -27,7 +23,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2025 C. Gogolin <service@cylancer.net>
+ * (c) 2026 C. Gogolin <service@cylancer.net>
  *
  */
 

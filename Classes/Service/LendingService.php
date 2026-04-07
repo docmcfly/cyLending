@@ -167,11 +167,7 @@ class LendingService implements SingletonInterface
         ]);
 
     }
-
-
-
-
-    public function reserve(
+public function reserve(
         Lending $toReserve,
         array $confirmedWarnings = [],
         int $ceUid,
@@ -408,7 +404,6 @@ class LendingService implements SingletonInterface
 
         return $validationResults;
     }
-
 
     /**
      * @param \Cylancer\CyLending\Domain\Model\Lending $availabilityRequest
