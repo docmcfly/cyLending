@@ -217,7 +217,11 @@ var updateCalendar = function (e) {
 }
 
 $('button.nav-link[data-uri]').on("click", function () {
-    let button = $(this)
+    let button = $(this) 
+    setTabContent(button)
+})
+
+function setTabContent(button) {
     let refreshMode = button.attr('data-refresh')
     if (refreshMode !== 'off') {
         if (refreshMode == 'single') {
@@ -236,7 +240,7 @@ $('button.nav-link[data-uri]').on("click", function () {
             updateButtons(form);
         })
     }
-})
+}
 
 $('button.nav-link[data-visible-uri]').each(function (e) {
     let button = $(this)
@@ -318,3 +322,7 @@ function populateForm($form, data) {
 
 }
 
+$('button.nav-link[data-uri]').each(function (b) { 
+    let button = $(this) 
+    setTabContent(button)
+})
