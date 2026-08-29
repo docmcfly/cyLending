@@ -82,7 +82,7 @@ class Lending extends AbstractEntity
 		return \DateTimeImmutable::createFromFormat(LendingRepository::SQL_DATE_FORMAT, $this->until);
 	}
 
-	 public function setUntil(string $until): self
+	public function setUntil(string $until): self
 	{
 		$this->until = $until;
 		return $this;
@@ -104,7 +104,7 @@ class Lending extends AbstractEntity
 		return $this;
 	}
 
-	 public function getBorrower(): ?FrontendUser
+	public function getBorrower(): ?FrontendUser
 	{
 		return $this->borrower;
 	}
@@ -114,8 +114,7 @@ class Lending extends AbstractEntity
 		$this->borrower = $borrower;
 		return $this;
 	}
-
-	public function getPurpose(): ?string
+    public function getPurpose(): ?string
 	{
 		return $this->purpose;
 	}
@@ -146,6 +145,11 @@ class Lending extends AbstractEntity
 	{
 		$this->approver = $approver;
 		return $this;
+	}
+
+	public function getApproverUid(): ?int
+	{
+		return $this->_getProperty('approver');
 	}
 
 	public function getHighPriority(): bool

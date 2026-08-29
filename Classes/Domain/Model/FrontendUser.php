@@ -29,6 +29,9 @@ class FrontendUser extends AbstractEntity
     protected ?string $lastName = '';
 
     protected ?string $email = '';
+
+    protected ?bool $disable = null;
+
     /**
      * Constructs a new Front-End User
      */
@@ -84,9 +87,11 @@ class FrontendUser extends AbstractEntity
     {
         return $this->email;
     }
-
-
-    public function setUsergroup(ObjectStorage $usergroup): void
+    public function isDisabled(): ?bool
+    {
+        return $this->disable;
+    }
+     public function setUsergroup(ObjectStorage $usergroup): void
     {
         $this->usergroup = $usergroup;
     }

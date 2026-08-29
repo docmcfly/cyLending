@@ -67,6 +67,18 @@
 				<target state="tanslated">"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"</target>
 			</trans-unit>
 
+			<trans-unit id="lending.overview.frontendUser.notfound">
+				<source>Unkown frontend user uid: %s</source>
+				<target state="tanslated">Unbekannte Frontend-User-Uid: %s</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.frontendUser.disable">
+				<source>(deactivated)</source>
+				<target state="tanslated">(deaktiviert)</target>
+			</trans-unit>
+			<trans-unit id="lending.overview.frontendUser.deleted">
+				<source>(deleted)</source>
+				<target state="tanslated">(gelöscht)</target>
+			</trans-unit>
 
 			<trans-unit id="lending.overview.availabilityRequest.form.object">
 				<source>Lending object</source>
@@ -248,7 +260,7 @@
 				<source>Reject availability request</source>
 				<target state="tanslated">Ausleihanfrage ablehnen</target>
 			</trans-unit>
-			
+
 			<trans-unit id="lending.overview.approval.noneEntries">
 				<source>None entry exists</source>
 				<target state="tanslated">Aktuell keine Ausleihanfragen vorhanden</target>
