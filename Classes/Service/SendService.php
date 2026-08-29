@@ -193,7 +193,7 @@ class SendService implements SingletonInterface
     public function informPreviousBorrower(Lending $availabilityRequest, RequestInterface $request, string $language): void
     {
         $receiver = $availabilityRequest->getBorrower();
-        if (!empty($receiver->getEmail())) {
+        if ($receiver != null && !empty($receiver->getEmail())) {
             $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
             $fluidEmail
                 ->setRequest($request)
@@ -214,15 +214,15 @@ class SendService implements SingletonInterface
     }
 
     /**
-     * @param \Cylancer\CyLending\Domain\Model\Lending $availabilityRequest
-     * @param \TYPO3\CMS\Extbase\Mvc\RequestInterface $request
+     * @param Lending $availabilityRequest
+     * @param RequestInterface $request
      * @param string $language
      * @return void
      */
     public function sendAvailabilityRequestResultMail(Lending $availabilityRequest, RequestInterface $request, string $language): void
     {
         $receiver = $availabilityRequest->getBorrower();
-        if (!empty($receiver->getEmail())) {
+        if ($receiver != null &&!empty($receiver->getEmail())) {
             $fluidEmail = GeneralUtility::makeInstance(FluidEmail::class);
             $fluidEmail
                 ->setRequest($request)

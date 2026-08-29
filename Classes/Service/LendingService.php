@@ -14,7 +14,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-
+use TYPO3\CMS\Core\Database\ConnectionPool;
 /**
  *
  * This file is part of the "lending" Extension for TYPO3 CMS.
@@ -36,6 +36,8 @@ class LendingService implements SingletonInterface
         private readonly ValidationService $validationService,
         private readonly PersistenceManager $persistenceManager,
         private readonly SendService $sendService,
+        private readonly ConnectionPool $connectionPool,
+
     ) {
     }
 
@@ -79,13 +81,31 @@ class LendingService implements SingletonInterface
                 $description .= ' (' . $lending->getQuantity() . ' ' . LocalizationUtility::translate($key, 'cy_lending') . ')';
             }
             $event['description'] = $description;
-            $event['responsible'] = $lending->getBorrower()->getFirstName() . ' ' . $lending->getBorrower()->getLastName();
+            $event['responsible'] = $this->getBoworrerName($lending);
             $event['backgroundColor'] = $lendingObject->getColor();
             $event['striped'] = $lending->getState() == Lending::STATE_AVAILABILITY_REQUEST;
 
             $events[] = $event;
         }
         return $events;
+    }
+
+    private function getBoworrerName(Lending $lending): string
+    {
+
+        if ($lending->getBorrower() != null) {
+            return $this->frontendUserService->getFrontendUserName($lending->getBorrower());
+        }
+
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_cylending_domain_model_lending');
+
+        $row = $connection->select(
+            ['borrower'],
+            'tx_cylending_domain_model_lending',
+            ['uid' => $lending->getUid()]
+        )->fetchAssociative();
+
+        return $this->frontendUserService->getFrontendUserName($row ? (int) $row['borrower'] : null);
     }
 
     public function calculateMaximumFrom(Lending $lending): int
@@ -167,7 +187,7 @@ class LendingService implements SingletonInterface
         ]);
 
     }
-public function reserve(
+    public function reserve(
         Lending $toReserve,
         array $confirmedWarnings = [],
         int $ceUid,
@@ -326,8 +346,8 @@ public function reserve(
 
     /**
      * Summary of reject
-     * @param \Cylancer\CyLending\Domain\Model\Lending|int $availabilityRequest
-     * @param \TYPO3\CMS\Extbase\Mvc\RequestInterface $request
+     * @param Lending|int $availabilityRequest
+     * @param RequestInterface $request
      * @param string $language
      * @param array $flexformSettings
      * @return ValidationResults
@@ -369,12 +389,12 @@ public function reserve(
     }
 
     /**
-     * @param \Cylancer\CyLending\Domain\Model\Lending $availabilityRequest
-     * @param \TYPO3\CMS\Extbase\Mvc\RequestInterface $request
+     * @param Lending $myLending
+     * @param RequestInterface $request
      * @param string $language
      * @param int[] $frontendUserStroageUids
-     * @param \Cylancer\CyLending\Domain\Model\Lending|null $myLending
-     * @return \Cylancer\CyLending\Domain\Model\ValidationResults
+     * @param Lending|null $myLending
+     * @return ValidationResults
      */
     public function cancelMyLendingAction(
         Lending $myLending,
@@ -406,12 +426,11 @@ public function reserve(
     }
 
     /**
-     * @param \Cylancer\CyLending\Domain\Model\Lending $availabilityRequest
-     * @param \TYPO3\CMS\Extbase\Mvc\RequestInterface $request
+     * @param Lending $availabilityRequest
+     * @param RequestInterface $request
      * @param string $language
      * @param int[] $frontendUserStroageUids
-     * @param \Cylancer\CyLending\Domain\Model\Lending|null $myLending
-     * @return \Cylancer\CyLending\Domain\Model\ValidationResults
+     * @return ValidationResults
      */
     public function cancelMyAvailabilityRequest(
         Lending $availabilityRequest,

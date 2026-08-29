@@ -7,6 +7,8 @@ A warning is issued for loans that overlap in time. External appointment sources
 
 ## Change log
 
+* 5.5.2 :: FIX : The cancel process works as expected.
+* 5.5.1 :: FIX : The main view works if the borrower is disable or deleted.
 * 5.5.0 :: UPD : The main view refreshs the tab in the background.
 * 5.4.1 :: FIX : The list type of the content element is deprecated.
 * 5.4.0 :: UPD : Release the bootsrap version 16.

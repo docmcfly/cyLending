@@ -18,9 +18,12 @@ use TYPO3\CMS\Core\Context\Context;
 use Cylancer\CyLending\Domain\Model\FrontendUserGroup;
 use Cylancer\CyLending\Domain\Model\FrontendUser;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class FrontendUserService implements SingletonInterface
 {
+
+    private const EXTENSION_NAME = 'cy_lending';
 
     public function __construct(
         private readonly FrontendUserRepository $frontendUserRepository,
@@ -52,8 +55,11 @@ class FrontendUserService implements SingletonInterface
     }
 
 
-    public function containsUser(FrontendUserGroup $userGroup, FrontendUser $frontendUser): bool
+    public function containsUser(FrontendUserGroup $userGroup, ?FrontendUser $frontendUser): bool
     {
+        if ($frontendUser == null) {
+            return false;
+        }
 
         foreach ($frontendUser->getUsergroup() as $ug) {
             if ($this->containsGroup($userGroup, $ug->getUid())) {
@@ -124,6 +130,31 @@ class FrontendUserService implements SingletonInterface
             }
         }
         return $return;
+    }
+
+    public function getFrontendUserName(FrontendUser|int $frontendUser): string
+    {
+        if ($frontendUser == null) {
+            return LocalizationUtility::translate('lending.overview.frontendUser.notfound', FrontendUserService::EXTENSION_NAME, ['null']);
+        }
+
+        if ($frontendUser instanceof FrontendUser) {
+            return $frontendUser->getFirstName() . ' ' . $frontendUser->getLastName();
+        }
+
+        $uid = $frontendUser;
+        $frontendUser = $this->frontendUserRepository->findFrontendUser($uid);
+
+        if ($frontendUser == null) {
+            return LocalizationUtility::translate('lending.overview.frontendUser.notfound', FrontendUserService::EXTENSION_NAME, [$uid]);
+        }
+
+        $sufix = $frontendUser->isDisabled()
+            ? LocalizationUtility::translate('lending.overview.frontendUser.disable', FrontendUserService::EXTENSION_NAME, [$uid])
+            : LocalizationUtility::translate('lending.overview.frontendUser.deleted', FrontendUserService::EXTENSION_NAME, [$uid]);
+
+        return $frontendUser->getFirstName() . ' ' . $frontendUser->getLastName() . (empty($sufix) ? '' : ' ' . $sufix);
+
     }
 
 }

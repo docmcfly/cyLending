@@ -30,6 +30,16 @@
 				<source>My lendings</source>
 			</trans-unit>
 
+			<trans-unit id="lending.overview.frontendUser.notfound">
+				<source>Unkown frontend user uid: %s</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.frontendUser.disable">
+				<source>(deactivated)</source>
+			</trans-unit>
+			<trans-unit id="lending.overview.frontendUser.deleted">
+				<source>(deleted)</source>
+			</trans-unit>
+
 			<trans-unit id="lending.overview.availabilityRequest.form.object">
 				<source>Lending object</source>
 			</trans-unit>

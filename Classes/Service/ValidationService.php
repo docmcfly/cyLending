@@ -250,7 +250,7 @@ class ValidationService implements SingletonInterface
     {
         /** @var ValidationResults $validationResults */
         $validationResults = $availabilityRequest->getValidationResults();
-        if ($availabilityRequest->getBorrower()->getUid() != $this->frontendUserService->getCurrentUserUid()) {
+        if ($availabilityRequest->getBorrower() == null || $availabilityRequest->getBorrower()->getUid() != $this->frontendUserService->getCurrentUserUid()) {
             $validationResults->addError('notYourLending');
         }
         return $validationResults;
@@ -260,7 +260,7 @@ class ValidationService implements SingletonInterface
     {
         /** @var ValidationResults $validationResults */
         $validationResults = $myLending->getValidationResults();
-        if ($myLending->getBorrower()->getUid() != $this->frontendUserService->getCurrentUserUid()) {
+        if ($myLending->getBorrower() == null || $myLending->getBorrower()->getUid() != $this->frontendUserService->getCurrentUserUid()) {
             $validationResults->addError('notYourLending');
         }
         return $validationResults;

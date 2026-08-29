@@ -1,6 +1,7 @@
 <?php
 namespace Cylancer\CyLending\Domain\Repository;
 
+use Cylancer\CyLending\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -15,7 +16,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  */
 
- class FrontendUserRepository extends Repository
+class FrontendUserRepository extends Repository
 {
 
 
@@ -25,9 +26,9 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
         $q = $this->createQuery();
 
         $findInSet = [];
-        
+
         foreach ($usergroups as $ugUid) {
-            $findInSet[] =  $q->contains('usergroup', $ugUid);
+            $findInSet[] = $q->contains('usergroup', $ugUid);
         }
 
         $q->getQuerySettings()->setStoragePageIds($storageUids);
@@ -37,5 +38,20 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
         return $q->execute();
 
     }
+
+    public function findFrontendUser(int $uid): ?FrontendUser
+    {
+        $query = $this->createQuery();
+        $qs = $query->getQuerySettings();
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+        $query->getQuerySettings()->setIncludeDeleted(true);
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        
+        $return =  $query->matching(
+            $query->equals('uid', $uid)
+        )->execute()->getFirst();
+        return $return;
+    }
+
 
 }
